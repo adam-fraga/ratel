@@ -7,6 +7,6 @@ import (
 	"fmt"
 )
 
-func initProject() {
+func InitProject() {
 	fmt.Println("Creating a new project")
 }
