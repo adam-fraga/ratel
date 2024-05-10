@@ -22,7 +22,7 @@ func DbCommands() []*cobra.Command {
 func dbSubCommands() []*cobra.Command {
 	return []*cobra.Command{
 		{
-			Use:         "container",
+			Use:         "run-container",
 			Short:       "Create a new database container with docker",
 			Long:        "delete a project",
 			Annotations: map[string]string{"category": "db"},
@@ -44,6 +44,15 @@ func dbSubCommands() []*cobra.Command {
 				default:
 					fmt.Println("Please provide a valid database type")
 				}
+			},
+		},
+		{
+			Use:         "run-migration",
+			Short:       "Run database migration",
+			Long:        "Run database migration",
+			Annotations: map[string]string{"category": "db"},
+			Run: func(cmd *cobra.Command, args []string) {
+				handlers.RunDbMigration()
 			},
 		},
 	}

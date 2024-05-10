@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/adam-fraga/commands"
+	"github.com/adam-fraga/ratel/commands"
 )
 
 func main() {
