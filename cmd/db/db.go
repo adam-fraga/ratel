@@ -26,8 +26,7 @@ to quickly create a Cobra application.`,
 }
 
 func addDbSubCommands() {
-	dbCmd.AddCommand(runDbContainer)
-	dbCmd.AddCommand()
+	dbCmd.AddCommand(runDbContainerCmd)
 }
 
 func init() {

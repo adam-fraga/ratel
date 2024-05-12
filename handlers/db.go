@@ -19,8 +19,3 @@ func DumpDatabase() {
 func RunDbContainer(dbType string) {
 	fmt.Println("Creating a " + dbType + " container...")
 }
-
-// Use ginkgo package to manage application database migrations
-func RunDbMigration() {
-	fmt.Println("Running database migration...")
-}

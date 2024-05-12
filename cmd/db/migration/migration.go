@@ -25,6 +25,10 @@ to quickly create a Cobra application.`,
 	},
 }
 
+func AddMigrationCommand(command *cobra.Command) {
+	migrationCmd.AddCommand(runMigrationCmd)
+}
+
 func init() {
 	cmd.RootCmd.AddCommand(migrationCmd)
 
