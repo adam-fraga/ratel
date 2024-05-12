@@ -13,14 +13,9 @@ import (
 
 // listProjectDependenciesCmd represents the listProjectDependencies command
 var listProjectDependenciesCmd = &cobra.Command{
-	Use:   "listProjectDependencies",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "list-dependencies",
+	Short: "List all javascript and golang project dependencies",
+	Long:  `List all project dependencies available in the project.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("listProjectDependencies called")
 	},

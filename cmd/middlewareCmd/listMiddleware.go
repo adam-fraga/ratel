@@ -11,14 +11,10 @@ import (
 
 // listMiddlewareCmd represents the listMiddleware command
 var listMiddlewareCmd = &cobra.Command{
-	Use:   "listMiddleware",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:   "list",
+	Short: "List all middlewares",
+	Long:  "List all middlewares available in the project.",
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		handlers.ListMiddlewares()
 	},

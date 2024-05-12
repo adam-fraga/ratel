@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/adam-fraga/ratel/cmd"
+	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ import (
 var runDbContainerCmd = &cobra.Command{
 	Use:         "run-container",
 	Short:       "Create a new database container with docker",
-	Long:        "delete a project",
+	Long:        `Create a new database container with docker for the web framework.`,
 	Annotations: map[string]string{"category": "db"},
 	ValidArgs:   []string{"sqlite, postgres, mysql, mongo"},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -38,7 +39,7 @@ var runDbContainerCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(runDbContainerCmd)
+	cmd.RootCmd.AddCommand(runDbContainerCmd)
 
 	// Here you will define your flags and configuration settings.
 

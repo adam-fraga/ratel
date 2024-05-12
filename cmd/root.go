@@ -16,9 +16,8 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "ratel",
-	Short: "Ratel is a cli tool for managing anago web framework.",
-	Long: `Ratel is a CLI library for Go that empowers anago web framework.
-This application is a tool to generate the needed files, db commands, middleware, and more`,
+	Short: "Ratel is a cli tool for managing Anago web framework.",
+	Long:  `Ratel is a cli tool for managing Anago web framework.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

@@ -4,6 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
+	"fmt"
+
 	"github.com/adam-fraga/ratel/cmd"
 	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
@@ -16,7 +18,10 @@ var createMiddlewareCmd = &cobra.Command{
 	Long:        "Create and initialize structure for a new middleware with the framework",
 	Annotations: map[string]string{"category": "project"},
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.CreateGenericMiddleware()
+		if len(args) == 0 || (args[0] == "" || len(args) > 1) {
+			fmt.Println("Please provide a name for the middleware")
+		}
+		handlers.CreateGenericMiddleware(args[0])
 	},
 }
 

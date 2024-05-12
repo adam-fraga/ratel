@@ -13,7 +13,7 @@ import (
 var runMigrationCmd = &cobra.Command{
 	Use:         "run-migration",
 	Short:       "Run database migration",
-	Long:        "Run database migration",
+	Long:        `Run database migration to update the database schema.`,
 	Annotations: map[string]string{"category": "db"},
 	Run: func(cmd *cobra.Command, args []string) {
 		handlers.RunDbMigration()

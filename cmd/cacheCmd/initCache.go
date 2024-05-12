@@ -11,9 +11,14 @@ import (
 
 // initCacheCmd represents the initCache command
 var initCacheCmd = &cobra.Command{
-	Use:         "init",
-	Short:       "init a new cache",
-	Long:        "Create and initialize structure for a new middleware with the framework",
+	Use:   "init",
+	Short: "init a new cache",
+	Long: `Initializing a new cache for the web framework will enable 
+  performance and scalability of the application. By caching frequently 
+  accessed data and reducing the number of requests made to our database 
+  and other external systems, resulting in faster response times and a
+  better user experience.`,
+
 	Annotations: map[string]string{"category": "cache"},
 	ValidArgs:   []string{"name"},
 	Run: func(cmd *cobra.Command, args []string) {

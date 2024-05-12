@@ -6,31 +6,27 @@ package dbMigrationCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
+	"github.com/adam-fraga/ratel/cmd/dbCmd"
 	"github.com/spf13/cobra"
 )
 
 // migrationCmd represents the migration command
 var migrationCmd = &cobra.Command{
 	Use:   "migration",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Migration commands",
+	Long:  `Migration commands provide a way to interact with the migration system of the web framework.`,
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("migration called")
+		fmt.Println("MIGRATION COMMAND CALLED")
 	},
 }
 
-func AddMigrationCommand(command *cobra.Command) {
+func AddMigrationSubcommand(command *cobra.Command) {
 	migrationCmd.AddCommand(runMigrationCmd)
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(migrationCmd)
+	dbCmd.DbCmd.AddCommand(migrationCmd)
 
 	// Here you will define your flags and configuration settings.
 

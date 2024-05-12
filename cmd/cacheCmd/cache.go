@@ -13,15 +13,10 @@ import (
 // cacheCmd represents the cache command
 var cacheCmd = &cobra.Command{
 	Use:   "cache",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Cache commands",
+	Long:  `Cache commands provide a way to interact with the cache system. of the web framework.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Cache command called")
+		fmt.Println("CACHE COMMAND CALLED")
 	},
 }
 

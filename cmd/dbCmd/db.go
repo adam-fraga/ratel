@@ -11,26 +11,21 @@ import (
 )
 
 // dbCmd represents the db command
-var dbCmd = &cobra.Command{
+var DbCmd = &cobra.Command{
 	Use:   "db",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Database commands",
+	Long:  `Database commands provide a way to interact with the database system of the web framework.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("db called")
 	},
 }
 
 func addDbSubCommands() {
-	dbCmd.AddCommand(runDbContainerCmd)
+	DbCmd.AddCommand(runDbContainerCmd)
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(dbCmd)
+	cmd.RootCmd.AddCommand(DbCmd)
 
 	// Here you will define your flags and configuration settings.
 
