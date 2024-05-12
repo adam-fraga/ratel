@@ -4,71 +4,43 @@ package handlers
 // 1. create project should implement the whole project with the GO4T stack
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/adam-fraga/ratel/datatype"
 	"github.com/adam-fraga/ratel/errors"
-	"github.com/joho/godotenv"
+	"github.com/adam-fraga/ratel/models/datatypes"
 )
 
-func InitProject() {
+func InitProject(appName string) {
 	fmt.Println("Creating a new project")
-	createProjectStructure()
+	createProjectStructure(appName)
 }
 
-func createProjectStructure() {
-	fmt.Println("Creating the project structure...")
-	err, dotenv := godotenv.Load()
+func createProjectStructure(appName string) error {
+	fmt.Printf("Creating the project structure for application %s...", appName)
+	jsonFolders, err := parseJsonFolders()
 	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
-	appName := dotenv["APP_NAME"]
-
-	folders := []datatype.Folder{
-		{FolderName: appName, Permissions: 755},
-		{FolderName: "cmd", Permissions: 755, SubFolders: []datatype.Folder{appName}},
-		{FolderName: "static", Permissions: 755, SubFolders: []datatype.Folder{
-			{FolderName: "style", Permissions: 755},
-			{FolderName: "script", Permissions: 755}}},
-		{FolderName: "src", Permissions: 755, SubFolders: []datatype.Folder{
-			{FolderName: "style", Permissions: 755},
-			{FolderName: "script", Permissions: 755}}},
-		{FolderName: "handler", Permissions: 755},
-		{FolderName: "views", Permissions: 755, SubFolders: []datatype.Folder{
-			{FolderName: "views/layout", Permissions: 755},
-			{FolderName: "views/metadatas", Permissions: 755},
-			{FolderName: "views/templates", Permissions: 755},
-			{FolderName: "views/partials", Permissions: 755},
-			{FolderName: "views/components", Permissions: 755},
-			{FolderName: "views/pages", Permissions: 755}}},
-		{FolderName: "config", Permissions: 755},
-		{FolderName: "script", Permissions: 755},
-		{FolderName: "docs", Permissions: 755},
-
-		{FolderName: "error", Permissions: 755},
-		{FolderName: "db", Permissions: 755},
-		{FolderName: "middleware", Permissions: 755},
-		{FolderName: "model", Permissions: 755},
+		return &errors.Error{Type: "Project Structure Error", Msg: "Error parsing the folders.json file"}
 	}
 
-	for _, folder := range folders {
+	for _, folder := range jsonFolders {
 		createFolders(&folder)
 	}
 	createFiles()
+	return nil
 }
 
 // Create the folders for the project
-func createFolders(folder *datatype.Folder) error {
-	fmt.Sprintf("Creating the folder %s...", folder.FolderName)
-	err := os.Mkdir(folder.FolderName, folder.Permissions)
+func createFolders(folder *datatypes.Folder) error {
+	fmt.Printf("Creating the folder %s...", folder.FolderName)
 
+	err := os.Mkdir(folder.FolderName, folder.Permissions)
 	if err != nil {
 		return &errors.Error{Type: "Project Structure Error", Msg: fmt.Sprintf("Error creating %s folder", folder.FolderName)}
 	}
 
-	fmt.Sprintf("Folder %s successfully created", folder.FolderName)
-
+	fmt.Printf("Folder %s successfully created", folder.FolderName)
 	if len(folder.SubFolders) > 0 {
 		for _, subFolder := range folder.SubFolders {
 			createFolders(&subFolder)
@@ -84,4 +56,21 @@ func createFiles() {
 
 func populateFiles() {
 	fmt.Println("Populating the files...")
+}
+
+func parseJsonFolders() ([]datatypes.Folder, error) {
+	fmt.Println("Parsing the folders...")
+	var folders []datatypes.Folder
+
+	jsonFile, err := os.Open("folders.json")
+	if err != nil {
+		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error opening the folders.json file"}
+	}
+	defer jsonFile.Close()
+
+	err = json.NewDecoder(jsonFile).Decode(&folders)
+	if err != nil {
+		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error decoding the folders.json file"}
+	}
+	return folders, nil
 }
