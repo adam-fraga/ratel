@@ -7,10 +7,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/adam-fraga/ratel/cacheCmd"
-	"github.com/adam-fraga/ratel/dbCmd"
-	"github.com/adam-fraga/ratel/middlewareCmd"
-	"github.com/adam-fraga/ratel/projectCmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,13 +31,6 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func addSubCommands() {
-	projectCmd.AddProjectSubCommands()
-	dbCmd.AddDbSubCommands()
-	middlewareCmd.AddMiddlewareSubCommands()
-	cacheCmd.AddCacheSubCommands()
 }
 
 func init() {
