@@ -6,12 +6,11 @@ package dbMigrationCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd/dbCmd"
 	"github.com/spf13/cobra"
 )
 
 // migrationCmd represents the migration command
-var migrationCmd = &cobra.Command{
+var MigrationCmd = &cobra.Command{
 	Use:   "migration",
 	Short: "Migration commands",
 	Long:  `Migration commands provide a way to interact with the migration system of the web framework.`,
@@ -21,12 +20,12 @@ var migrationCmd = &cobra.Command{
 	},
 }
 
-func AddMigrationSubcommand(command *cobra.Command) {
-	migrationCmd.AddCommand(runMigrationCmd)
+func addMigrationSubcommand() {
+	MigrationCmd.AddCommand(runMigrationCmd)
 }
 
 func init() {
-	dbCmd.DbCmd.AddCommand(migrationCmd)
+	addMigrationSubcommand()
 
 	// Here you will define your flags and configuration settings.
 

@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
@@ -21,8 +20,6 @@ var listMiddlewareCmd = &cobra.Command{
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(listMiddlewareCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

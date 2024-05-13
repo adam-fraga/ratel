@@ -6,12 +6,11 @@ package viewCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/spf13/cobra"
 )
 
 // viewCmd represents the view command
-var viewCmd = &cobra.Command{
+var ViewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "View commands for the project",
 	Long:  `View commands for the project.`,
@@ -20,8 +19,13 @@ var viewCmd = &cobra.Command{
 	},
 }
 
+func addViewSubCommands() {
+	ViewCmd.AddCommand(createViewCmd)
+	// ViewCmd.AddCommand(listViewCmd)
+}
+
 func init() {
-	cmd.RootCmd.AddCommand(viewCmd)
+	addViewSubCommands()
 
 	// Here you will define your flags and configuration settings.
 

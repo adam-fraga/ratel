@@ -6,12 +6,11 @@ package projectCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/spf13/cobra"
 )
 
 // projectCmd represents the project command
-var projectCmd = &cobra.Command{
+var ProjectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Project related commands for the web framework",
 	Long:  `Project commands provide a way to interact with the project system of the web framework.`,
@@ -21,13 +20,13 @@ var projectCmd = &cobra.Command{
 	},
 }
 
-func AddProjectCommand(command *cobra.Command) {
-	projectCmd.AddCommand(createProjectCmd)
-	projectCmd.AddCommand(listProjectDependenciesCmd)
+func AddProjectSubCommands() {
+	ProjectCmd.AddCommand(createProjectCmd)
+	ProjectCmd.AddCommand(listProjectDependenciesCmd)
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(projectCmd)
+	AddProjectSubCommands()
 
 	// Here you will define your flags and configuration settings.
 

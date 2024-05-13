@@ -6,13 +6,12 @@ package middlewareCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
 	// "github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
 
 // middlewareCmd represents the middleware command
-var middlewareCmd = &cobra.Command{
+var MiddlewareCmd = &cobra.Command{
 	Use:   "middleware",
 	Short: "Middleware commands for the project",
 	Long:  `Middleware commands for the project.`,
@@ -22,13 +21,13 @@ var middlewareCmd = &cobra.Command{
 }
 
 func addMiddlewareSubCommands() {
-	middlewareCmd.AddCommand(listMiddlewareCmd)
-	middlewareCmd.AddCommand(createMiddlewareCmd)
-	middlewareCmd.AddCommand(createAuthMiddlewareCmd)
+	MiddlewareCmd.AddCommand(listMiddlewareCmd)
+	MiddlewareCmd.AddCommand(createMiddlewareCmd)
+	MiddlewareCmd.AddCommand(createAuthMiddlewareCmd)
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(middlewareCmd)
+	addMiddlewareSubCommands()
 
 	// Here you will define your flags and configuration settings.
 

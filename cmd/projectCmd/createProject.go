@@ -5,7 +5,6 @@ package projectCmd
 
 import (
 	"fmt"
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
@@ -23,8 +22,6 @@ var createProjectCmd = &cobra.Command{
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(createProjectCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

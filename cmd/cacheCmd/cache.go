@@ -6,12 +6,11 @@ package cacheCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/spf13/cobra"
 )
 
 // cacheCmd represents the cache command
-var cacheCmd = &cobra.Command{
+var CacheCmd = &cobra.Command{
 	Use:   "cache",
 	Short: "Cache commands",
 	Long:  `Cache commands provide a way to interact with the cache system. of the web framework.`,
@@ -21,13 +20,12 @@ var cacheCmd = &cobra.Command{
 }
 
 func addCacheSubCommands() {
-	cacheCmd.AddCommand(initCacheCmd)
-	cacheCmd.AddCommand(runCacheCmd)
+	CacheCmd.AddCommand(initCacheCmd)
+	CacheCmd.AddCommand(runCacheCmd)
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(cacheCmd)
-
+	addCacheSubCommands()
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

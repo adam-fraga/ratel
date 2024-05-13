@@ -6,7 +6,7 @@ package dbCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
+	dbMigrationCmd "github.com/adam-fraga/ratel/cmd/dbCmd/migration"
 	"github.com/spf13/cobra"
 )
 
@@ -20,9 +20,14 @@ var DbCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	cmd.RootCmd.AddCommand(DbCmd)
+func addDbSubCommands() {
+	// DbCmd.AddCommand(createDbCmd)
+	// DbCmd.AddCommand(listDbCmd)
+	DbCmd.AddCommand(dbMigrationCmd.MigrationCmd)
+}
 
+func init() {
+	addDbSubCommands()
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

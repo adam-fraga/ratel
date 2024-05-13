@@ -6,7 +6,6 @@ package cacheCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -21,8 +20,6 @@ var runCacheCmd = &cobra.Command{
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(runCacheCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
