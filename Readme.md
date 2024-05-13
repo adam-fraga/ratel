@@ -29,7 +29,6 @@ Viper is used to manage the configuration of the application, and cobra is used 
 - [ ] Implement the logic for the commands that generates the project
       (The project should be generated following the structure the json data folders and files)
       (Project name should be asked to the user)
-      (Database should be asked to the user)
 
 - [ ] Implement the logic for the commands that generates the cache
       (Start by choosing between simple cache like Go cache package or Valkey)
