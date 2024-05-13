@@ -20,10 +20,6 @@ var DbCmd = &cobra.Command{
 	},
 }
 
-func addDbSubCommands() {
-	DbCmd.AddCommand(runDbContainerCmd)
-}
-
 func init() {
 	cmd.RootCmd.AddCommand(DbCmd)
 
