@@ -1,92 +1,92 @@
 [
   {
     "folderName": "src",
-    "permissions": "755",
+    "permissions": 755,
     "subFolders": [
       {
         "folderName": "style",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "script",
-        "permissions": "755"
+        "permissions": 755
       }
     ]
   },
   {
     "folderName": "src",
-    "permissions": "755",
+    "permissions": 755,
     "subFolders": [
       {
         "folderName": "style",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "script",
-        "permissions": "755"
+        "permissions": 755
       }
     ]
   },
   {
     "folderName": "handler",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "views",
-    "permissions": "755",
+    "permissions": 755,
     "subFolders": [
       {
         "folderName": "views/layout",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "views/metadatas",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "views/templates",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "views/partials",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "views/components",
-        "permissions": "755"
+        "permissions": 755
       },
       {
         "folderName": "views/pages",
-        "permissions": "755"
+        "permissions": 755
       }
     ]
   },
   {
     "folderName": "config",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "script",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "docs",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "error",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "db",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "middleware",
-    "permissions": "755"
+    "permissions": 755
   },
   {
     "folderName": "model",
-    "permissions": "755"
+    "permissions": 755
   }
 ]

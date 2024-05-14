@@ -6,28 +6,38 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/adam-fraga/ratel/errors"
 	"github.com/adam-fraga/ratel/models/datatypes"
 )
 
-func InitProject(appName string) {
-	fmt.Println("Creating a new project")
-	createProjectStructure(appName)
+func InitProject() {
+	//Capture user input
+	var appName string
+	io.WriteString(os.Stdout, "Choose a name for your application: ")
+	fmt.Scanln(&appName)
+	err := createProjectStructure(appName)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func createProjectStructure(appName string) error {
 	fmt.Printf("Creating the project structure for application %s...", appName)
-	jsonFolders, err := parseJsonFolders()
+	jsonFolders, err := getProjectStructureFromJson()
 	if err != nil {
-		return &errors.Error{Type: "Project Structure Error", Msg: "Error parsing the folders.json file"}
+
+		return &errors.Error{Type: "Project Structure Error", Msg: "Error parsing the folders.json file: " + err.Error()}
 	}
 
 	for _, folder := range jsonFolders {
-		createFolders(&folder)
+		fmt.Println(folder)
+		// createFolders(&folder)
 	}
-	createFiles()
+	// createFiles()
 	return nil
 }
 
@@ -58,19 +68,26 @@ func populateFiles() {
 	fmt.Println("Populating the files...")
 }
 
-func parseJsonFolders() ([]datatypes.Folder, error) {
-	fmt.Println("Parsing the folders...")
+func getProjectStructureFromJson() ([]datatypes.Folder, error) {
+	fmt.Println("Parsing the folders from Folders.json...")
+
 	var folders []datatypes.Folder
 
-	jsonFile, err := os.Open("folders.json")
+	rootPath, _ := os.Getwd()
+	folderJsonFilePath := filepath.Join(rootPath, "/data/folders.json")
+
+	projectStructureJsonFile, err := os.Open(folderJsonFilePath)
 	if err != nil {
+		fmt.Println(err)
 		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error opening the folders.json file"}
 	}
-	defer jsonFile.Close()
+	defer projectStructureJsonFile.Close()
 
-	err = json.NewDecoder(jsonFile).Decode(&folders)
+	err = json.NewDecoder(projectStructureJsonFile).Decode(&folders)
 	if err != nil {
+		fmt.Println(err)
 		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error decoding the folders.json file"}
 	}
+
 	return folders, nil
 }
