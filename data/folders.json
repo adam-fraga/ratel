@@ -14,20 +14,6 @@
     ]
   },
   {
-    "folderName": "src",
-    "permissions": 755,
-    "subFolders": [
-      {
-        "folderName": "style",
-        "permissions": 755
-      },
-      {
-        "folderName": "script",
-        "permissions": 755
-      }
-    ]
-  },
-  {
     "folderName": "handler",
     "permissions": 755
   },

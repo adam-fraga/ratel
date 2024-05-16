@@ -26,35 +26,47 @@ func InitProject() {
 }
 
 func createProjectStructure(appName string) error {
-	fmt.Printf("Creating the project structure for application %s...", appName)
+	fmt.Printf("Creating the project structure for application %s...\n", appName)
 	jsonFolders, err := getProjectStructureFromJson()
 	if err != nil {
-
 		return &errors.Error{Type: "Project Structure Error", Msg: "Error parsing the folders.json file: " + err.Error()}
 	}
-
-	for _, folder := range jsonFolders {
-		fmt.Println(folder)
-		// createFolders(&folder)
+	err = createFolders(jsonFolders, false, "")
+	if err != nil {
+		return &errors.Error{Type: "Project Structure Error", Msg: "Error creating the folders: " + err.Error()}
 	}
 	// createFiles()
 	return nil
 }
 
 // Create the folders for the project
-func createFolders(folder *datatypes.Folder) error {
-	fmt.Printf("Creating the folder %s...", folder.FolderName)
+func createFolders(folders []datatypes.Folder, isSubfolder bool, parentFolder string) error {
+	subfolders := []datatypes.Folder{}
 
-	err := os.Mkdir(folder.FolderName, folder.Permissions)
-	if err != nil {
-		return &errors.Error{Type: "Project Structure Error", Msg: fmt.Sprintf("Error creating %s folder", folder.FolderName)}
+	if len(subfolders) > 0 {
+		err := createFolders(subfolders, true, parentFolder)
+		if err != nil {
+			return &errors.Error{Type: "Project Structure Error", Msg: "Error creating the subfolders: " + err.Error()}
+		}
 	}
 
-	fmt.Printf("Folder %s successfully created", folder.FolderName)
-	if len(folder.SubFolders) > 0 {
-		for _, subFolder := range folder.SubFolders {
-			createFolders(&subFolder)
+	for _, folder := range folders {
+		if isSubfolder {
+			rootPath, _ := os.Getwd()
+			folder.FolderName = filepath.Join(rootPath, folder.FolderName)
 		}
+
+		err := os.Mkdir(folder.FolderName, folder.Permissions)
+		if err != nil {
+			return &errors.Error{Type: "Project Structure Error", Msg: "Error creating the folder: " + err.Error()}
+		}
+		fmt.Printf("Folder %s with permission: %d successfully created \n", folder.FolderName, folder.Permissions)
+		if len(folder.SubFolders) > 0 {
+			for _, subfolder := range folder.SubFolders {
+				subfolders = append(subfolders, subfolder)
+			}
+		}
+		subfolders = nil
 	}
 	return nil
 }
@@ -65,7 +77,7 @@ func createFiles() {
 }
 
 func populateFiles() {
-	fmt.Println("Populating the files...")
+	fmt.Print("Populating the files...")
 }
 
 func getProjectStructureFromJson() ([]datatypes.Folder, error) {
