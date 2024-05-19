@@ -7,45 +7,76 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/adam-fraga/ratel/errors"
 	"github.com/adam-fraga/ratel/models/datatypes"
 )
 
 func InitProject(appName string) {
-	fmt.Println("Creating a new project")
+
 	createProjectStructure(appName)
 }
 
 func createProjectStructure(appName string) error {
-	fmt.Printf("Creating the project structure for application %s...", appName)
+	fmt.Printf("Creating the project structure for application %s...\n", appName)
 	jsonFolders, err := parseJsonFolders()
 	if err != nil {
-		return &errors.Error{Type: "Project Structure Error", Msg: "Error parsing the folders.json file"}
+		fmt.Println("Error parsing the json folders")
+		fmt.Println(err.Error())
+		return err
 	}
 
 	for _, folder := range jsonFolders {
-		createFolders(&folder)
+		err := createFolder(&folder, "")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
-	createFiles()
+	// createFiles()
 	return nil
 }
 
-// Create the folders for the project
-func createFolders(folder *datatypes.Folder) error {
-	fmt.Printf("Creating the folder %s...", folder.FolderName)
+func createFolder(folder *datatypes.Folder, parentFolder string) error {
+	fmt.Printf("Creating the folder %s with permissions %d..\n", folder.FolderName, folder.Permissions)
 
-	err := os.Mkdir(folder.FolderName, folder.Permissions)
+	err := os.Mkdir(folder.FolderName, os.FileMode(0755))
 	if err != nil {
-		return &errors.Error{Type: "Project Structure Error", Msg: fmt.Sprintf("Error creating %s folder", folder.FolderName)}
+		return &errors.Error{
+			Type:       "Project Structure Error",
+			Origin:     "createFolder()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", folder.FolderName)}
 	}
 
-	fmt.Printf("Folder %s successfully created", folder.FolderName)
 	if len(folder.SubFolders) > 0 {
 		for _, subFolder := range folder.SubFolders {
-			createFolders(&subFolder)
+			err := createFolder(&subFolder, folder.FolderName)
+			if err != nil {
+				return &errors.Error{
+					Type:       "Project Structure Error",
+					Origin:     "createFolder()",
+					FileOrigin: "handlers/project.go",
+					Msg:        err.Error() + fmt.Sprintf("Error creating subfolder %s in folder %s", subFolder.FolderName, folder.FolderName)}
+			}
 		}
 	}
+
+	return nil
+}
+
+func createSubFolder(subFolder *datatypes.Folder, parentFolder string) error {
+	fmt.Printf("Creating the subfolder %s inside parentFolder %s with permissions %d..", subFolder.FolderName, parentFolder, subFolder.Permissions)
+	err := os.Mkdir(subFolder.FolderName, os.FileMode(0755))
+
+	if err != nil {
+		return &errors.Error{
+			Type:       "Project Structure Error",
+			Origin:     "createSubFolder()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", subFolder.FolderName)}
+	}
+
 	return nil
 }
 
@@ -62,15 +93,33 @@ func parseJsonFolders() ([]datatypes.Folder, error) {
 	fmt.Println("Parsing the folders...")
 	var folders []datatypes.Folder
 
-	jsonFile, err := os.Open("folders.json")
+	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/folders.json")
+
 	if err != nil {
-		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error opening the folders.json file"}
+		return nil, &errors.Error{
+			Type:       "Project Structure Error",
+			Origin:     "parseJsonFolders()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error() + "Error getting the absolute path of the json file"}
+	}
+
+	jsonFile, err := os.Open(projectStructureJsonFilePath)
+	if err != nil {
+		return nil, &errors.Error{
+			Type:       "Project Structure Error",
+			Origin:     "parseJsonFolders()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error()}
 	}
 	defer jsonFile.Close()
 
 	err = json.NewDecoder(jsonFile).Decode(&folders)
 	if err != nil {
-		return nil, &errors.Error{Type: "Project Structure Error", Msg: "Error decoding the folders.json file"}
+		return nil, &errors.Error{
+			Type:       "Project Structure Error",
+			Origin:     "parseJsonFolders()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error() + "Error decoding the json file"}
 	}
 	return folders, nil
 }

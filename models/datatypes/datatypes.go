@@ -12,7 +12,7 @@ type Project struct {
 type Folder struct {
 	FolderName  string      `json:"folderName"`
 	SubFolders  []Folder    `json:"subFolders"`
-	Files       []File      `json:"files"`
+	Files       []string    `json:"files"`
 	Permissions fs.FileMode `json:"permissions"`
 }
 

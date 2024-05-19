@@ -1,92 +1,77 @@
 [
   {
     "folderName": "src",
-    "permissions": "755",
     "subFolders": [
       {
         "folderName": "style",
-        "permissions": "755"
+        "files": ["style.css"]
       },
       {
         "folderName": "script",
-        "permissions": "755"
+        "files": ["script.js"]
       }
     ]
   },
   {
-    "folderName": "src",
-    "permissions": "755",
+    "folderName": "views",
     "subFolders": [
       {
-        "folderName": "style",
-        "permissions": "755"
+        "folderName": "views/layout",
+        "files": ["mainLayout.templ"]
       },
       {
-        "folderName": "script",
-        "permissions": "755"
+        "folderName": "views/metadatas",
+        "files": ["metadatas.templ"]
+      },
+      {
+        "folderName": "views/templates"
+      },
+      {
+        "folderName": "views/partials",
+        "files": ["header.templ", "footer.templ"]
+      },
+      {
+        "folderName": "views/components"
+      },
+      {
+        "folderName": "views/pages",
+        "files": ["index.templ"]
       }
     ]
   },
   {
     "folderName": "handler",
-    "permissions": "755"
-  },
-  {
-    "folderName": "views",
-    "permissions": "755",
-    "subFolders": [
-      {
-        "folderName": "views/layout",
-        "permissions": "755"
-      },
-      {
-        "folderName": "views/metadatas",
-        "permissions": "755"
-      },
-      {
-        "folderName": "views/templates",
-        "permissions": "755"
-      },
-      {
-        "folderName": "views/partials",
-        "permissions": "755"
-      },
-      {
-        "folderName": "views/components",
-        "permissions": "755"
-      },
-      {
-        "folderName": "views/pages",
-        "permissions": "755"
-      }
-    ]
+    "files": ["indexHandler.go"]
   },
   {
     "folderName": "config",
-    "permissions": "755"
+    "files": ["config.yml"]
   },
   {
     "folderName": "script",
-    "permissions": "755"
+    "files": ["index.ts"]
   },
   {
-    "folderName": "docs",
-    "permissions": "755"
+    "folderName": "docs"
   },
   {
     "folderName": "error",
-    "permissions": "755"
+    "files": ["error.go"]
   },
   {
     "folderName": "db",
-    "permissions": "755"
+    "files": ["db.go"]
   },
   {
     "folderName": "middleware",
-    "permissions": "755"
+    "files": ["auth-middleware.go"]
   },
   {
     "folderName": "model",
-    "permissions": "755"
+    "files": ["user.go"]
+  },
+  {
+    "folderName": "test",
+    "files": ["index.test.go"]
   }
 ]
