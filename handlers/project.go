@@ -1,8 +1,5 @@
 package handlers
 
-//Implement the following commands:
-// 1. create project should implement the whole project with the GO4T stack
-
 import (
 	"encoding/json"
 	"fmt"
@@ -28,30 +25,45 @@ func createProjectStructure(appName string) error {
 	}
 
 	for _, folder := range jsonFolders {
-		err := createFolder(&folder, "")
+		err := createFolder(&folder)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 	}
-	// createFiles()
+
 	return nil
 }
 
-func createFolder(folder *datatypes.Folder, parentFolder string) error {
-	fmt.Printf("Creating the folder %s with permissions %d..\n", folder.FolderName, folder.Permissions)
+func createFolder(folder *datatypes.Folder) error {
+	fmt.Printf("Creating the folder %s with permissions 755...\n", folder.FolderName)
 
-	err := os.Mkdir(folder.FolderName, os.FileMode(0755))
-	if err != nil {
-		return &errors.Error{
-			Type:       "Project Structure Error",
-			Origin:     "createFolder()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", folder.FolderName)}
+	if folder.FolderName != "root" {
+		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
+		if err != nil {
+			return &errors.Error{
+				Type:       "Project Structure Error",
+				Origin:     "createFolder()",
+				FileOrigin: "handlers/project.go",
+				Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", folder.FolderName)}
+		}
+	}
+
+	if len(folder.Files) > 0 {
+		for _, file := range folder.Files {
+			err := createFile(file)
+			if err != nil {
+				return &errors.Error{
+					Type:       "Project Structure Error",
+					Origin:     "createFolder()",
+					FileOrigin: "handlers/project.go",
+					Msg:        err.Error() + fmt.Sprintf("Error creating file %s in folder %s", file, folder.FolderName)}
+			}
+		}
 	}
 
 	if len(folder.SubFolders) > 0 {
 		for _, subFolder := range folder.SubFolders {
-			err := createFolder(&subFolder, folder.FolderName)
+			err := createFolder(&subFolder)
 			if err != nil {
 				return &errors.Error{
 					Type:       "Project Structure Error",
@@ -65,24 +77,18 @@ func createFolder(folder *datatypes.Folder, parentFolder string) error {
 	return nil
 }
 
-func createSubFolder(subFolder *datatypes.Folder, parentFolder string) error {
-	fmt.Printf("Creating the subfolder %s inside parentFolder %s with permissions %d..", subFolder.FolderName, parentFolder, subFolder.Permissions)
-	err := os.Mkdir(subFolder.FolderName, os.FileMode(0755))
-
+func createFile(fileName string) error {
+	fmt.Printf("Creating the file %s with permissions 755...\n", fileName)
+	file, err := os.Create(fileName)
 	if err != nil {
 		return &errors.Error{
 			Type:       "Project Structure Error",
-			Origin:     "createSubFolder()",
+			Origin:     "createFolder()",
 			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", subFolder.FolderName)}
+			Msg:        err.Error() + fmt.Sprintf("Error creating %s file", fileName)}
 	}
-
+	defer file.Close()
 	return nil
-}
-
-func createFiles() {
-	populateFiles()
-	fmt.Println("Creating the files...")
 }
 
 func populateFiles() {
