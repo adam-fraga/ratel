@@ -6,7 +6,6 @@ package middlewareCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +21,7 @@ var createAuthMiddlewareCmd = &cobra.Command{
 			fmt.Println("Please provide a name for the middleware")
 			return
 		}
-		handlers.CreateAuthMiddleware(args[0])
+		fmt.Printf("Creating auth middleware with name: %s\n", args[0])
 	},
 }
 

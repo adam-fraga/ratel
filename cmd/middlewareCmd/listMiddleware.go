@@ -4,7 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
-	"github.com/adam-fraga/ratel/handlers"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +16,7 @@ var listMiddlewareCmd = &cobra.Command{
 	Long:  "List all middlewares available in the project.",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.ListMiddlewares()
+		fmt.Println("Listing all middlewares")
 	},
 }
 

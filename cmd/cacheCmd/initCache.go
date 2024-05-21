@@ -4,7 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cacheCmd
 
 import (
-	"github.com/adam-fraga/ratel/handlers"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +22,7 @@ var initCacheCmd = &cobra.Command{
 	Annotations: map[string]string{"category": "cache"},
 	ValidArgs:   []string{"name"},
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.InitCache(args[0])
+		fmt.Println("CACHE INIT CALLED")
 	},
 }
 

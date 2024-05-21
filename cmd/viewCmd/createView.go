@@ -4,7 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
-	"github.com/adam-fraga/ratel/handlers"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ var createViewCmd = &cobra.Command{
 	Short: "Create a new view with go templ (.templ)",
 	Long:  `Create a new view with go templ (.templ) in the views folder.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.CreateView()
+		fmt.Println("createView called")
 	},
 }
 

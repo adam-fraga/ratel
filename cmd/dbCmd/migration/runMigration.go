@@ -4,7 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package dbMigrationCmd
 
 import (
-	"github.com/adam-fraga/ratel/handlers"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +16,7 @@ var runMigrationCmd = &cobra.Command{
 	Long:        `Run database migration to update the database schema.`,
 	Annotations: map[string]string{"category": "db"},
 	Run: func(cmd *cobra.Command, args []string) {
-		handlers.RunDbMigration()
+		fmt.Println("runMigration called")
 	},
 }
 

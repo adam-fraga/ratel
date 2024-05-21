@@ -6,7 +6,6 @@ package middlewareCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/handlers"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +19,7 @@ var createMiddlewareCmd = &cobra.Command{
 		if len(args) == 0 || (args[0] == "" || len(args) > 1) {
 			fmt.Println("Please provide a name for the middleware")
 		}
-		handlers.CreateGenericMiddleware(args[0])
+		fmt.Printf("Creating middleware with name: %s\n", args[0])
 	},
 }
 

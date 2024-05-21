@@ -5,7 +5,7 @@ package projectCmd
 
 import (
 	"fmt"
-	"github.com/adam-fraga/ratel/handlers"
+	"github.com/adam-fraga/ratel/handlers/project"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +17,7 @@ var createProjectCmd = &cobra.Command{
 	Annotations: map[string]string{"category": "project"},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("CREATE PROJECT")
-		handlers.InitProject("Osef")
+		project.InitProject("Osef")
 	},
 }
 
