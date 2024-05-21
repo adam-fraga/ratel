@@ -15,6 +15,7 @@ import (
 	// "github.com/schollz/progressbar/v3"
 )
 
+// Init the project creation process
 func InitProject(appName string) {
 	CreateProjectStructure(appName)
 	PopulateProjectFiles()
@@ -120,14 +121,6 @@ func PopulateProjectFiles() {
 		fmt.Println(err.Error())
 	}
 
-	for i := 0; i < len(files["src"]); i++ {
-		go func(i int) {
-			fmt.Println("SRC" + files["src"][i])
-			fmt.Println("DIST" + files["dst"][i])
-			time.Sleep(1 * time.Second)
-		}(i)
-	}
-
 	var wg sync.WaitGroup
 	wg.Add(len(files["src"]))
 
@@ -153,11 +146,11 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 			Msg:        err.Error() + fmt.Sprintf("Error opening file %s\n", srcFiles[i])}
 	}
 	defer srcFile.Close()
+	defer dstFile.Close()
 
 	buf := new(bytes.Buffer)       // Create a new bytes.Buffer to store the file's contents
 	_, err = io.Copy(buf, srcFile) // Copy file contents into the buffer
 	if err != nil {
-		fmt.Println("Error reading file:", err)
 		return &errors.Error{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",

@@ -16,12 +16,10 @@
     "folderName": "static",
     "subFolders": [
       {
-        "folderName": "static/images",
-        "files": ["static/images/logo.png"]
+        "folderName": "static/images"
       },
       {
-        "folderName": "static/fonts",
-        "files": ["static/fonts/roboto.ttf"]
+        "folderName": "static/fonts"
       },
       {
         "folderName": "static/js"
@@ -49,7 +47,7 @@
     "subFolders": [
       {
         "folderName": "views/layout",
-        "files": ["views/layout/mainLayout.templ"]
+        "files": ["views/layout/main.templ"]
       },
       {
         "folderName": "views/metadatas",
