@@ -1,0 +1,5 @@
+/bin/
+**/*_templ.go
+**/*.env
+*.sum
+node_modules/

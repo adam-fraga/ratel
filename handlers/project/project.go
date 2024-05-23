@@ -158,6 +158,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 			Msg:        err.Error() + fmt.Sprintf("Error reading file %s\n", srcFiles[i])}
 	}
 
+	fmt.Printf("Copying file %s to %s\n", srcFiles[i], dstFiles[i])
 	_, err2 := buf.WriteTo(dstFile) // Write the buffer to the destination file
 	if err2 != nil {
 		return &errors.Error{
@@ -204,6 +205,24 @@ func GetFilesFromProject() (map[string][]string, error) {
 			joinPath := filepath.Join(dataConfigFilePath, fileName)
 			srcFiles = append(srcFiles, joinPath)
 		}
+		for _, subFolder := range folder.SubFolders {
+			for _, file := range subFolder.Files {
+				fileName = filepath.Base(file)
+				dstFiles = append(dstFiles, file)
+				joinPath := filepath.Join(dataConfigFilePath, fileName)
+				srcFiles = append(srcFiles, joinPath)
+			}
+		}
+	}
+
+	fmt.Println("Source files:")
+	for _, src := range srcFiles {
+		fmt.Println(src)
+	}
+
+	fmt.Println("Destination files:")
+	for _, dst := range dstFiles {
+		fmt.Println(dst)
 	}
 
 	files["src"] = srcFiles
