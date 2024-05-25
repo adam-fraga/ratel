@@ -20,15 +20,14 @@ var ModelCmd = &cobra.Command{
 	},
 }
 
-func addMiddlewareSubCommands() {
+func addModelSubCommands() {
 	ModelCmd.AddCommand(listModelCmd)
 	ModelCmd.AddCommand(createModelCmd)
 	ModelCmd.AddCommand(deleteModelCmd)
 }
 
 func init() {
-	addMiddlewareSubCommands()
-
+	addModelSubCommands()
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

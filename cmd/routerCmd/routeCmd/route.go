@@ -1,7 +1,7 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
-package dbMigrationCmd
+package routeCmd
 
 import (
 	"fmt"

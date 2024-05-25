@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var createRouterCmd = &cobra.Command{
+var createRouteCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new route",
 	Long:  `Create a new route in the project, note that route should be associated with a router`,

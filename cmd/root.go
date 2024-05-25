@@ -9,8 +9,11 @@ import (
 
 	"github.com/adam-fraga/ratel/cmd/cacheCmd"
 	"github.com/adam-fraga/ratel/cmd/dbCmd"
+	"github.com/adam-fraga/ratel/cmd/handlerCmd"
 	"github.com/adam-fraga/ratel/cmd/middlewareCmd"
+	"github.com/adam-fraga/ratel/cmd/modelCmd"
 	"github.com/adam-fraga/ratel/cmd/projectCmd"
+	"github.com/adam-fraga/ratel/cmd/routerCmd"
 	"github.com/adam-fraga/ratel/cmd/viewCmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,6 +37,9 @@ func addCommands() {
 	rootCmd.AddCommand(viewCmd.ViewCmd)
 	rootCmd.AddCommand(dbCmd.DbCmd)
 	rootCmd.AddCommand(cacheCmd.CacheCmd)
+	rootCmd.AddCommand(routerCmd.RouterCmd)
+	rootCmd.AddCommand(modelCmd.ModelCmd)
+	rootCmd.AddCommand(handlerCmd.HandlerCmd)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
