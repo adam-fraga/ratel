@@ -21,7 +21,8 @@ var ViewCmd = &cobra.Command{
 
 func addViewSubCommands() {
 	ViewCmd.AddCommand(createViewCmd)
-	// ViewCmd.AddCommand(listViewCmd)
+	ViewCmd.AddCommand(deleteViewCmd)
+	ViewCmd.AddCommand(listViewCmd)
 }
 
 func init() {
