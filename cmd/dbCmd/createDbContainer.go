@@ -18,9 +18,6 @@ var createDbContainerCmd = &cobra.Command{
 	Short: "Create a database container",
 	Long:  `Create a database container for the project using Docker and PostgreSQL`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		ut.PrintInfoMsg("Creating a database container")
-
 		provider, err := cmd.Flags().GetString("provider")
 		if err != nil {
 			var error = &errors.DevError{
@@ -32,7 +29,7 @@ var createDbContainerCmd = &cobra.Command{
 			ut.PrintErrorMsg(error.Msg)
 		}
 
-		db.InitDb(provider)
+		db.InitDbDevelopmentContainer(provider)
 	},
 }
 
@@ -44,6 +41,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	createDbContainerCmd.Flags().StringP("provider", "p", "", "Choose the database provider to create the container (postgres, mysql, mongo)")
+	createDbContainerCmd.Flags().StringP("provider", "p", "", "Choose the database provider to create the container (postgres, mariadb, mongo)")
 	createDbContainerCmd.MarkFlagRequired("provider")
 }

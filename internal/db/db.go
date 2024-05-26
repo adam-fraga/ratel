@@ -1,38 +1,38 @@
-package models
+package db
 
 import (
 	"database/sql"
 	"os"
 
-	"github.com/adam-fraga/ratel/errors"
+	"github.com/adam-fraga/ratel/internal/errors"
 	"github.com/adam-fraga/ratel/utils"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
-type PgDb struct {
-	Db *sql.DB
+type Db struct {
+	Conn *sql.DB
 }
 
-func (pg *PgDb) Connect() error {
+func (pg *Db) Connect() error {
 	err := godotenv.Load()
 	if err != nil {
-		return &errors.ClientError{Msg: "Error loading .env file: " + err.Error()}
+		return &errors.DevError{Type: "ENV", Msg: "Error loading .env file", Origin: "db.Connect()", FileOrigin: "internal/db/db.go"}
 	}
 	var user, dbname, password string = os.Getenv("RATEL_DB_USER"), os.Getenv("RATEL_DB_NAME"), os.Getenv("RATEL_DB_PASSWORD")
 	connStr := "user=" + user + " dbname=" + dbname + " password=" + password + " sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		return &errors.ClientError{Msg: "Error connecting to the database: " + err.Error()}
+		return &errors.DbError{Query: connStr, Msg: err.Error(), Action: "sql.Open()"}
 	}
-	pg.Db = db
+	pg.Conn = db
 
 	utils.PrintInfoMsg("Connected to the database")
 	return nil
 }
 
-func (pg *PgDb) Close() {
-	pg.Db.Close()
+func (pg *Db) Close() {
+	pg.Conn.Close()
 	utils.PrintInfoMsg("Database connection closed")
 }

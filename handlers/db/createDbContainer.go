@@ -10,8 +10,8 @@ import (
 	"github.com/adam-fraga/ratel/utils"
 )
 
-func InitDb(dbProvider string) {
-	if dbProvider == "postgres" || dbProvider == "mongo" || dbProvider == "mysql" {
+func InitDbDevelopmentContainer(dbProvider string) {
+	if dbProvider == "postgres" || dbProvider == "mongo" || dbProvider == "mariadb" {
 		var dbConfig dt.DbUserConfig
 		dbConfig.DbProvider = dbProvider
 
@@ -38,21 +38,18 @@ func createDbContainer(dbConfig *dt.DbUserConfig) error {
 	switch dbConf.DbProvider {
 	case "postgres":
 		dbConf.DbPort = "5432"
-		utils.PrintInfoMsg("Creating a PostgreSQL container")
 		if err := runPostgresDockerCmd(dbConf); err != nil {
-			return &errors.ClientError{Msg: "Error running the command for Postgres container: " + err.Error()}
+			return &errors.ClientError{Msg: "Error running the command for Postgres SQL container: " + err.Error()}
 		}
 	case "mongo":
 		dbConf.DbPort = "27017"
-		utils.PrintInfoMsg("Creating a MongoDB container")
 		if err := runMongoDockerCmd(dbConf); err != nil {
 			return &errors.ClientError{Msg: "Error running the command for Mongo container: " + err.Error()}
 		}
-	case "mysql":
+	case "mariadb":
 		dbConf.DbPort = "3306"
-		utils.PrintInfoMsg("Creating a MySQL container")
-		if err := runMysqlDockerCmd(dbConf); err != nil {
-			return &errors.ClientError{Msg: "Error running the command for MySQL container: " + err.Error()}
+		if err := runMariadbDockerCmd(dbConf); err != nil {
+			return &errors.ClientError{Msg: "Error running the command for MariaDB container: " + err.Error()}
 		}
 	default:
 		return &errors.ClientError{Msg: "Database provider not supported"}
@@ -61,27 +58,34 @@ func createDbContainer(dbConfig *dt.DbUserConfig) error {
 }
 
 func runPostgresDockerCmd(dbConfig *dt.DbUserConfig) error {
+	utils.PrintInfoMsg("Creating a Postgres container")
 	cmd := exec.Command("docker", "run", "--name", dbConfig.DbProvider, "-e", "POSTGRES_PASSWORD="+dbConfig.DbPassword, "-d", "-p", dbConfig.DbPort+":"+dbConfig.DbPort, dbConfig.DbProvider)
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for Postgres container"}
+		return &errors.ClientError{Msg: "Error running the command for Postgres container: " + err.Error()}
 	}
 	return nil
 }
 
 func runMongoDockerCmd(dbConfig *dt.DbUserConfig) error {
+	utils.PrintInfoMsg("Creating a Mongo container")
 	cmd := exec.Command("docker", "run", "--name", dbConfig.DbProvider, "-d", "-p", dbConfig.DbPort+":"+dbConfig.DbPort, dbConfig.DbProvider)
+	cmd.Stdout = os.Stdout
+
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for Mongo container"}
+		return &errors.ClientError{Msg: "Error running the command for Mongo containero : " + err.Error()}
 	}
 	return nil
 }
 
-func runMysqlDockerCmd(dbConfig *dt.DbUserConfig) error {
-	cmd := exec.Command("docker", "run", "--name", dbConfig.DbProvider, "-e", "MYSQL_ROOT_PASSWORD="+dbConfig.DbPassword, "-d", "-p", dbConfig.DbPort+":"+dbConfig.DbPort, dbConfig.DbProvider)
+func runMariadbDockerCmd(dbConfig *dt.DbUserConfig) error {
+	utils.PrintInfoMsg("Creating a MariaDB container")
+	cmd := exec.Command("docker", "run", "--detach", "--name", dbConfig.DbName, "--env", "MARIADB_ROOT_PASSWORD="+dbConfig.DbPassword, "-d", dbConfig.DbProvider+":latest")
+	cmd.Stdout = os.Stdout
+
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for MySQL container"}
+		return &errors.ClientError{Msg: "Error running the command for MySQL container: " + err.Error()}
 	}
 	return nil
 }

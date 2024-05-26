@@ -15,7 +15,7 @@ type DevError struct {
 
 func (e *DevError) Error() string {
 	printer := color.New(color.FgRed).SprintfFunc()
-	return fmt.Sprintf(printer("Error of type: %s\nIn file: %s\nReturned by: %s\nError Message: %s\n",
+	return fmt.Sprintf(printer("APP Error of type: %s\nIn file: %s\nReturned by: %s\nError Message: %s\n",
 		e.Type, e.FileOrigin, e.Origin, e.Msg))
 }
 
@@ -27,4 +27,15 @@ type ClientError struct {
 func (e *ClientError) Error() string {
 	printer := color.New(color.FgRed).SprintfFunc()
 	return fmt.Sprintf(printer("Error: %s\n", e.Msg))
+}
+
+type DbError struct {
+	Query  string
+	Msg    string
+	Action string
+}
+
+func (e *DbError) Error() string {
+	printer := color.New(color.FgRed).SprintfFunc()
+	return fmt.Sprintf(printer("DB Error on action: %s\nQuery: %s\nError Message: %s\n", e.Action, e.Query, e.Msg))
 }
