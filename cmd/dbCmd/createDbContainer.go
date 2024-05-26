@@ -6,8 +6,8 @@ package dbCmd
 import (
 	"fmt"
 
-	"github.com/adam-fraga/ratel/errors"
 	"github.com/adam-fraga/ratel/handlers/db"
+	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )

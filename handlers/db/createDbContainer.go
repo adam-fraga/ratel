@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/exec"
 
-	dt "github.com/adam-fraga/ratel/datatypes"
-	"github.com/adam-fraga/ratel/errors"
+	dt "github.com/adam-fraga/ratel/internal/datatypes"
+	"github.com/adam-fraga/ratel/internal/errors"
 	"github.com/adam-fraga/ratel/utils"
 )
 

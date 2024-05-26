@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	dt "github.com/adam-fraga/ratel/datatypes"
-	"github.com/adam-fraga/ratel/errors"
+	dt "github.com/adam-fraga/ratel/internal/datatypes"
+	"github.com/adam-fraga/ratel/internal/errors"
 )
 
 // PromptDbConfig prompts the user to enter the database configuration
