@@ -21,7 +21,6 @@ var DbCmd = &cobra.Command{
 }
 
 func addDbSubCommands() {
-	DbCmd.AddCommand(pingDbCmd)
 	DbCmd.AddCommand(createDbContainerCmd)
 	DbCmd.AddCommand(dbMigrationCmd.MigrationCmd)
 }

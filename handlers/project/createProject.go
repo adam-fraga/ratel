@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/adam-fraga/ratel/datatypes"
 	"github.com/adam-fraga/ratel/errors"
-	"github.com/adam-fraga/ratel/models/datatypes"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )

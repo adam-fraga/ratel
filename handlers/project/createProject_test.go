@@ -1,7 +1,7 @@
 package project
 
 import (
-	"github.com/adam-fraga/ratel/models/datatypes"
+	"github.com/adam-fraga/ratel/datatypes"
 	"testing"
 )
 

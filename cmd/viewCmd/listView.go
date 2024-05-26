@@ -9,7 +9,7 @@ import (
 var listViewCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all views",
-	Long:  `List all views created in the project.`,
+	Long:  `List all views created in the project including page, components and layouts`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("LIST VIEW COMMAND CALLED")
 	},
