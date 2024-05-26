@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/adam-fraga/ratel/errors"
-	"github.com/adam-fraga/ratel/handlers/utils"
 	"github.com/adam-fraga/ratel/models/datatypes"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -24,7 +24,7 @@ func InitProject(appName string) {
 
 // Create the project structure based on the data/projectStruct.json file
 func CreateProjectStructure(appName string) error {
-	utils.PrintInfoMsg("Creating the project structure for application "+appName, "\n")
+	ut.PrintInfoMsg(fmt.Sprintf("Creating the project structure for application %s", appName))
 	projectStruct, err := getProjectStructFromJsonFIle()
 	if err != nil {
 		fmt.Println("Error parsing the json folders")
@@ -39,18 +39,18 @@ func CreateProjectStructure(appName string) error {
 		}
 	}
 
-	utils.PrintSuccessMsg("\nProject structure", "created\n")
+	ut.PrintSuccessMsg("\nProject structure successfully created\n")
 	return nil
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
 func CreateFolder(folder *datatypes.Folder) error {
-	utils.PrintInfoMsg(fmt.Sprintf("%s Folder with permissions 755...", folder.FolderName), "created")
+	ut.PrintInfoMsg(fmt.Sprintf("%s Folder with permissions 755 successfuly created", folder.FolderName))
 
 	if folder.FolderName != "root" {
 		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
 		if err != nil {
-			return &errors.Error{
+			return &errors.DevError{
 				Type:       "Project Structure Error",
 				Origin:     "createFolder()",
 				FileOrigin: "handlers/project.go",
@@ -62,7 +62,7 @@ func CreateFolder(folder *datatypes.Folder) error {
 		for _, file := range folder.Files {
 			err := CreateFile(file)
 			if err != nil {
-				return &errors.Error{
+				return &errors.DevError{
 					Type:       "Project Structure Error",
 					Origin:     "createFolder()",
 					FileOrigin: "handlers/project.go",
@@ -75,7 +75,7 @@ func CreateFolder(folder *datatypes.Folder) error {
 		for _, subFolder := range folder.SubFolders {
 			err := CreateFolder(&subFolder)
 			if err != nil {
-				return &errors.Error{
+				return &errors.DevError{
 					Type:       "Project Structure Error",
 					Origin:     "createFolder()",
 					FileOrigin: "handlers/project.go",
@@ -91,7 +91,7 @@ func CreateFolder(folder *datatypes.Folder) error {
 func CreateFile(fileDestination string) error {
 	file, err := os.Create(fileDestination)
 	if err != nil {
-		return &errors.Error{
+		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "createFolder()",
 			FileOrigin: "handlers/project.go",
@@ -101,7 +101,7 @@ func CreateFile(fileDestination string) error {
 	err2 := os.Chmod(fileDestination, os.FileMode(0777))
 
 	if err2 != nil {
-		return &errors.Error{
+		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "createFolder()",
 			FileOrigin: "handlers/project.go",
@@ -124,7 +124,7 @@ func PopulateProjectFiles() {
 	wg.Add(len(files["src"]))
 
 	for i := range files["src"] {
-		bar := utils.SetProgressBar(files["dst"][i])
+		bar := ut.SetProgressBar(files["dst"][i])
 		go processFile(&wg, files["src"], files["dst"], i, bar)
 	}
 
@@ -139,7 +139,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 	dstFile, err := os.OpenFile(dstFiles[i], os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
-		return &errors.Error{
+		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",
 			FileOrigin: "handlers/project.go",
@@ -151,7 +151,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 	buf := new(bytes.Buffer)       // Create a new bytes.Buffer to store the file's contents
 	_, err = io.Copy(buf, srcFile) // Copy file contents into the buffer
 	if err != nil {
-		return &errors.Error{
+		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",
 			FileOrigin: "handlers/project.go",
@@ -160,7 +160,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 
 	_, err2 := buf.WriteTo(dstFile) // Write the buffer to the destination file
 	if err2 != nil {
-		return &errors.Error{
+		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",
 			FileOrigin: "handlers/project.go",
@@ -169,7 +169,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 
 	pb.Finish()
 	fmt.Println()
-	utils.PrintSuccessMsg(dstFiles[i], "populated")
+	ut.PrintSuccessMsg(dstFiles[i] + " successfully populated")
 
 	return nil
 }
@@ -184,7 +184,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 	dataConfigFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/configs/")
 
 	if err != nil {
-		return nil, &errors.Error{
+		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "getFilesFromProject()",
 			FileOrigin: "handlers/project.go",
@@ -194,7 +194,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 	fmt.Println("Populating the project files...")
 	projectStruct, err := getProjectStructFromJsonFIle()
 	if err != nil {
-		return nil, &errors.Error{
+		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "getFilesFromProject()",
 			FileOrigin: "handlers/project.go",
@@ -232,7 +232,7 @@ func getProjectStructFromJsonFIle() ([]datatypes.Folder, error) {
 	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/projectStruct.json")
 
 	if err != nil {
-		return nil, &errors.Error{
+		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "parseJsonFolders()",
 			FileOrigin: "handlers/project.go",
@@ -241,7 +241,7 @@ func getProjectStructFromJsonFIle() ([]datatypes.Folder, error) {
 
 	jsonFile, err := os.Open(projectStructureJsonFilePath)
 	if err != nil {
-		return nil, &errors.Error{
+		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "parseJsonFolders()",
 			FileOrigin: "handlers/project.go",
@@ -251,7 +251,7 @@ func getProjectStructFromJsonFIle() ([]datatypes.Folder, error) {
 
 	err = json.NewDecoder(jsonFile).Decode(&folders)
 	if err != nil {
-		return nil, &errors.Error{
+		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "parseJsonFolders()",
 			FileOrigin: "handlers/project.go",

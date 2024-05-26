@@ -16,3 +16,12 @@ type File struct {
 	FileContent string `json:"fileContent"`
 	Extension   string `json:"extension"`
 }
+
+type DbConfig struct {
+	DbProvider string
+	DbHost     string
+	DbPort     string
+	DbUser     string
+	DbPassword string
+	DbName     string
+}
