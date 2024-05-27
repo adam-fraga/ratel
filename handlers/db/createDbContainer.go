@@ -5,14 +5,14 @@ import (
 	"os"
 	"os/exec"
 
-	dt "github.com/adam-fraga/ratel/internal/datatypes"
 	"github.com/adam-fraga/ratel/internal/errors"
+	m "github.com/adam-fraga/ratel/models"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
 func InitDbDevelopmentContainer(dbProvider string) {
 	if dbProvider == "postgres" || dbProvider == "mongo" || dbProvider == "mariadb" {
-		var dbConfig dt.DbUserConfig
+		var dbConfig m.DbUserConfig
 		dbConfig.DbProvider = dbProvider
 
 		err := createDbContainer(&dbConfig)
@@ -28,7 +28,7 @@ func InitDbDevelopmentContainer(dbProvider string) {
 	}
 }
 
-func createDbContainer(dbConfig *dt.DbUserConfig) error {
+func createDbContainer(dbConfig *m.DbUserConfig) error {
 	dbConf, err := promptDbConfig(dbConfig)
 
 	if err != nil {
@@ -59,7 +59,7 @@ func createDbContainer(dbConfig *dt.DbUserConfig) error {
 	return nil
 }
 
-func runPostgresDockerCmd(dbConfig *dt.DbUserConfig) error {
+func runPostgresDockerCmd(dbConfig *m.DbUserConfig) error {
 	ut.PrintInfoMsg("Creating a Postgres container")
 	cmd := exec.Command("docker", "run", "--name", dbConfig.DbProvider+"-"+dbConfig.DbName, "-e",
 		"POSTGRES_PASSWORD="+dbConfig.DbPassword,
@@ -72,7 +72,7 @@ func runPostgresDockerCmd(dbConfig *dt.DbUserConfig) error {
 	return nil
 }
 
-func runMongoDockerCmd(dbConfig *dt.DbUserConfig) error {
+func runMongoDockerCmd(dbConfig *m.DbUserConfig) error {
 	ut.PrintInfoMsg("Creating a Mongo container")
 	cmd := exec.Command("docker", "run", "--name", dbConfig.DbProvider, "-d", "-p", dbConfig.DbPort+":"+dbConfig.DbPort, dbConfig.DbProvider)
 	cmd.Stdout = os.Stdout
@@ -83,7 +83,7 @@ func runMongoDockerCmd(dbConfig *dt.DbUserConfig) error {
 	return nil
 }
 
-func runMariadbDockerCmd(dbConfig *dt.DbUserConfig) error {
+func runMariadbDockerCmd(dbConfig *m.DbUserConfig) error {
 	ut.PrintInfoMsg("Creating a MariaDB container")
 	cmd := exec.Command("docker", "run", "--detach",
 		"--name", dbConfig.DbName,
@@ -104,7 +104,7 @@ func createSqliteLocalDb() {
 	fmt.Println("Creating a SQLite local database")
 }
 
-func promptDbConfig(dbConfig *dt.DbUserConfig) (*dt.DbUserConfig, error) {
+func promptDbConfig(dbConfig *m.DbUserConfig) (*m.DbUserConfig, error) {
 
 	if dbConfig.DbProvider != "postgres" {
 		os.Stdin.WriteString("Please enter the database user: ")
@@ -134,7 +134,7 @@ func promptDbConfig(dbConfig *dt.DbUserConfig) (*dt.DbUserConfig, error) {
 	return dbConfig, nil
 }
 
-func confirmConfig(dbConfig *dt.DbUserConfig) {
+func confirmConfig(dbConfig *m.DbUserConfig) {
 	ut.PrintInfoMsg(fmt.Sprintf("\nDatabase configuration:\n\nDB Provider: %s\nDB Port: %s\nDB User: %s\nDB Name: %s\n",
 		dbConfig.DbProvider, dbConfig.DbPort, dbConfig.DbUser, dbConfig.DbName))
 

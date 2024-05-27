@@ -3,7 +3,6 @@ package db
 import (
 	"github.com/adam-fraga/ratel/internal/db"
 	"github.com/adam-fraga/ratel/internal/errors"
-	schema "github.com/adam-fraga/ratel/models/views"
 	"github.com/adam-fraga/ratel/utils"
 )
 
@@ -14,15 +13,6 @@ func InitDb() error {
 			Origin:     "InitDb()",
 			FileOrigin: "init.go",
 			Msg:        "Error creating the database: " + err.Error(),
-		}
-	}
-
-	if err := initSchema(); err != nil {
-		return &errors.DevError{
-			Type:       "initSchema()",
-			Origin:     "InitDb()",
-			FileOrigin: "init.go",
-			Msg:        "Error initializing the schema: " + err.Error(),
 		}
 	}
 
@@ -37,9 +27,6 @@ func initSchema() error {
 	}
 
 	defer db.Close()
-
-	schema.CreateLayoutTable(db.Conn)
-	schema.CreatePageTable(db.Conn)
 
 	return nil
 }

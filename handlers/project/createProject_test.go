@@ -1,7 +1,7 @@
 package project
 
 import (
-	"github.com/adam-fraga/ratel/internal/datatypes"
+	m "github.com/adam-fraga/ratel/models"
 	"testing"
 )
 
@@ -13,15 +13,15 @@ func TestCreateProjectStructure(t *testing.T) {
 }
 
 func TestCreateFolder(t *testing.T) {
-	ProjectStructure := datatypes.Folder{
+	ProjectStructure := m.Folder{
 		FolderName: "tmp/test",
-		SubFolders: []datatypes.Folder{},
+		SubFolders: []m.Folder{},
 		Files:      []string{},
 	}
 
-	ProjectStructure.SubFolders = append(ProjectStructure.SubFolders, datatypes.Folder{
+	ProjectStructure.SubFolders = append(ProjectStructure.SubFolders, m.Folder{
 		FolderName: "tmp/test/subtest",
-		SubFolders: []datatypes.Folder{},
+		SubFolders: []m.Folder{},
 		Files:      []string{},
 	})
 
@@ -33,9 +33,9 @@ func TestCreateFolder(t *testing.T) {
 }
 
 func TestCreateFile(t *testing.T) {
-	ProjectStructure := datatypes.Folder{
+	ProjectStructure := m.Folder{
 		FolderName: "tmp/test",
-		SubFolders: []datatypes.Folder{},
+		SubFolders: []m.Folder{},
 		Files:      []string{},
 	}
 

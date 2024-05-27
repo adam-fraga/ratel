@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/adam-fraga/ratel/internal/datatypes"
 	"github.com/adam-fraga/ratel/internal/errors"
+	m "github.com/adam-fraga/ratel/models"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )
@@ -44,7 +44,7 @@ func CreateProjectStructure(appName string) error {
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
-func CreateFolder(folder *datatypes.Folder) error {
+func CreateFolder(folder *m.Folder) error {
 	ut.PrintInfoMsg(fmt.Sprintf("%s Folder with permissions 755 successfuly created", folder.FolderName))
 
 	if folder.FolderName != "root" {
@@ -226,8 +226,8 @@ func GetFilesFromProject() (map[string][]string, error) {
 }
 
 // Parse the project structure from the data/projectStruct.json file and return a slice of Folder structs
-func getProjectStructFromJsonFIle() ([]datatypes.Folder, error) {
-	var folders []datatypes.Folder
+func getProjectStructFromJsonFIle() ([]m.Folder, error) {
+	var folders []m.Folder
 
 	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/projectStruct.json")
 
