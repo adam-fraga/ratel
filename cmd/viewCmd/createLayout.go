@@ -4,18 +4,20 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
-	"fmt"
-
+	h "github.com/adam-fraga/ratel/handlers/views"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
 // createViewCmd represents the createView command
 var createLayoutCmd = &cobra.Command{
-	Use:   "create layout",
+	Use:   "create-layout",
 	Short: "Create a new view layout with go templ (.templ)",
 	Long:  `Create a new view layout with go templ (.templ) in the views folder.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("CREATE VIEW LAYOUT CALLED")
+		if err := h.CreateView("layouts", args); err != nil {
+			ut.PrintErrorMsg(err.Error())
+		}
 	},
 }
 

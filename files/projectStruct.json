@@ -46,8 +46,8 @@
     "folderName": "views",
     "subFolders": [
       {
-        "folderName": "views/layout",
-        "files": ["views/layout/main.templ"]
+        "folderName": "views/layouts",
+        "files": ["views/layouts/main.templ"]
       },
       {
         "folderName": "views/metadatas",

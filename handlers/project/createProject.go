@@ -112,7 +112,7 @@ func CreateFile(fileDestination string) error {
 	return nil
 }
 
-// Populate the project files with the data from the data/configs folder using goroutines
+// Populate the project files with the data from the files/configs folder using goroutines
 func PopulateProjectFiles() {
 
 	files, err := GetFilesFromProject()
@@ -181,7 +181,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 	var dstFiles []string
 	files := make(map[string][]string)
 
-	dataConfigFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/configs/")
+	dataConfigFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/files/configs/")
 
 	if err != nil {
 		return nil, &errors.DevError{
@@ -229,7 +229,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 func getProjectStructFromJsonFIle() ([]m.Folder, error) {
 	var folders []m.Folder
 
-	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/data/projectStruct.json")
+	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/files/projectStruct.json")
 
 	if err != nil {
 		return nil, &errors.DevError{

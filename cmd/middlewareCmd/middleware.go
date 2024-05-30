@@ -23,7 +23,6 @@ var MiddlewareCmd = &cobra.Command{
 func addMiddlewareSubCommands() {
 	MiddlewareCmd.AddCommand(listMiddlewareCmd)
 	MiddlewareCmd.AddCommand(createMiddlewareCmd)
-	MiddlewareCmd.AddCommand(createAuthMiddlewareCmd)
 }
 
 func init() {
