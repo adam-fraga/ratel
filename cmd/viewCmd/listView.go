@@ -1,17 +1,25 @@
 package viewCmd
 
 import (
-	"fmt"
-
+	h "github.com/adam-fraga/ratel/handlers/views"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
 var listViewCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all views",
-	Long:  `List all views created in the project including page, components and layouts`,
+	Short: "List all views: pages, components, layouts, partials, templates, meta or all",
+	Long: `List all views: pages, components, layouts, partials, templates, meta or all.
+  Usage: "ratel view list [pages|components|layouts|partials|templates|meta] or ratel view list for all views"
+  `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("LIST VIEW COMMAND CALLED")
+		if len(args) == 0 {
+			h.ListViews("")
+		} else if len(args) == 1 {
+			h.ListViews(args[0])
+		} else {
+			ut.PrintErrorMsg("Invalid number of arguments: ratel view list [pages|components|layouts|partials|templates|meta] or no arguments to list all the views")
+		}
 	},
 }
 
