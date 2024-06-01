@@ -8,23 +8,16 @@ import (
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
-// ViewFile struct to hold the view file information
-type ViewFile struct {
-	Name string
-	Path string
-	Type string
-}
-
 // ViewFiles struct to hold the view files
 type ViewFiles struct {
 	totalFiles uint16
 
-	Templates  []ViewFile
-	Partials   []ViewFile
-	Layouts    []ViewFile
-	Pages      []ViewFile
-	Components []ViewFile
-	Metadatas  []ViewFile
+	Templates  []View
+	Partials   []View
+	Layouts    []View
+	Pages      []View
+	Components []View
+	Metadatas  []View
 }
 
 // ListViews function to list the views
@@ -131,17 +124,17 @@ func (*ViewFiles) getAllView(viewFiles *ViewFiles, fileTypes []string) error {
 			}
 			switch fileType {
 			case "templates":
-				viewFiles.Templates = append(viewFiles.Templates, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Templates = append(viewFiles.Templates, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "partials":
-				viewFiles.Partials = append(viewFiles.Partials, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Partials = append(viewFiles.Partials, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "layouts":
-				viewFiles.Layouts = append(viewFiles.Layouts, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Layouts = append(viewFiles.Layouts, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "pages":
-				viewFiles.Pages = append(viewFiles.Pages, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Pages = append(viewFiles.Pages, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "components":
-				viewFiles.Components = append(viewFiles.Components, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Components = append(viewFiles.Components, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "metadatas":
-				viewFiles.Metadatas = append(viewFiles.Metadatas, ViewFile{Name: file[0].Name(), Path: path, Type: fileType})
+				viewFiles.Metadatas = append(viewFiles.Metadatas, View{Name: file[0].Name(), Path: path, Type: fileType})
 			}
 		}
 	}
@@ -167,17 +160,17 @@ func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
 		var fileElement = string(file[0].Name())
 		switch fileType {
 		case "templates":
-			viewFiles.Templates = append(viewFiles.Templates, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Templates = append(viewFiles.Templates, View{Name: fileElement, Path: path, Type: fileType})
 		case "partials":
-			viewFiles.Partials = append(viewFiles.Partials, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Partials = append(viewFiles.Partials, View{Name: fileElement, Path: path, Type: fileType})
 		case "layouts":
-			viewFiles.Pages = append(viewFiles.Layouts, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Pages = append(viewFiles.Layouts, View{Name: fileElement, Path: path, Type: fileType})
 		case "pages":
-			viewFiles.Pages = append(viewFiles.Pages, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Pages = append(viewFiles.Pages, View{Name: fileElement, Path: path, Type: fileType})
 		case "components":
-			viewFiles.Components = append(viewFiles.Components, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Components = append(viewFiles.Components, View{Name: fileElement, Path: path, Type: fileType})
 		case "metadatas":
-			viewFiles.Metadatas = append(viewFiles.Metadatas, ViewFile{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Metadatas = append(viewFiles.Metadatas, View{Name: fileElement, Path: path, Type: fileType})
 		}
 	}
 
@@ -185,7 +178,7 @@ func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
 }
 
 // Beautify function to beautify the view files before printing to the stdout
-func (*ViewFiles) Beautify(viewFileList []ViewFile, viewFiles *ViewFiles) {
+func (*ViewFiles) Beautify(viewFileList []View, viewFiles *ViewFiles) {
 	var count uint8
 
 	for _, file := range viewFileList {

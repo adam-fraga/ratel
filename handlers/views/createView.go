@@ -6,28 +6,38 @@ import (
 	"path"
 
 	"github.com/adam-fraga/ratel/internal/errors"
-	m "github.com/adam-fraga/ratel/models"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
-// CreateView Create a file view of type (Component, Page, Layout)
-func CreateView(viewType string, files []string) error {
+type View struct {
+	Name string
+	Path string
+	Type string
+}
 
-	var v m.View
-	v.Type = viewType
-
-	for _, name := range files {
-		ut.PrintInfoMsg(fmt.Sprintf("Creating %s %s", v.Type, name))
+func (*View) New(viewType string) *View {
+	return &View{
+		Type: viewType,
 	}
+}
+
+// CreateView Create a file view of type (Component, Page, Layout)
+func (*View) Create(v *View, files []string) error {
 
 	if len(files) > 1 {
-		os.Stdin.WriteString("Create the following files ? (y/n): ")
+		ut.PrintInfoMsg(fmt.Sprintf("\n   Creating multiple %s\n", v.Type))
 		var response string
+
+		for _, file := range files {
+			ut.PrintSuccessMsg(fmt.Sprintf("     %s", file))
+		}
+
+		ut.PrintWarningMsg(fmt.Sprintf("\n   Confirm you to create the followings %s (y/n):", v.Type))
 
 		fmt.Scanln(&response)
 
 		if response == "n" {
-			CreateView(viewType, files)
+			v.Create(v, files)
 		}
 	}
 
@@ -37,7 +47,7 @@ func CreateView(viewType string, files []string) error {
 			return &errors.ClientError{Msg: fmt.Sprintf("%s name cannot be empty", v.Type)}
 		}
 
-		if err := createViewFile(v); err != nil {
+		if err := v.CreateFile(v); err != nil {
 			return &errors.DevError{Msg: fmt.Sprintf("Error creating %s file :" + err.Error())}
 		}
 	}
@@ -46,7 +56,7 @@ func CreateView(viewType string, files []string) error {
 
 }
 
-func createViewFile(v m.View) error {
+func (*View) CreateFile(v *View) error {
 
 	v.Path = "views/" + v.Type + "/"
 
@@ -69,6 +79,6 @@ func createViewFile(v m.View) error {
 			Msg:        err.Error() + fmt.Sprintf("Error changing permissions for %v file\n", file)}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("Creating %s %s successfuly...\n", v.Type, v.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", v.Path, v.Name))
 	return nil
 }

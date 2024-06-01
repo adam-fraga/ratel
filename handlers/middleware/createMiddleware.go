@@ -1,4 +1,4 @@
-package views
+package middleware
 
 import (
 	"fmt"
@@ -10,60 +10,74 @@ import (
 )
 
 type Middleware struct {
-	Name        string
-	Description string
-	Path        string `default:"views/middlewares"`
+	Name string
+	Path string
 }
 
-// PromptCreateComponent prompts the user to enter the component configuration
-func CreateMiddleware() error {
+func (*Middleware) New() *Middleware {
+	return &Middleware{}
+}
+
+// CreateView Create a file view of type (Component, Page, Layout)
+func (*Middleware) Create(mids []string) error {
 
 	var m Middleware
 
-	os.Stdin.WriteString("Please enter the middleware name: ")
-	fmt.Scanln(&m.Name)
+	if len(mids) > 1 {
+		ut.PrintInfoMsg(fmt.Sprintf("\n   Creating multiple middlewares\n"))
 
-	if m.Name == "" {
-		return &errors.ClientError{Msg: "middleware name cannot be empty"}
+		for _, mid := range mids {
+			ut.PrintSuccessMsg(fmt.Sprintf("     %s", mid))
+		}
+
+		ut.PrintWarningMsg("\n   Confirm you to create the followings middleware (y/n):")
+		var response string
+
+		fmt.Scanln(&response)
+
+		if response == "n" {
+			m.Create(mids)
+		}
 	}
 
-	os.Stdin.WriteString("Please enter the middleware description: ")
-	fmt.Scanln(&m.Description)
+	for _, mid := range mids {
+		m.Name = mid
+		if m.Name == "" {
+			return &errors.ClientError{Msg: fmt.Sprintf("%s name cannot be empty", m.Name)}
+		}
 
-	ut.PrintInfoMsg(fmt.Sprintf("\nMiddleware configuration:\n\nMiddleware Name: %s\nMiddleware Description: %s\n",
-		m.Name, m.Description))
-
-	os.Stdin.WriteString("Is the configuration correct? (y/n): ")
-	var response string
-
-	fmt.Scanln(&response)
-
-	if response == "n" {
-		CreateMiddleware()
-	}
-
-	err := CreateMiddlewareFile(m)
-	if err != nil {
-		return &errors.DevError{Msg: "Error creating middleware file: " + err.Error()}
+		if err := m.CreateFile(m); err != nil {
+			return &errors.DevError{Msg: fmt.Sprintf("Error creating %s file :" + err.Error())}
+		}
 	}
 
 	return nil
 
 }
 
-func CreateMiddlewareFile(m Middleware) error {
+func (*Middleware) CreateFile(m Middleware) error {
 
-	componentPath := path.Join(m.Path, m.Name)
-	err := os.MkdirAll(componentPath, os.ModePerm)
+	m.Path = "middlewares/"
+
+	file, err := os.Create(path.Join(m.Path, m.Name+".go"))
+	defer file.Close()
+
 	if err != nil {
 		return &errors.DevError{
-			Type:       "os.MkdirAll()",
-			Origin:     "CreateMiddlewareFile()",
-			FileOrigin: "createMiddleware.go",
-			Msg:        "Error creating component directory: " + err.Error(),
-		}
+			Type:       "Creation view file error",
+			Origin:     "createViewFile()",
+			FileOrigin: "handlers/middlewares/createMiddleware.go",
+			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
 	}
 
-	ut.PrintSuccessMsg("Middleware created !")
+	if err := os.Chmod(m.Path+m.Name+".go", os.FileMode(0755)); err != nil {
+		return &errors.DevError{
+			Type:       "Creation view file error",
+			Origin:     "createViewFile()",
+			FileOrigin: "handlers/views/createView.go",
+			Msg:        err.Error() + fmt.Sprintf("Error changing permissions for %v file\n", file)}
+	}
+
+	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", m.Path, m.Name))
 	return nil
 }

@@ -89,8 +89,8 @@
     "files": ["db/db.go"]
   },
   {
-    "folderName": "middleware",
-    "files": ["middleware/auth-middleware.go"]
+    "folderName": "middlewares",
+    "files": ["middlewares/auth-middleware.go"]
   },
   {
     "folderName": "model",

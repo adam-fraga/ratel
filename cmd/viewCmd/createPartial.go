@@ -4,6 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
+	"fmt"
+	"os"
+	s "strings"
+
 	"github.com/spf13/cobra"
 
 	h "github.com/adam-fraga/ratel/handlers/views"
@@ -15,8 +19,24 @@ var createPartialCmd = &cobra.Command{
 	Short: "Create a new view partial with go templ (.templ)",
 	Long:  `Create a new view partial with go templ (.templ) in the partials folder.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := h.CreateView("partials", args); err != nil {
-			ut.PrintErrorMsg(err.Error())
+
+		var v h.View
+		partial := v.New("partials")
+
+		if len(args) == 0 {
+			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", partial.Type))
+			os.Exit(1)
+		} else if len(args) > 0 && len(args) < 100 {
+			for i, arg := range args {
+				args[i] = s.ToLower(arg)
+				args[i] = s.ReplaceAll(args[i], "-", "_")
+			}
+			if err := v.Create(partial, args); err != nil {
+				ut.PrintErrorMsg(err.Error())
+			}
+		} else {
+			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 10 %s at once.", partial.Type))
+			os.Exit(1)
 		}
 	},
 }

@@ -4,6 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
+	"fmt"
+	"os"
+	s "strings"
+
 	h "github.com/adam-fraga/ratel/handlers/views"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
@@ -15,8 +19,24 @@ var createLayoutCmd = &cobra.Command{
 	Short: "Create a new view layout with go templ (.templ)",
 	Long:  `Create a new view layout with go templ (.templ) in the views folder.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := h.CreateView("layouts", args); err != nil {
-			ut.PrintErrorMsg(err.Error())
+
+		var v h.View
+		layout := v.New("layouts")
+
+		if len(args) == 0 {
+			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", layout.Type))
+			os.Exit(1)
+		} else if len(args) > 0 && len(args) < 100 {
+			for i, arg := range args {
+				args[i] = s.ToLower(arg)
+				args[i] = s.ReplaceAll(args[i], "-", "_")
+			}
+			if err := v.Create(layout, args); err != nil {
+				ut.PrintErrorMsg(err.Error())
+			}
+		} else {
+			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 10 %s at once.", layout.Type))
+			os.Exit(1)
 		}
 	},
 }

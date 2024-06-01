@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
+	"fmt"
 	"os"
 	s "strings"
 
@@ -20,19 +21,22 @@ var createComponentCmd = &cobra.Command{
 	Long:  `Create a new view component with go templ (.templ) in the component folder.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		var v h.View
+		component := v.New("components")
+
 		if len(args) == 0 {
-			ut.PrintErrorMsg("You must provide a name for the component")
+			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", component.Type))
 			os.Exit(1)
 		} else if len(args) > 0 && len(args) < 100 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
 			}
-			if err := h.CreateView("components", args); err != nil {
+			if err := v.Create(component, args); err != nil {
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg("You cannot create more than 100 components at once.")
+			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 20 %s at once.", component.Type))
 			os.Exit(1)
 		}
 	},
