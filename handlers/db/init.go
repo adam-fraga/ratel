@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package db contains handlers to execute the logic of the database system of ratel web framework
+*/
+
 package db
 
 import (
@@ -6,6 +11,7 @@ import (
 	"github.com/adam-fraga/ratel/utils"
 )
 
+// InitDb initialize the database for ratel
 func InitDb() error {
 	if err := createDatabase(); err != nil {
 		return &errors.DevError{
@@ -19,6 +25,7 @@ func InitDb() error {
 	return nil
 }
 
+// InitSchema initialize the database schema for ratel web framework
 func initSchema() error {
 	var db db.Db
 
@@ -31,6 +38,7 @@ func initSchema() error {
 	return nil
 }
 
+// createDatabase create the database for the necessary data for ratel web framework
 func createDatabase() error {
 	var db db.Db
 

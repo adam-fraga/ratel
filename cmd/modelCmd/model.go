@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package modelCmd provide a way to interact with the model system of the ratel web framework.
 */
+
 package modelCmd
 
 import (
@@ -23,7 +25,6 @@ var ModelCmd = &cobra.Command{
 func addModelSubCommands() {
 	ModelCmd.AddCommand(listModelCmd)
 	ModelCmd.AddCommand(createModelCmd)
-	ModelCmd.AddCommand(deleteModelCmd)
 }
 
 func init() {

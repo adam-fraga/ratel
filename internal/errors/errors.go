@@ -1,7 +1,13 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package errors contains the custom error types that are used in the ratel web framework
+*/
+
 package errors
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 )
 

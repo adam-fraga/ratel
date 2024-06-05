@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package views contains handlers to execute the logic of the views system of ratel web framework
+*/
+
 package views
 
 import (
@@ -9,19 +14,21 @@ import (
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
+// View represent a view
 type View struct {
 	Name string
 	Path string
 	Type string
 }
 
+// New Create a new view
 func (*View) New(viewType string) *View {
 	return &View{
 		Type: viewType,
 	}
 }
 
-// CreateView Create a file view of type (Component, Page, Layout)
+// Create view of type (Component, Page, Layout, Partial, Template or Metadata)
 func (*View) Create(v *View, files []string) error {
 
 	if len(files) > 1 {
@@ -56,6 +63,7 @@ func (*View) Create(v *View, files []string) error {
 
 }
 
+// CreateFile Create a file view of type (Component, Page, Layout, Partial, Template or Metadata) in the appropriate folder
 func (*View) CreateFile(v *View) error {
 
 	v.Path = "views/" + v.Type + "/"

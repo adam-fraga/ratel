@@ -1,5 +1,6 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package cacheCmd provide a way to interact with the cache system of the ratel web framework.
 */
 package cacheCmd
 

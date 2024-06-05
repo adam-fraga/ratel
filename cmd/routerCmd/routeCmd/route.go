@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package routeCmd provide a way to interact with the route system of the ratel web framework.
 */
+
 package routeCmd
 
 import (
@@ -20,7 +22,6 @@ var RouteCmd = &cobra.Command{
 
 func addrouteSubCommands() {
 	RouteCmd.AddCommand(createRouteCmd)
-	RouteCmd.AddCommand(deleteRouteCmd)
 	RouteCmd.AddCommand(listRouteCmd)
 }
 

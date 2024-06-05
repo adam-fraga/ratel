@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package handler contains handlers to execute the logic of the handler system of the ratel web framework
+*/
+
 package handler
 
 import (
@@ -9,16 +14,18 @@ import (
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
+// Handler represent a handler
 type Handler struct {
 	Name string
 	Path string
 }
 
+// New Create a new handler
 func (*Handler) New() *Handler {
 	return &Handler{}
 }
 
-// CreateView Create a file view of type (Component, Page, Layout)
+// Create a new handler
 func (*Handler) Create(handlers []string) error {
 
 	var h Handler
@@ -55,6 +62,7 @@ func (*Handler) Create(handlers []string) error {
 
 }
 
+// CreateFile create a new handler file in the handlers directory
 func (*Handler) CreateFile(h Handler) error {
 
 	h.Path = "handlers/"

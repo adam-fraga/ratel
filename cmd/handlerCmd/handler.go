@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package handlerCmd provide a way to interact with the handler system of the ratel web framework.
 */
+
 package handlerCmd
 
 import (
@@ -23,7 +25,6 @@ var HandlerCmd = &cobra.Command{
 
 func addHandlerSubCommand() {
 	HandlerCmd.AddCommand(createHandlerCmd)
-	HandlerCmd.AddCommand(deleteHandlerCmd)
 	HandlerCmd.AddCommand(listHandlerCmd)
 }
 

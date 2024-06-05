@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package dbMigrationCmd provide a way to interact with the migration system of the ratel web framework.
 */
+
 package dbMigrationCmd
 
 import (

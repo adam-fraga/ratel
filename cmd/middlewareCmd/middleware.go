@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package middlewareCmd provide a way to interact with the middleware system of the ratel web framework.
 */
+
 package middlewareCmd
 
 import (

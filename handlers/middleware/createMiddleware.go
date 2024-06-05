@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package middleware contains handlers to execute the logic of the middleware system of ratel web framework
+*/
+
 package middleware
 
 import (

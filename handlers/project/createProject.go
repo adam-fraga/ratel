@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package project contains handlers to execute the logic of the project system of ratel web framework
+*/
+
 package project
 
 import (
@@ -11,10 +16,29 @@ import (
 	"time"
 
 	"github.com/adam-fraga/ratel/internal/errors"
-	m "github.com/adam-fraga/ratel/models"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )
+
+// Project represent a project
+type Project struct {
+	ProjectName string
+	Folders     []Folder
+}
+
+// Folder represent a folder in the project
+type Folder struct {
+	FolderName string   `json:"folderName"`
+	SubFolders []Folder `json:"subFolders"`
+	Files      []string `json:"files"`
+}
+
+// File represent a file in the project
+type File struct {
+	FileName    string `json:"fileName"`
+	FileContent string `json:"fileContent"`
+	Extension   string `json:"extension"`
+}
 
 // Init the project creation process
 func InitProject(appName string) {
@@ -44,7 +68,7 @@ func CreateProjectStructure(appName string) error {
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
-func CreateFolder(folder *m.Folder) error {
+func CreateFolder(folder *Folder) error {
 	ut.PrintInfoMsg(fmt.Sprintf("%s Folder with permissions 755 successfuly created", folder.FolderName))
 
 	if folder.FolderName != "root" {
@@ -226,8 +250,8 @@ func GetFilesFromProject() (map[string][]string, error) {
 }
 
 // Parse the project structure from the data/projectStruct.json file and return a slice of Folder structs
-func getProjectStructFromJsonFIle() ([]m.Folder, error) {
-	var folders []m.Folder
+func getProjectStructFromJsonFIle() ([]Folder, error) {
+	var folders []Folder
 
 	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/files/projectStruct.json")
 

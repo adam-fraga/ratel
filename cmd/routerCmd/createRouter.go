@@ -1,3 +1,8 @@
+/*
+Copyright © 2024 Adm FRG adam.fraga@live.fr
+Package routerCmd provide a way to interact with the router system of the ratel web framework.
+*/
+
 package routerCmd
 
 import (

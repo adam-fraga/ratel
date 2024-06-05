@@ -1,6 +1,8 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+ Copyright © 2024 Adm FRG adam.fraga@live.fr
+ Package routerCmd provide a way to interact with the router system of the ratel web framework.
 */
+
 package routerCmd
 
 import (
@@ -24,7 +26,6 @@ var RouterCmd = &cobra.Command{
 func AddrouterSubCmd() {
 	RouterCmd.AddCommand(createRouterCmd)
 	RouterCmd.AddCommand(listRouterCmd)
-	RouterCmd.AddCommand(deleteRouterCmd)
 	RouterCmd.AddCommand(routeCmd.RouteCmd)
 }
 
