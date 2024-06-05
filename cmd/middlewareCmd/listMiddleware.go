@@ -4,8 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
-	"fmt"
-
+	h "github.com/adam-fraga/ratel/handlers/middleware"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,13 @@ var listMiddlewareCmd = &cobra.Command{
 	Long:  "List all middlewares available in the project.",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Listing all middlewares")
+		if len(args) == 0 {
+			if err := h.List(); err != nil {
+				ut.PrintErrorMsg("Error listing the middlewares: " + err.Error())
+			}
+		} else {
+			ut.PrintErrorMsg("Invalid number of argument ratel list middleware take no arguments.")
+		}
 	},
 }
 
