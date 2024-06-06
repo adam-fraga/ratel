@@ -16,8 +16,11 @@ import (
 
 var createPartialCmd = &cobra.Command{
 	Use:   "create-partial",
-	Short: "Create a new view partial with go templ (.templ)",
-	Long:  `Create a new view partial with go templ (.templ) in the partials folder.`,
+	Short: "Create a new partial view file with a .templ file in the partials folder.",
+	Long: `The create-partial command is an essential part of the toolset provided by our web framework.
+It simplifies the process of creating new partial view files by generating new .templ files in the views/partials directory.
+You can create up to 20 partials at a time.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var v h.View
@@ -26,7 +29,7 @@ var createPartialCmd = &cobra.Command{
 		if len(args) == 0 {
 			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", partial.Type))
 			os.Exit(1)
-		} else if len(args) > 0 && len(args) < 100 {
+		} else if len(args) > 0 && len(args) < 10 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
@@ -35,8 +38,10 @@ var createPartialCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 10 %s at once.", partial.Type))
-			os.Exit(1)
+			ut.PrintInfoMsg(fmt.Sprintf("Note that you cannot create more than 10 %s at once.", partial.Type))
+			if err := ut.RunCommandWithOutput("./ratel", "view create-partials --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
 		}
 	},
 }

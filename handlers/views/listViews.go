@@ -33,7 +33,6 @@ func ListViews(viewType string) error {
 
 	switch viewType {
 	case "":
-
 		if err := viewFiles.setViewFiles(&viewFiles, "all"); err != nil {
 			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
 			return &customError
@@ -62,18 +61,24 @@ func ListViews(viewType string) error {
 			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
 			return &customError
 		}
+		viewFiles.printFilesToStdOut(&viewFiles)
 	case "components":
 		if err := viewFiles.setViewFiles(&viewFiles, "components"); err != nil {
 			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
 			return &customError
 		}
+		viewFiles.printFilesToStdOut(&viewFiles)
 	case "metadatas":
 		if err := viewFiles.setViewFiles(&viewFiles, "metadatas"); err != nil {
 			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
 			return &customError
 		}
+		viewFiles.printFilesToStdOut(&viewFiles)
 	default:
-		ut.PrintErrorMsg("Choose a valid view type\n")
+		if err := ut.RunCommandWithOutput("./ratel", "view list --help"); err != nil {
+			customError.Msg = fmt.Sprintf("Error running the command to show the help: " + err.Error())
+			return &customError
+		}
 	}
 	return nil
 }
@@ -164,7 +169,7 @@ func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
 		case "partials":
 			viewFiles.Partials = append(viewFiles.Partials, View{Name: fileElement, Path: path, Type: fileType})
 		case "layouts":
-			viewFiles.Pages = append(viewFiles.Layouts, View{Name: fileElement, Path: path, Type: fileType})
+			viewFiles.Layouts = append(viewFiles.Layouts, View{Name: fileElement, Path: path, Type: fileType})
 		case "pages":
 			viewFiles.Pages = append(viewFiles.Pages, View{Name: fileElement, Path: path, Type: fileType})
 		case "components":

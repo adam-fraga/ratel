@@ -16,8 +16,11 @@ import (
 // createViewCmd represents the createView command
 var createPageCmd = &cobra.Command{
 	Use:   "create-page",
-	Short: "Create a new view page with go templ (.templ)",
-	Long:  `Create a new view page with go templ (.templ) in the views folder.`,
+	Short: "Create a new view page with a .templ file in the pages folder.",
+	Long: `The create-page command is an essential part of the toolset provided by our web framework.
+It simplifies the process of creating new pages by generating new .templ files in the views/pages directory.
+You can create up to 10 pages at a time.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var v h.View
@@ -26,7 +29,7 @@ var createPageCmd = &cobra.Command{
 		if len(args) == 0 {
 			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", page.Type))
 			os.Exit(1)
-		} else if len(args) > 0 && len(args) < 100 {
+		} else if len(args) > 0 && len(args) < 10 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
@@ -35,8 +38,10 @@ var createPageCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 10 %s at once.", page.Type))
-			os.Exit(1)
+			ut.PrintInfoMsg(fmt.Sprintf("Note that you cannot create more than 10 %s at once.", page.Type))
+			if err := ut.RunCommandWithOutput("./ratel", "view create-pages --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
 		}
 	},
 }

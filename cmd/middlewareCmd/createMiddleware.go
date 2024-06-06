@@ -15,8 +15,11 @@ import (
 // createMiddlewareCmd represents the createMiddleware command
 var createMiddlewareCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a new middleware",
-	Long:  `Create a new middleware in the middlewares folder.`,
+	Short: "Create a new middleware file in the middleware folder.",
+	Long: `The create-middleware command is an essential part of the toolset provided by our web framework.
+It simplifies the process of creating new middleware by generating new files in the middleware directory.
+You can create up to 20 middleware components at a time.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var m h.Middleware
@@ -24,7 +27,7 @@ var createMiddlewareCmd = &cobra.Command{
 		if len(args) == 0 {
 			ut.PrintErrorMsg("You must provide a name for the middleware")
 			os.Exit(1)
-		} else if len(args) > 0 && len(args) < 50 {
+		} else if len(args) > 0 && len(args) < 10 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
@@ -33,8 +36,10 @@ var createMiddlewareCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg("You cannot create more than 50 middleware at once.")
-			os.Exit(1)
+			ut.PrintInfoMsg("Note that you cannot create more than 10 middleware at once.")
+			if err := ut.RunCommandWithOutput("./ratel", "middleware create --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
 		}
 	},
 }

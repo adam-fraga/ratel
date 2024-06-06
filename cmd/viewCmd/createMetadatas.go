@@ -15,9 +15,11 @@ import (
 )
 
 var createMetadataCmd = &cobra.Command{
-	Use:   "create-metadatas",
-	Short: "Create a new view metadata with go templ (.templ)",
-	Long:  `Create a new view metadata with go templ (.templ) in the metadatas folder.`,
+	Use:   "create-metadata",
+	Short: "Create a new metadatas file with a .templ file in the metadatas folder.",
+	Long: `The create-metadata command is an essential part of the toolset provided by our web framework.
+It simplifies the process of creating new metadata files by generating new .templ files in the views/metadatas directory.
+You can create up to 20 metadatas at a time.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var v h.View
@@ -26,7 +28,7 @@ var createMetadataCmd = &cobra.Command{
 		if len(args) == 0 {
 			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", metadata.Type))
 			os.Exit(1)
-		} else if len(args) > 0 && len(args) < 100 {
+		} else if len(args) > 0 && len(args) < 20 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
@@ -35,8 +37,10 @@ var createMetadataCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 10 %s at once.", metadata.Type))
-			os.Exit(1)
+			ut.PrintInfoMsg(fmt.Sprintf("Note that you cannot create more than 20 %s at once.", metadata.Type))
+			if err := ut.RunCommandWithOutput("./ratel", "view create-metadatas --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
 		}
 	},
 }

@@ -17,8 +17,10 @@ import (
 // createViewCmd represents the createView command
 var createComponentCmd = &cobra.Command{
 	Use:   "create-component",
-	Short: "Create a new view component with go templ (.templ)",
-	Long:  `Create a new view component with go templ (.templ) in the component folder.`,
+	Short: "Create a new view component with go templ (.templ) in the component folder.",
+	Long: `The create-component command is an essential part of the toolset provided by our web framework.
+It simplifies the process of creating new view components by generating new .templ files in the views/components directory.
+You can create up to 20 components at a time.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var v h.View
@@ -27,7 +29,7 @@ var createComponentCmd = &cobra.Command{
 		if len(args) == 0 {
 			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", component.Type))
 			os.Exit(1)
-		} else if len(args) > 0 && len(args) < 100 {
+		} else if len(args) > 0 && len(args) < 20 {
 			for i, arg := range args {
 				args[i] = s.ToLower(arg)
 				args[i] = s.ReplaceAll(args[i], "-", "_")
@@ -36,8 +38,9 @@ var createComponentCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintErrorMsg(fmt.Sprintf("You cannot create more than 20 %s at once.", component.Type))
-			os.Exit(1)
+			if err := ut.RunCommandWithOutput("./ratel", "view create-component --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
 		}
 	},
 }
