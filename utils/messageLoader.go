@@ -1,5 +1,18 @@
 package utils
 
+/*
+loadMessages()
+
+	// Set the desired language (e.g., based on user preference)
+	lang := "en"
+	if len(os.Args) > 1 {
+		lang = os.Args[1]
+	}
+
+	fmt.Println(getMessage(lang, "welcome"))
+	fmt.Println(getMessage(lang, "goodbye"))
+*/
+
 import (
 	"embed"
 	"encoding/json"
@@ -14,9 +27,11 @@ var locales embed.FS
 
 var Messages map[string]map[string]string
 
+// LoadMessages loads the messages from the locales directory
 func LoadMessages() error {
+
 	Messages = make(map[string]map[string]string)
-	localeFiles, err := locales.ReadDir("github.com/adam-fraga/ratel/locales")
+	localeFiles, err := locales.ReadDir("/home/afraga/Projects/ratel/utils/locales")
 	if err != nil {
 		return &er.DevError{
 			Type:       "Error",
@@ -27,7 +42,7 @@ func LoadMessages() error {
 
 	for _, localeFile := range localeFiles {
 		locale := localeFile.Name()
-		file, err := locales.ReadFile(fmt.Sprintf("github.com/adam-fraga/ratel/locales/%s/messages.json", locale))
+		file, err := locales.ReadFile(fmt.Sprintf("/home/afraga/Projects/ratel/utils/locales/%s", locale))
 		if err != nil {
 			log.Fatalf("Error reading %s: %v", locale, err)
 		}
@@ -42,6 +57,7 @@ func LoadMessages() error {
 	return nil
 }
 
+// GetMessage returns the message for the given language and key
 func GetMessage(lang, key string) string {
 	if msg, ok := Messages[lang][key]; ok {
 		return msg
