@@ -1,53 +1,136 @@
-# Documentation
+<!-- PROJECT LOGO -->
+<div align="center">
+  <h1 align="center">Ratel</h1>
+  <p align="center">
+    A powerful web framework for Go developers
+  </p>
+</div>
 
-Each folder containing in cmd folder is a top of level command (excludig the root command).
-if the file.go has the same name of the folder then the file.go is the root command of the palet.
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-Each file.go is a main palet that contains the main commands that display their options and purpose,
-and a function that add their subcommands.
+<!-- ABOUT THE PROJECT -->
 
-Following that logic we can implement a command line interface that is easy to understand and to maintain
-with several levels of nested commands.
+## About The Project
 
-Viper is used to manage the configuration of the application, and cobra is used to manage the commands.
+Ratel is a versatile web framework designed to streamline web development with Go. It provides developers with a comprehensive set of tools and functionalities to simplify project setup, management, and deployment. Whether you're building a small web application or a large-scale project, Ratel offers the flexibility and scalability you need to succeed.
 
-### TODO
+Key Features:
 
-##### COMMANDS
+- **Project Management**: Ratel offers commands for project setup, configuration, and deployment, making it easy to get started with your web development journey.
+- **Middleware Support**: The framework includes middleware commands for managing authentication, logging, error handling, and request/response modification.
+- **Database Integration**: Ratel provides commands for database setup, migration, seeding, querying, and administration, ensuring smooth integration with your chosen database system.
+- **View Handling**: With Ratel, you can easily create, list, update, and delete views within your project, simplifying the process of managing your project's frontend components.
 
-- [ ] Add a command to generate handlers
-- [ ] Add a command to generate models
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
-<!-- LATER -->
+<!-- INSTALLATION -->
 
-- [ ] Add a command to generate the proto files
-- [ ] Add a command to compile the proto files
-- [ ] Add a command to generate the grpc server
+## Installation
 
-##### IMPLEMENT LOGIC (HANDLER) FOR COMMANDS
+To install Ratel on your local machine, simply download the latest version of the binary here:
+(My ratel website here later)
 
-- [ ] Implement the logic for the commands that generates the project
-      (The project should be generated following the structure the json data folders and files)
-      (Project name should be asked to the user)
+Alternatively, you can build Ratel from source by following these steps:
 
-- [ ] Implement the logic for the commands that generates the cache
-      (Start by choosing between simple cache like Go cache package or Valkey)
-      (Write logic to run the cache client and server)
-      (Write logic to launch basic cache commands)
-      (Add more to this todo section later...)
+1. Clone the Ratel repository:
 
-- [ ] Implement the logic for the commands that interact with postgres database
-      (Write logic to connect to the database)
-      (Write logic to launch basic database commands)
+```bash
+git clone https://github.com/adam-fraga/ratel.git
+```
 
-- [ ] Implement the logic for the commands that generates the middleware
-      (Write logic to create the middleware files)
+````markdown
+<!-- USAGE -->
 
-- [ ] Implement the logic for the commands that generates the views with templ
-      (Write logic to create the views files)
+## Usage
 
-- [ ] Implement the logic for the commands that generates the handlers
-      (Write logic to create the handlers files)
+Once Ratel is installed, you can start using it to develop your web projects. Here are some common commands and usage examples:
 
-- [ ] Implement the logic for the commands that generates the models
-      (Write logic to create the models files)
+### Creating a New Project
+
+Use the `ratel create` command to create a new project:
+
+```bash
+ratel create my-project
+```
+````
+
+### Managing Middleware
+
+Use the `ratel middleware` command to manage middleware functionalities within your project:
+
+```bash
+ratel middleware create auth
+```
+
+### View Handling
+
+Use the `ratel view` command to handle views within your project, including creation (.templ), listing, updating, and deletion:
+
+```bash
+ratel view create-component header
+ratel view list-components
+
+ratel view create-page home
+ratel view list-pages
+
+ratel view create-template base
+ratel view list-templates
+
+# And more...
+```
+
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+
+<!-- ROADMAP -->
+
+## Roadmap
+
+See the open issues for a list of proposed features (and known issues) to track the development progress.
+
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+
+<!-- CONTRIBUTING -->
+
+## Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
+Any contributions you make are greatly appreciated.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+
+<!-- LICENSE -->
+
+## License
+
+Distributed under the MIT License. See LICENSE for more information.
+
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+
+<!-- CONTACT -->
+
+## Contact
+
+Your Name - fragadams@gmail.com
+
+Project Link: [https://github.com/adam-fraga/ratel](https://github.com/your-username/ratel)
+
+<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+```
