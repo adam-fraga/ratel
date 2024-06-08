@@ -137,7 +137,7 @@ func CreateFile(fileDestination string) error {
 	return nil
 }
 
-// Populate the project files with the data from the files/configs folder using goroutines
+// Populate the project files with the data from the files/configs embeded folder using goroutines
 func PopulateProjectFiles() {
 
 	files, err := GetFilesFromProject()
@@ -157,7 +157,10 @@ func PopulateProjectFiles() {
 	wg.Wait()
 }
 
-// Process the file copying the contents from the source file to the destination file
+/*
+Process the file copying the contents from the source file containing in the embedded folder configs
+to the destination file in the project structure
+*/
 func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) error {
 	var embeddedConfigs = em.EmbeddedConfigs
 	defer wg.Done()
@@ -197,7 +200,7 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 	return nil
 }
 
-// Get the files from the project structure and return a map with the source and destination files
+// Get the files from the project structure embedded file json and return a map with the source and destination files
 func GetFilesFromProject() (map[string][]string, error) {
 	var fileName string
 	var srcFiles []string
