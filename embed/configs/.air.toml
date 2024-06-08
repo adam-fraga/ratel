@@ -4,8 +4,8 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "./tmp/main"
-  cmd = "go build -o ./tmp/main  ./cmd/GO4T"
+  bin = "./tmp/main" # Change "main" to your app name
+  cmd = "go build -o ./tmp/main ./cmd/main.go" # Change "main" to your app name
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata", "static", "node_modules"]
   exclude_file = []

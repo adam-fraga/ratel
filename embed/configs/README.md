@@ -24,14 +24,30 @@
 
 ## About The Project
 
-Ratel is a versatile web framework designed to streamline web development with Go. It provides developers with a comprehensive set of tools and functionalities to simplify project setup, management, and deployment. Whether you're building a small web application or a large-scale project, Ratel offers the flexibility and scalability you need to succeed.
+Ratel is a versatile web framework designed to streamline web development with Go.
+It provides developers with a comprehensive set of tools and functionalities to simplify project setup,
+management, and deployment.
+
+Whether you're building a small web application or a large-scale project,
+Ratel offers the flexibility and scalability you need to succeed.
 
 Key Features:
 
-- **Project Management**: Ratel offers commands for project setup, configuration, and deployment, making it easy to get started with your web development journey.
-- **Middleware Support**: The framework includes middleware commands for managing authentication, logging, error handling, and request/response modification.
-- **Database Integration**: Ratel provides commands for database setup, migration, seeding, querying, and administration, ensuring smooth integration with your chosen database system.
-- **View Handling**: With Ratel, you can easily create, list, update, and delete views within your project, simplifying the process of managing your project's frontend components.
+- **Project Management**: Ratel offers commands for project setup, configuration, and deployment,
+  making it easy to get started with your web development journey.
+- **Middleware Support**: The framework includes middleware commands for managing authentication,
+  logging, error handling, and request/response modification.
+- **Database Integration**: Ratel provides commands for database setup, migration, seeding, querying,
+  and administration, ensuring smooth integration with your chosen database system.
+- **View Handling**: With Ratel, you can easily create and list views within your project,
+  simplifying the process of managing your project's frontend components, the generated views are in the templ
+  format used by the [a-h/templ](https://github.com/a-h/templ) templating engine.
+- **Live Reloading**: Ratel supports live reloading with [Air](https://github.com/air-verse/air), allowing you to
+  see changes in real-time.
+- **Handler Management**: Ratel provides commands for creating, listing, handlers in your project
+- **Model Management**: Ratel provides commands for creating, listing, models in your project
+
+# And more...
 
 <p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
@@ -40,7 +56,7 @@ Key Features:
 ## Installation
 
 To install Ratel on your local machine, simply download the latest version of the binary here:
-(My ratel website here later)
+Website coming soon...
 
 Alternatively, you can build Ratel from source by following these steps:
 
@@ -50,21 +66,42 @@ Alternatively, you can build Ratel from source by following these steps:
 git clone https://github.com/adam-fraga/ratel.git
 ```
 
-````markdown
-<!-- USAGE -->
-
 ## Usage
 
-Once Ratel is installed, you can start using it to develop your web projects. Here are some common commands and usage examples:
+Once Ratel is installed, you can start using it to develop your web projects.
 
 ### Creating a New Project
 
-Use the `ratel create` command to create a new project:
+Use the `ratel project create` command to create a new project:
 
 ```bash
-ratel create my-project
+ratel project create my-project
 ```
-````
+
+### Initializing a New Project
+
+```bash
+go mod init "github.com/your-username/your-project"
+```
+
+### Install necessary dependencies
+
+You need to install Air for live reloading and templ templating engine.
+You can install them using the following links:
+
+[Air](https://github.com/air-verse/air)
+[Templ](https://github.com/a-h/templ)
+
+We also recommend using a terminal multiplexer like tmux or screen to run multiple commands
+in a single terminal window this will help you run the server and the air live reload at the same time
+and build your typescript + tailwind files with webpack.
+
+```bash
+npm install
+go get github.com/a-h/templ
+go get joho/godotenv
+go mod tidy
+```
 
 ### Managing Middleware
 
@@ -93,15 +130,11 @@ ratel view list-templates
 
 <p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
-<!-- ROADMAP -->
-
 ## Roadmap
 
 See the open issues for a list of proposed features (and known issues) to track the development progress.
 
 <p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
 
 ## Contributing
 
@@ -116,19 +149,17 @@ Any contributions you make are greatly appreciated.
 
 <p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
-<!-- LICENSE -->
-
 ## License
 
 Distributed under the MIT License. See LICENSE for more information.
 
 <p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
-<!-- CONTACT -->
-
 ## Contact
 
-Your Name - fragadams@gmail.com
+Adm FRG - fragadams@gmail.com
+[Discord](https://discord.gg/yourdiscord)
+[Youtube](https://youtube.com/yourchannel)
 
 Project Link: [https://github.com/adam-fraga/ratel](https://github.com/your-username/ratel)
 

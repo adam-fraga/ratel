@@ -1,5 +1,5 @@
 tailwind:
-	@npx tailwindcss -i ./configs/input.css -o ./static/css/styles.css --watch
+	@npx tailwindcss -i ./src/css/input.css -o ./static/css/styles.css --watch
 
 templ:
 	@templ generate -watch -proxy=http://localhost:3000
@@ -8,7 +8,7 @@ webpack:
 	@npm run watch
 
 build:
-	go build -o bin/app
+	go build -o ./tmp/main ./cmd/main.go
 
 test:
 	go test -v ./... -count=1 

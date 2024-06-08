@@ -44,12 +44,16 @@ type File struct {
 // Init the project creation process
 func InitProject(appName string) {
 	CreateProjectStructure(appName)
-	PopulateProjectFiles()
+	err := PopulateProjectFiles()
+	if err != nil {
+		fmt.Println("Error populating project files")
+		ut.PrintErrorMsg(err.Error())
+	}
 }
 
 // Create the project structure based on the data/projectStruct.json file
 func CreateProjectStructure(appName string) error {
-	ut.PrintInfoMsg(fmt.Sprintf("Creating the project structure for application %s", appName))
+	ut.PrintInfoMsg(fmt.Sprintf("   Creating the project structure folder for the application %s\n", appName))
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
 		fmt.Println("Error parsing the json folders")
@@ -64,13 +68,13 @@ func CreateProjectStructure(appName string) error {
 		}
 	}
 
-	ut.PrintSuccessMsg("\nProject structure successfully created\n")
+	ut.PrintSuccessMsg("\n   Project structure successfully created\n")
 	return nil
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
 func CreateFolder(folder *Folder) error {
-	ut.PrintInfoMsg(fmt.Sprintf("%s Folder with permissions 755 successfuly created", folder.FolderName))
+	ut.PrintInfoMsg(fmt.Sprintf("     %s Folder with permissions 755 successfuly created", folder.FolderName))
 
 	if folder.FolderName != "root" {
 		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
@@ -138,11 +142,15 @@ func CreateFile(fileDestination string) error {
 }
 
 // Populate the project files with the data from the files/configs embeded folder using goroutines
-func PopulateProjectFiles() {
+func PopulateProjectFiles() error {
 
 	files, err := GetFilesFromProject()
 	if err != nil {
-		fmt.Println(err.Error())
+		return &errors.DevError{
+			Type:       "Project Structure Error",
+			Origin:     "populateProjectFiles()",
+			FileOrigin: "handlers/project.go",
+			Msg:        err.Error() + fmt.Sprintf("Error getting files from project\n")}
 	}
 
 	var wg sync.WaitGroup
@@ -155,6 +163,8 @@ func PopulateProjectFiles() {
 
 	time.Sleep(1 * time.Second)
 	wg.Wait()
+
+	return nil
 }
 
 /*
@@ -195,7 +205,6 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 
 	pb.Finish()
 	fmt.Println()
-	ut.PrintSuccessMsg(dstFiles[i] + " successfully populated")
 
 	return nil
 }
@@ -209,7 +218,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 
 	dataConfigFilePath := "configs/"
 
-	ut.PrintInfoMsg("Populating the project files...")
+	ut.PrintSuccessMsg("   Populating the project files...\n")
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
 		return nil, &errors.DevError{

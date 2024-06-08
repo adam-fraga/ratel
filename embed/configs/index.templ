@@ -1,19 +1,18 @@
-package components
+package pages
 
-templ Index(name string) {
+templ Index(data map[string]interface{}) {
 <!DOCTYPE html>
 <html>
 
 <head>
   <title>Page Title</title>
-  <link rel="stylesheet" type="text/css" href="/assets/styles/styles.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+  <script src="/static/js/htmx.min.js" defer></script>
+  <script src="/static/js/bundle.js" defer></script>
 </head>
 
 <body>
-  <h1 class="text-blue-400">Welcome, {name}</h1>
-
-  <script src="/static/js/htmx.min.js"></script>
-  <script src="/static/js/bundle.js"></script>
+  <h1 class="text-blue-400">Welcome</h1>
 </body>
 
 </html>

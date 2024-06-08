@@ -9,7 +9,8 @@
       "webpack.config.js",
       ".air.toml",
       "Makefile",
-      ".gitignore"
+      ".gitignore",
+      ".env"
     ]
   },
   {
@@ -23,11 +24,20 @@
       },
       {
         "folderName": "static/js"
+        "files": ["static/js/htmx.js"]
       },
       {
         "folderName": "static/css"
       }
     ]
+  },
+  {
+    "folderName": "utils",
+    "files": ["utils/utils.go"]
+  },
+  {
+    "folderName": "cmd",
+    "files": ["cmd/main.go"]
   },
   {
     "folderName": "src",
@@ -68,6 +78,20 @@
         "files": ["views/pages/index.templ"]
       }
     ]
+  },
+  {
+    "folderName": "router",
+    "subFolders": [
+      {
+        "routes": "router/routes",
+        "files": ["router/routes/route.go"]
+      }
+    ],
+    "files": ["router/router.go"]
+  },
+  {
+    "folderName": "controllers",
+    "files": ["controllers/indexController.go"]
   },
   {
     "folderName": "handlers",
