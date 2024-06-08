@@ -8,7 +8,7 @@ import (
 	"os"
 	s "strings"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ import (
 var createLayoutCmd = &cobra.Command{
 	Use:   "create-layout",
 	Short: "Create a new layout file with a .templ file in the layouts folder.",
-	Long: `The create-layout command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create-layout" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new layout files by generating new .templ files in the views/layouts directory.
 You can create up to 10 layouts at a time.`,
 

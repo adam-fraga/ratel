@@ -6,9 +6,7 @@ Package modelCmd provide a way to interact with the model system of the ratel we
 package modelCmd
 
 import (
-	"fmt"
-
-	// "github.com/adam-fraga/ratel/handlers"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +16,7 @@ var ModelCmd = &cobra.Command{
 	Short: "model management commands for the project",
 	Long:  `model management commands for the project.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("MODEL COMMAND CALLED")
+		ut.RunCommandWithOutput("ratel", "model --help")
 	},
 }
 

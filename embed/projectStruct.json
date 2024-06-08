@@ -70,8 +70,8 @@
     ]
   },
   {
-    "folderName": "handler",
-    "files": ["handler/indexHandler.go"]
+    "folderName": "handlers",
+    "files": ["handlers/indexHandler.go"]
   },
   {
     "folderName": "config",
@@ -93,8 +93,8 @@
     "files": ["middlewares/auth-middleware.go"]
   },
   {
-    "folderName": "model",
-    "files": ["model/user.go"]
+    "folderName": "models",
+    "files": ["models/user.go"]
   },
   {
     "folderName": "test",

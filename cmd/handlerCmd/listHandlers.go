@@ -4,8 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package handlerCmd
 
 import (
-	"fmt"
-
+	h "github.com/adam-fraga/ratel/handlers/handler"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,15 @@ var listHandlerCmd = &cobra.Command{
 	Short: "List all handlers",
 	Long:  `List all handlers in the web framework.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("LIST HANDLER CALLED")
+		if len(args) == 0 {
+			if err := h.List(); err != nil {
+				ut.PrintErrorMsg("Error listing the handlers: " + err.Error())
+			}
+		} else {
+			if err := ut.RunCommandWithOutput("ratel", "handler list --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
+		}
 	},
 }
 

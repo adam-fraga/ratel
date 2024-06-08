@@ -16,7 +16,7 @@ import (
 var createMiddlewareCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new middleware file in the middleware folder.",
-	Long: `The create-middleware command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel middleware create" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new middleware by generating new files in the middleware directory.
 You can create up to 20 middleware components at a time.`,
 

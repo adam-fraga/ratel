@@ -10,14 +10,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
 var createTemplateCmd = &cobra.Command{
 	Use:   "create-template",
 	Short: "Create a new template file with a .templ file in the templates folder.",
-	Long: `The create-template command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create-template" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new template files by generating new .templ files in the views/templates directory.
 You can create up to 10 templates at a time.`,
 

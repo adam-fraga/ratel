@@ -1,7 +1,7 @@
 package viewCmd
 
 import (
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -9,7 +9,7 @@ import (
 var listViewCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all views: pages, components, layouts, partials, templates, meta or all",
-	Long: `The "list" command allows you to view all views within your project, including:
+	Long: `The "ratel view list" command allows you to view all views within your project, including:
 
 - No value: all views
 - pages

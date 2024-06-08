@@ -1,8 +1,8 @@
 package modelCmd
 
 import (
-	"fmt"
-
+	h "github.com/adam-fraga/ratel/handlers/model"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +11,15 @@ var listModelCmd = &cobra.Command{
 	Short: "List all models",
 	Long:  `List all models created in the project.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("LIST MODEL COMMAND CALLED")
+		if len(args) == 0 {
+			if err := h.List(); err != nil {
+				ut.PrintErrorMsg("Error listing the models: " + err.Error())
+			}
+		} else {
+			if err := ut.RunCommandWithOutput("ratel", "model list --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
+		}
 	},
 }
 

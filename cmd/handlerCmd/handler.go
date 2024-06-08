@@ -6,8 +6,7 @@ Package handlerCmd provide a way to interact with the handler system of the rate
 package handlerCmd
 
 import (
-	"fmt"
-
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +18,7 @@ var HandlerCmd = &cobra.Command{
   of the web framework. Yo ucan think of handlers as the controllers of the
   web framework.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("HANDLER COMMAND CALLED")
+		ut.RunCommandWithOutput("ratel", "handler --help")
 	},
 }
 

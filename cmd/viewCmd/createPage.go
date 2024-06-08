@@ -8,7 +8,7 @@ import (
 	"os"
 	s "strings"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ import (
 var createPageCmd = &cobra.Command{
 	Use:   "create-page",
 	Short: "Create a new view page with a .templ file in the pages folder.",
-	Long: `The create-page command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create-page" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new pages by generating new .templ files in the views/pages directory.
 You can create up to 10 pages at a time.`,
 

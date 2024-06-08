@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
@@ -18,7 +18,7 @@ import (
 var createComponentCmd = &cobra.Command{
 	Use:   "create-component",
 	Short: "Create a new view component with go templ (.templ) in the component folder.",
-	Long: `The create-component command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create component" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new view components by generating new .templ files in the views/components directory.
 You can create up to 20 components at a time.`,
 	Run: func(cmd *cobra.Command, args []string) {

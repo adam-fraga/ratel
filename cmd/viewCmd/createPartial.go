@@ -10,14 +10,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
 var createPartialCmd = &cobra.Command{
 	Use:   "create-partial",
 	Short: "Create a new partial view file with a .templ file in the partials folder.",
-	Long: `The create-partial command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create-partial" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new partial view files by generating new .templ files in the views/partials directory.
 You can create up to 20 partials at a time.`,
 

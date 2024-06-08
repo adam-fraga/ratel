@@ -10,14 +10,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	h "github.com/adam-fraga/ratel/handlers/views"
+	h "github.com/adam-fraga/ratel/handlers/view"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
 var createMetadataCmd = &cobra.Command{
 	Use:   "create-metadata",
 	Short: "Create a new metadatas file with a .templ file in the metadatas folder.",
-	Long: `The create-metadata command is an essential part of the toolset provided by our web framework.
+	Long: `The "ratel view create-metadata" command is an essential part of the toolset provided by our web framework.
 It simplifies the process of creating new metadata files by generating new .templ files in the views/metadatas directory.
 You can create up to 20 metadatas at a time.`,
 	Run: func(cmd *cobra.Command, args []string) {
