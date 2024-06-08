@@ -15,6 +15,7 @@ import (
 	"sync"
 	"time"
 
+	em "github.com/adam-fraga/ratel/embed"
 	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
@@ -49,7 +50,7 @@ func InitProject(appName string) {
 // Create the project structure based on the data/projectStruct.json file
 func CreateProjectStructure(appName string) error {
 	ut.PrintInfoMsg(fmt.Sprintf("Creating the project structure for application %s", appName))
-	projectStruct, err := getProjectStructFromJsonFIle()
+	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
 		fmt.Println("Error parsing the json folders")
 		fmt.Println(err.Error())
@@ -158,37 +159,35 @@ func PopulateProjectFiles() {
 
 // Process the file copying the contents from the source file to the destination file
 func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) error {
+	var embeddedConfigs = em.EmbeddedConfigs
 	defer wg.Done()
-	srcFile, err := os.OpenFile(srcFiles[i], os.O_RDONLY|os.O_CREATE, 0666)
-	dstFile, err := os.OpenFile(dstFiles[i], os.O_WRONLY|os.O_CREATE, 0666)
-
+	srcFileData, err := embeddedConfigs.ReadFile(srcFiles[i])
 	if err != nil {
 		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",
 			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error opening file %s\n", srcFiles[i])}
+			Msg:        fmt.Sprintf("Error reading file from embedded source file %s"+err.Error()+"\n", srcFiles[i])}
 	}
-	defer srcFile.Close()
+
+	dstFilePath := dstFiles[i]
+	dstFile, err := os.Create(dstFilePath)
+	if err != nil {
+		return &errors.DevError{
+			Type:       "Project Structure Error",
+			Origin:     "processFile()",
+			FileOrigin: "handlers/project.go",
+			Msg:        fmt.Sprintf("Error creating file %s"+err.Error()+"\n", dstFiles[i])}
+	}
 	defer dstFile.Close()
 
-	buf := new(bytes.Buffer)       // Create a new bytes.Buffer to store the file's contents
-	_, err = io.Copy(buf, srcFile) // Copy file contents into the buffer
+	_, err = io.Copy(dstFile, bytes.NewReader(srcFileData)) // Copy file contents
 	if err != nil {
 		return &errors.DevError{
 			Type:       "Project Structure Error",
 			Origin:     "processFile()",
 			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error reading file %s\n", srcFiles[i])}
-	}
-
-	_, err2 := buf.WriteTo(dstFile) // Write the buffer to the destination file
-	if err2 != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "processFile()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err2.Error() + fmt.Sprintf("Error writing to file %s\n", dstFiles[i])}
+			Msg:        err.Error() + fmt.Sprintf("Error copying file %s\n", dstFiles[i])}
 	}
 
 	pb.Finish()
@@ -205,18 +204,10 @@ func GetFilesFromProject() (map[string][]string, error) {
 	var dstFiles []string
 	files := make(map[string][]string)
 
-	dataConfigFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/files/configs/")
+	dataConfigFilePath := "configs/"
 
-	if err != nil {
-		return nil, &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "getFilesFromProject()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error getting the absolute path of the data config file\n")}
-	}
-
-	fmt.Println("Populating the project files...")
-	projectStruct, err := getProjectStructFromJsonFIle()
+	ut.PrintInfoMsg("Populating the project files...")
+	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
 		return nil, &errors.DevError{
 			Type:       "Project Structure Error",
@@ -250,36 +241,13 @@ func GetFilesFromProject() (map[string][]string, error) {
 }
 
 // Parse the project structure from the data/projectStruct.json file and return a slice of Folder structs
-func getProjectStructFromJsonFIle() ([]Folder, error) {
+func getProjectStructFromJsonFile() ([]Folder, error) {
 	var folders []Folder
 
-	projectStructureJsonFilePath, err := filepath.Abs("/home/afraga/Projects/ratel/files/projectStruct.json")
-
+	err := json.Unmarshal(em.EmbeddedProjectStruct, &folders)
 	if err != nil {
-		return nil, &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "parseJsonFolders()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error getting the absolute path of the json file\n")}
+		return nil, fmt.Errorf("error decoding embedded project struct JSON: %w", err)
 	}
 
-	jsonFile, err := os.Open(projectStructureJsonFilePath)
-	if err != nil {
-		return nil, &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "parseJsonFolders()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error opening the json file %s\n", projectStructureJsonFilePath)}
-	}
-	defer jsonFile.Close()
-
-	err = json.NewDecoder(jsonFile).Decode(&folders)
-	if err != nil {
-		return nil, &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "parseJsonFolders()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error decoding the json file %s\n", projectStructureJsonFilePath)}
-	}
 	return folders, nil
 }
