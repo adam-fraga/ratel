@@ -16,6 +16,7 @@ var listProjectDependenciesCmd = &cobra.Command{
 	Short: "List all javascript and golang project dependencies",
 	Long:  `List all project dependencies available in the project.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		//ADD LOGIC THAT EXTRACT DEPENDENCIES FROM PACKAGE.JSON AND GO.MOD THEN PRINT THEM
 		fmt.Println("listProjectDependencies called")
 	},
 }

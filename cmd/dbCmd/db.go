@@ -5,9 +5,8 @@ Package dbCmd provide a way to interact with the database system of the ratel we
 package dbCmd
 
 import (
-	"fmt"
-
 	dbMigrationCmd "github.com/adam-fraga/ratel/cmd/dbCmd/migration"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +14,18 @@ import (
 var DbCmd = &cobra.Command{
 	Use:   "db",
 	Short: "Database commands",
-	Long:  `Database commands provide a way to interact with the database system of the web framework.`,
+	Long: `The "db" command encompasses a suite of subcommands tailored for managing database-related tasks within the project. 
+  It serves as the central interface for executing operations related to database management and configuration.
+  This command provides a comprehensive set of functionalities for working with databases, 
+  including tasks such as database setup, migration, seeding, querying, and administration.
+  With the "db" command, you can easily perform various database operations, such as creating database schemas,
+  migrating database structures, seeding initial data, executing database queries, and managing database connections.
+  By consolidating all database-related functionalities under a single entry point, 
+  the "db" command streamlines the workflow and enhances productivity for developers working on web applications 
+  that require database integration.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("db called")
+		ut.RunCommandWithOutput("ratel", "db --help")
 	},
 }
 

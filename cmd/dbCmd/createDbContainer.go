@@ -14,9 +14,26 @@ import (
 
 // dbCmd represents the db command
 var createDbContainerCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create a database container",
-	Long:  `Create a database container for the project using Docker and PostgreSQL`,
+	Use:   "create-dev-database",
+	Short: "Create a database container for the project using Docker and your choice of database provider",
+	Long: `The "create-dev-database" command helps you set up a database container for your project using Docker. You have the flexibility to choose from various database providers, including MongoDB, Redis, PostgreSQL, and SQLite (for testing purposes, stored as a local file).
+
+To specify the database provider, use one of the following flags:
+  --mongo: Create a MongoDB database container.
+  --redis: Create a Redis database container.
+  --postgres: Create a PostgreSQL database container.
+  --sqlite: Use SQLite for testing purposes (no Docker container required).
+
+For MongoDB, Redis, and PostgreSQL, the command orchestrates the creation of a Docker container, 
+ensuring seamless integration into your development environment. 
+You'll need to fill in the appropriate values in the .env file to configure the connection details.
+
+If you opt for SQLite, the command sets up a local file-based database, suitable for testing purposes. 
+No Docker container is spun up for SQLite, as it operates directly on the local file system.
+
+This command streamlines the process of provisioning a database container tailored to your project's needs,
+whether for local development or testing.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		provider, err := cmd.Flags().GetString("provider")
 		if err != nil {
@@ -28,8 +45,13 @@ var createDbContainerCmd = &cobra.Command{
 
 			ut.PrintErrorMsg(error.Msg)
 		}
-
-		db.InitDbDevelopmentContainer(provider)
+		if provider != "" {
+			db.InitDbDevelopmentContainer(provider)
+		} else {
+			if err := ut.RunCommandWithOutput("ratel", "db create-dev-database --help"); err != nil {
+				ut.PrintErrorMsg("Error running the command: " + err.Error())
+			}
+		}
 	},
 }
 

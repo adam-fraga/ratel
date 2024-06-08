@@ -38,8 +38,7 @@ You can create up to 10 templates at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintInfoMsg(fmt.Sprintf("Note that you cannot create more than 10 %s at once.", template.Type))
-			if err := ut.RunCommandWithOutput("./ratel", "view create-templates --help"); err != nil {
+			if err := ut.RunCommandWithOutput("ratel", "view create-template --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

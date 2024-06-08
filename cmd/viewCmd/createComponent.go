@@ -38,7 +38,7 @@ You can create up to 20 components at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("./ratel", "view create-component --help"); err != nil {
+			if err := ut.RunCommandWithOutput("ratel", "view create-component --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

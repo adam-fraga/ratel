@@ -4,8 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
-	"fmt"
-
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -13,9 +12,15 @@ import (
 var ViewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "View commands for the project",
-	Long:  `View commands for the project.`,
+	Long: `The "view" command provides a set of subcommands to manage views within the project.
+It encompasses all the commands related to handling and managing views. This command serves as a central hub 
+for performing operations on views, including creating, listing...you can interact with various view components 
+such as pages, components, layouts, partials, templates, and metadata.
+By encapsulating all view-related commands under a single entry point, the "view" command simplifies view 
+management and streamlines the workflow for developers working on frontend components within the project.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("VIEW COMMAND CALLED")
+		ut.RunCommandWithOutput("ratel", "view --help")
 	},
 }
 

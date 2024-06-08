@@ -36,8 +36,7 @@ You can create up to 20 middleware components at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintInfoMsg("Note that you cannot create more than 10 middleware at once.")
-			if err := ut.RunCommandWithOutput("./ratel", "middleware create --help"); err != nil {
+			if err := ut.RunCommandWithOutput("ratel", "middleware create --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

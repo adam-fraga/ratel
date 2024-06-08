@@ -6,8 +6,7 @@ Package projectCmd provide a way to interact with the project system of the rate
 package projectCmd
 
 import (
-	"fmt"
-
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,10 +14,21 @@ import (
 var ProjectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Project related commands for the web framework",
-	Long:  `Project commands provide a way to interact with the project system of the web framework.`,
+	Long: `
+The "project" command encompasses a collection of subcommands tailored for managing various aspects of the web framework 
+project. 
+It serves as the central hub for executing operations related to project management and configuration.
+This command consolidates all project-related functionalities, including tasks such as project creation, 
+initialization, configuration, customization, and deployment. It provides a comprehensive set of tools to streamline the development and maintenance of web applications built on the framework.
+With the "project" command, you can easily create new projects, initialize project structures, 
+configure project settings, customize project components, and deploy projects to different environments. 
+It serves as a versatile toolset for developers to efficiently manage and maintain their web framework projects.
+By offering a centralized entry point for project-related commands, the "project" command simplifies 
+the workflow and enhances productivity for developers working on web applications using the framework.
+`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("PROJECT COMMAND CALLED")
+		ut.RunCommandWithOutput("ratel", "project --help")
 	},
 }
 

@@ -6,9 +6,7 @@ Package middlewareCmd provide a way to interact with the middleware system of th
 package middlewareCmd
 
 import (
-	"fmt"
-
-	// "github.com/adam-fraga/ratel/handlers"
+	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +14,16 @@ import (
 var MiddlewareCmd = &cobra.Command{
 	Use:   "middleware",
 	Short: "Middleware commands for the project",
-	Long:  `Middleware commands for the project.`,
+	Long: `The "middleware" command provides a set of subcommands designed for managing middleware within the project. It serves as the central hub for executing operations related to middleware management and configuration.
+  This command offers a range of functionalities for working with middleware, including tasks such as creating new middleware,
+  and isting existing middleware.
+  With the "middleware" command, you can easily manage middleware functionalities to enhance the project's request 
+  handling capabilities, such as authentication, logging, error handling, and request/response modification.
+  By encapsulating all middleware-related functionalities under a single entry point, the "middleware" command 
+  simplifies the workflow and enhances productivity for developers working on web applications using the framework.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("MIDDLEWARE COMMAND CALLED")
+		ut.RunCommandWithOutput("ratel", "middleware --help")
 	},
 }
 

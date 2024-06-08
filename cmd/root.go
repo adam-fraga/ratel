@@ -23,12 +23,35 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ratel",
-	Short: "Ratel is a cli tool for managing Anago web framework.",
-	Long:  `Ratel is a cli tool for managing Anago web framework.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Use: "ratel",
+	Short: `Ratel is a versatile web framework designed to streamline web development with Go, offering a range 
+  of powerful tools and functionalities to simplify project setup, management, and deployment.`,
+	Long: `Ratel is a versatile web framework designed to streamline web development with Go. Developed by [Your Name], Ratel is an integral part of their day-to-day workflow, providing a robust set of tools and functionalities to simplify project setup, management, and deployment.
+
+Continuously updated with new features and improvements, Ratel empowers developers to build robust and scalable 
+web applications with ease. Its intuitive command-line interface and comprehensive toolset make it a 
+go-to choice for web development projects.
+
+Key Features:
+- Project Management: Ratel offers a range of commands for managing various aspects of your web project, including project creation, initialization, configuration, and deployment.
+- Middleware Support: The framework includes middleware commands for managing authentication, logging, error handling, and request/response modification.
+- Database Integration: Ratel provides database commands for setup, migration, seeding, querying, and administration.
+- View Handling: The framework offers commands for handling views within the project, facilitating creation, listing, updating, and deletion of views and components.
+
+List of Commands:
+- project: Project-related commands for setup, management, and deployment.
+- middleware: Middleware commands for managing middleware functionalities.
+- db: Database commands for setup, migration, seeding, querying, and administration.
+- view: View commands for handling views within the project.
+- create-dev-container: Command for creating a database container for the project using Docker.
+- list: Command for listing views within the project.
+- more soon...
+
+Ratel is more than just a framework—it's a powerful ally in your web development journey, 
+
+Developed by Adam Fraga, Ratel is an essential tool in modern web development workflows, 
+constantly evolving to meet the needs of developers.
+`,
 }
 
 func addCommands() {

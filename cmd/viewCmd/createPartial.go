@@ -38,8 +38,7 @@ You can create up to 20 partials at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			ut.PrintInfoMsg(fmt.Sprintf("Note that you cannot create more than 10 %s at once.", partial.Type))
-			if err := ut.RunCommandWithOutput("./ratel", "view create-partials --help"); err != nil {
+			if err := ut.RunCommandWithOutput("ratel", "view create-partial --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}
