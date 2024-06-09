@@ -90,10 +90,6 @@
     ]
   },
   {
-    "folderName": "controllers",
-    "files": ["controllers/indexController.go"]
-  },
-  {
     "folderName": "handlers",
     "files": ["handlers/indexHandler.go"]
   },
