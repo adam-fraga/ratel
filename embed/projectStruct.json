@@ -91,7 +91,7 @@
   },
   {
     "folderName": "handlers",
-    "files": ["handlers/indexHandler.go"]
+    "files": ["handlers/index.go"]
   },
   {
     "folderName": "config",

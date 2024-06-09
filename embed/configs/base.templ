@@ -1,0 +1,28 @@
+package layouts
+
+import (
+met "github.com/your-name/app-name/views/metadatas"
+par "github.com/your-name/app-name/views/partials"
+t "github.com/a-h/templ"
+)
+
+var (
+Head = met.Head
+Header = par.Header
+Footer = par.Footer
+)
+
+templ Base(Page t.Component) {
+<!DOCTYPE html>
+<html>
+@Head()
+@Header()
+
+<body>
+  @Page
+</body>
+
+@Footer()
+
+</html>
+}

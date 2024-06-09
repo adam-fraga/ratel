@@ -1,7 +1,7 @@
 package routers
 
 import (
-	h "github.com/adam-fraga/myapp/handlers"
+	h "github.com/your-name/app-name/handlers"
 	"net/http"
 	"path/filepath"
 )

@@ -1,8 +1,13 @@
 package partials
 
-templ footer(data map[string]interface{}) {
+templ Header() {
 <header>
-  <h1>Header</h1>
-  <p>header content</p>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
 </header>
 }
