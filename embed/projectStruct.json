@@ -23,7 +23,7 @@
         "folderName": "static/fonts"
       },
       {
-        "folderName": "static/js"
+        "folderName": "static/js",
         "files": ["static/js/htmx.js"]
       },
       {
