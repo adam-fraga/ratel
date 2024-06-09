@@ -53,6 +53,16 @@
     ]
   },
   {
+    "folderName": "routers",
+    "subFolders": [
+      {
+        "folderName": "routers/routes",
+        "files": ["routers/routes/route.go"]
+      }
+    ]
+  },
+
+  {
     "folderName": "views",
     "subFolders": [
       {
@@ -76,15 +86,6 @@
       {
         "folderName": "views/pages",
         "files": ["views/pages/index.templ"]
-      }
-    ]
-  },
-  {
-    "folderName": "routers",
-    "subFolders": [
-      {
-        "routes": "routers/routes",
-        "files": ["routers/routes/route.go"]
       }
     ]
   },

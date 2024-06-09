@@ -1,4 +1,4 @@
-package router
+package routers
 
 import (
 	h "github.com/adam-fraga/myapp/handlers"
