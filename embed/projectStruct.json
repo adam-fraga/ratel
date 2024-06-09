@@ -10,6 +10,7 @@
       ".air.toml",
       "Makefile",
       ".gitignore",
+      "tailwind.config.js",
       ".env"
     ]
   },
