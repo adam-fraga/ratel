@@ -54,10 +54,10 @@
   },
   {
     "folderName": "routers",
-    "files": ["routers/router.go"]
+    "files": ["routers/router.go"],
     "subFolders": [
       {
-        "folderName": "routers/routes",
+        "folderName": "routers/routes"
       }
     ]
   },
@@ -67,7 +67,7 @@
     "subFolders": [
       {
         "folderName": "views/layouts",
-        "files": ["views/layouts/main.templ"]
+        "files": ["views/layouts/base.templ"]
       },
       {
         "folderName": "views/metadatas",
