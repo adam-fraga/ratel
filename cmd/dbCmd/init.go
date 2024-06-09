@@ -4,8 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package dbCmd
 
 import (
-	"github.com/adam-fraga/ratel/handlers/db"
-	ut "github.com/adam-fraga/ratel/utils"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +15,7 @@ var initCmd = &cobra.Command{
 	Short: "Run the database schema initialization command",
 	Long:  `Run the database schema initialization command to create the tables in the database.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := db.InitDb(); err != nil {
-			ut.PrintErrorMsg(err.Error())
-		}
+		fmt.Println("init called")
 	},
 }
 

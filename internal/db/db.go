@@ -3,51 +3,70 @@ Copyright © 2024 Adm FRG adam.fraga@live.fr
 Package db hold the struct and logic to interact with the database system of the ratel web framework.
 */
 
+// This package contains the struct and logic to interact with the database system of the ratel web framework.
 package db
 
 import (
 	"database/sql"
-	"os"
 
-	"github.com/adam-fraga/ratel/internal/errors"
-	"github.com/adam-fraga/ratel/utils"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Db represent the db session and hold a database connection
 type Db struct {
-	Conn *sql.DB
+	Conn   *sql.DB
+	tables []string
 }
 
-// Connect Create a new db session and connect to the database
-func (pg *Db) Connect() error {
-	err := godotenv.Load()
-	if err != nil {
-		return &errors.DevError{
-			Type:       "ENV",
-			Msg:        "Error loading .env file: " + err.Error(),
-			Origin:     "db.Connect()",
-			FileOrigin: "internal/db/db.go"}
-	}
-	var user, dbname, password string = os.Getenv("RATEL_DB_USER"), os.Getenv("RATEL_DB_NAME"), os.Getenv("RATEL_DB_PASSWORD")
-	connStr := "user=" + user + " dbname=" + dbname + " password=" + password + " sslmode=disable"
+// NewDb create a new db session
+func NewDb() (*Db, error) {
+	conn, err := sql.Open("sqlite3", "ratel.db")
 
-	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		return &errors.DbError{
-			Query:  connStr,
-			Msg:    err.Error(),
-			Action: "sql.Open()"}
+		return nil, err
 	}
-	pg.Conn = db
+	return &Db{
+		Conn: conn,
+	}, nil
+}
 
-	utils.PrintInfoMsg("Connected to the database")
+// Close close the db session
+func (db *Db) Close() error {
+	return db.Conn.Close()
+}
+
+// InitDatabase create the tables in the database
+func (db *Db) InitDatabase(table Table) error {
+
+	for _, table := range db.tables {
+		if err := db.createTable(table); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-// Close the database connection
-func (pg *Db) Close() {
-	pg.Conn.Close()
-	utils.PrintInfoMsg("Database connection closed")
+// Init create the tables in the database
+func (db *Db) createTable(table Table) error {
+	var fields string
+	for _, field := range table.Fields {
+		fields += field.Name + " " + field.Type
+		if field.NotNull {
+			fields += " NOT NULL"
+		}
+		if field.Unique {
+			fields += " UNIQUE"
+		}
+		if field.Default != "" {
+			fields += " DEFAULT " + field.Default
+		}
+		fields += ", "
+	}
+	fields = fields[:len(fields)-2]
+
+	_, err := db.Conn.Exec("CREATE TABLE IF NOT EXISTS " + table.Name + " (" + fields + ")")
+	if err != nil {
+		return err
+	}
+	return nil
 }
