@@ -54,10 +54,10 @@
   },
   {
     "folderName": "routers",
+    "files": ["routers/router.go"]
     "subFolders": [
       {
         "folderName": "routers/routes",
-        "files": ["routers/routes/route.go"]
       }
     ]
   },
