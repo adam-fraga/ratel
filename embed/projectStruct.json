@@ -80,14 +80,13 @@
     ]
   },
   {
-    "folderName": "router",
+    "folderName": "routers",
     "subFolders": [
       {
-        "routes": "router/routes",
-        "files": ["router/routes/route.go"]
+        "routes": "routers/routes",
+        "files": ["routers/routes/route.go"]
       }
-    ],
-    "files": ["router/router.go"]
+    ]
   },
   {
     "folderName": "controllers",
