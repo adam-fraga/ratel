@@ -116,6 +116,17 @@
   {
     "folderName": "db",
     "files": ["db/db.go"]
+    "subFolders": [
+      {
+        "folderName": "db/migrations"
+      },
+      {
+        "folderName": "db/schemas"
+      },
+      {
+        "folderName": "db/seeds"
+      }
+    ]
   },
   {
     "folderName": "middlewares",
