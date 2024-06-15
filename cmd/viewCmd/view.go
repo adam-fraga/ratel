@@ -15,7 +15,7 @@ var ViewCmd = &cobra.Command{
 	Long: `The "view" command provides a set of subcommands to manage views within the project.
 It encompasses all the commands related to handling and managing views. This command serves as a central hub 
 for performing operations on views, including creating, listing...you can interact with various view components 
-such as pages, components, layouts, partials, templates, and metadata.
+such as pages, components, layouts, partials, templates, and metadata and forms.
 By encapsulating all view-related commands under a single entry point, the "view" command simplifies view 
 management and streamlines the workflow for developers working on frontend components within the project.`,
 
@@ -31,6 +31,7 @@ func addViewSubCommands() {
 	ViewCmd.AddCommand(createPageCmd)
 	ViewCmd.AddCommand(createPartialCmd)
 	ViewCmd.AddCommand(createTemplateCmd)
+	ViewCmd.AddCommand(createFormCmd)
 	ViewCmd.AddCommand(listViewCmd)
 }
 

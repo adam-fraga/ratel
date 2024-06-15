@@ -18,6 +18,7 @@ type ViewFiles struct {
 	Pages      []View
 	Components []View
 	Metadatas  []View
+	Forms      []View
 }
 
 // ListViews function to list the views
@@ -44,6 +45,13 @@ func ListViews(viewType string) error {
 			return &customError
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
+	case "forms":
+		if err := viewFiles.setViewFiles(&viewFiles, "forms"); err != nil {
+			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
+			return &customError
+		}
+		viewFiles.printFilesToStdOut(&viewFiles)
+
 	case "partials":
 		if err := viewFiles.setViewFiles(&viewFiles, "partials"); err != nil {
 			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
@@ -93,13 +101,14 @@ func (*ViewFiles) printFilesToStdOut(viewFiles *ViewFiles) {
 	viewFiles.Beautify(viewFiles.Pages, viewFiles)
 	viewFiles.Beautify(viewFiles.Components, viewFiles)
 	viewFiles.Beautify(viewFiles.Metadatas, viewFiles)
+	viewFiles.Beautify(viewFiles.Forms, viewFiles)
 
 	ut.PrintInfoMsg("\n   TOTAL")
 	ut.PrintSuccessMsg(fmt.Sprintf("     %d\n", viewFiles.totalFiles))
 }
 
 func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
-	fileTypes := []string{"templates", "partials", "layouts", "pages", "components", "metadatas"}
+	fileTypes := []string{"templates", "partials", "layouts", "pages", "components", "metadatas", "forms"}
 
 	if fileType == "all" {
 		if err := viewFiles.getAllView(viewFiles, fileTypes); err != nil {
@@ -140,6 +149,8 @@ func (*ViewFiles) getAllView(viewFiles *ViewFiles, fileTypes []string) error {
 				viewFiles.Components = append(viewFiles.Components, View{Name: file[0].Name(), Path: path, Type: fileType})
 			case "metadatas":
 				viewFiles.Metadatas = append(viewFiles.Metadatas, View{Name: file[0].Name(), Path: path, Type: fileType})
+			case "forms":
+				viewFiles.Forms = append(viewFiles.Forms, View{Name: file[0].Name(), Path: path, Type: fileType})
 			}
 		}
 	}
@@ -176,6 +187,8 @@ func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
 			viewFiles.Components = append(viewFiles.Components, View{Name: fileElement, Path: path, Type: fileType})
 		case "metadatas":
 			viewFiles.Metadatas = append(viewFiles.Metadatas, View{Name: fileElement, Path: path, Type: fileType})
+		case "forms":
+			viewFiles.Forms = append(viewFiles.Forms, View{Name: fileElement, Path: path, Type: fileType})
 		}
 	}
 

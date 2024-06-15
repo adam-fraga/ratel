@@ -75,6 +75,14 @@
         "files": ["views/metadatas/metadatas.templ"]
       },
       {
+        "folderName": "views/forms",
+        "files": [
+          "views/forms/login.templ",
+          "views/forms/register.templ",
+          "views/forms/profile.templ"
+        ]
+      },
+      {
         "folderName": "views/templates"
       },
       {

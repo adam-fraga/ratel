@@ -17,7 +17,8 @@ var listViewCmd = &cobra.Command{
 - layouts
 - partials
 - templates
-- metadata
+- metadatas
+- forms
 
 If you enter "view list", it will display all views located in the default directories defined for each view type.
 These directories are predefined within the project structure and include pages, components, layouts, partials,

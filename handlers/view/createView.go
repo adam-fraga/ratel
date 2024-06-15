@@ -63,7 +63,7 @@ func (*View) Create(v *View, files []string) error {
 
 }
 
-// CreateFile Create a file view of type (Component, Page, Layout, Partial, Template or Metadata) in the appropriate folder
+// CreateFile Create a file view of type (Component, Page, Layout, forms, Partial, Template or Metadata) in the appropriate folder
 func (*View) CreateFile(v *View) error {
 
 	v.Path = "views/" + v.Type + "/"
