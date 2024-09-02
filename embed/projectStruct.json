@@ -115,7 +115,7 @@
   },
   {
     "folderName": "db",
-    "files": ["db/db.go"]
+    "files": ["db/db.go"],
     "subFolders": [
       {
         "folderName": "db/migrations"
