@@ -42,7 +42,7 @@ type File struct {
 }
 
 // Init the project creation process
-func InitProject(appName string) {
+func CreateProject(appName string) {
 	CreateProjectStructure(appName)
 	err := PopulateProjectFiles()
 	if err != nil {

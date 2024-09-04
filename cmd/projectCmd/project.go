@@ -34,6 +34,7 @@ the workflow and enhances productivity for developers working on web application
 
 func AddProjectSubCommands() {
 	ProjectCmd.AddCommand(createProjectCmd)
+  ProjectCmd.AddCommand(initProjectCmd)
 	ProjectCmd.AddCommand(listProjectDependenciesCmd)
 }
 

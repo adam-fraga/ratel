@@ -56,7 +56,7 @@ providing a structured architecture to kickstart your development process.
 	Annotations: map[string]string{"category": "project"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 1 {
-			project.InitProject(args[0])
+			project.CreateProject(args[0])
 		} else {
 			if err := ut.RunCommandWithOutput("ratel", "project create --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
