@@ -17,7 +17,9 @@ var initProjectCmd = &cobra.Command{
 	Short: "Initialize a new Go project with optional frameworks using Ratel",
 	Long: `
 The "init" command helps you initialize a new Go project with the Ratel framework. 
-You need to provide the name of your GitHub repository as an argument.
+  You need to provide the name of your GitHub repository as an argument with this format:
+  
+  "github/your-name/repository"
 
 You can optionally specify a framework for your project:
   - Fiber: Use the --fiber flag to initialize with the Fiber framework.
