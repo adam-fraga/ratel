@@ -25,6 +25,8 @@ import (
 type Project struct {
 	ProjectName string
 	Folders     []Folder
+  Framework string
+  Reponame string
 }
 
 // Folder represent a folder in the project

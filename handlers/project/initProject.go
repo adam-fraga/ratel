@@ -8,6 +8,7 @@ package project
 import (
 	"fmt"
 
+  s "strings"
 	"github.com/adam-fraga/ratel/utils"
 )
 
@@ -16,28 +17,40 @@ import (
 
 // Init the project creation process
 func InitProject(reponame string, framework string) {
+  p := Project{}
+
+  if reponame == "" || !s.HasPrefix("github/", reponame){
+    utils.PrintErrorMsg("Repo name is not well formatted: \"github/your-name/repo\"")
+    return
+  }
+
+  p.Reponame = reponame
+
   if framework == "" {
     utils.RunCommandWithOutput("go", fmt.Sprintf("mod init %s", reponame))
     utils.PrintSuccessMsg(fmt.Sprintf("Successfully initialized repo: %s !", reponame))
     return
-  }
-
-  if framework == "echo" || framework == "fiber"{
-    utils.RunCommandWithOutput("go", fmt.Sprintf("mod init %s", reponame))
-    utils.PrintSuccessMsg(fmt.Sprintf("Successfully initialized repo: %s with %s framework !", reponame, framework))
-    getFrameworkFromGoPackage(framework)
+  } else if framework == "Echo" || framework == "Fiber"{
+    p.Framework = framework
+    utils.RunCommandWithOutput("go", fmt.Sprintf("mod init %s", p.Reponame))
+    utils.PrintSuccessMsg(fmt.Sprintf("Successfully initialized repo: %s with %s framework !", p.Reponame, p.Framework))
+    getFrameworkFromGoPackage(&p)
   }
 }
 
-func getFrameworkFromGoPackage(framework string){
-  if framework == "echo" {
+func getFrameworkFromGoPackage(p *Project){
+  if p.Framework == "Echo" {
     utils.PrintInfoMsg("Get echo framework from go package...")
     utils.RunCommandWithOutput("go", "get github.com/labstack/echo/v4")
     return
-  }
-  if framework == "fiber" {
+  } else if p.Framework == "Fiber" {
     utils.PrintInfoMsg("Get echo framework from go package...")
     utils.RunCommandWithOutput("go", "get github.com/gofiber/fiber/v2")
+    return
   }
+}
+
+func rewriteGoMainFileAccordingToFramework(p *Project)  {
 
 }
+  
