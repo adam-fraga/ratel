@@ -27,6 +27,7 @@ type Project struct {
 	Folders     []Folder
   Framework string
   Reponame string
+  Files []File
 }
 
 // Folder represent a folder in the project
@@ -41,6 +42,7 @@ type File struct {
 	FileName    string `json:"fileName"`
 	FileContent string `json:"fileContent"`
 	Extension   string `json:"extension"`
+  FileLocation string `json:"fileLocation"`
 }
 
 // Init the project creation process
