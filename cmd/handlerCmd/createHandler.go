@@ -35,7 +35,7 @@ var createHandlerCmd = &cobra.Command{
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "handler create --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "handler create --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

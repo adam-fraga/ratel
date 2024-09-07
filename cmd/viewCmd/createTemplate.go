@@ -38,7 +38,7 @@ You can create up to 10 templates at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "view create-template --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "view create-template --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

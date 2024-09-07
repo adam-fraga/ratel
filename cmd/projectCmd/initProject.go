@@ -31,7 +31,7 @@ If no framework flag is provided, the project will be initialized without any fr
 	Annotations: map[string]string{"category": "project"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			if err := ut.RunCommandWithOutput("ratel", "project init --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "project init --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 			return

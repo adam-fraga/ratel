@@ -18,7 +18,7 @@ var HandlerCmd = &cobra.Command{
   of the web framework. Yo ucan think of handlers as the controllers of the
   web framework.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "handler --help")
+		ut.RunCommand("ratel", true, "handler --help")
 	},
 }
 

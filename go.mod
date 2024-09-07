@@ -4,9 +4,7 @@ go 1.22.2
 
 require (
 	github.com/fatih/color v1.17.0
-	github.com/joho/godotenv v1.5.1
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
-	github.com/lib/pq v1.10.9
 	github.com/schollz/progressbar/v3 v3.14.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2

@@ -21,7 +21,7 @@ var listMiddlewareCmd = &cobra.Command{
 				ut.PrintErrorMsg("Error listing the middlewares: " + err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "middleware list --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "middleware list --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

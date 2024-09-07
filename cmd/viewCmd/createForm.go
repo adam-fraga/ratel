@@ -38,7 +38,7 @@ You can create up to 5 form at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "view create-form --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "view create-form --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

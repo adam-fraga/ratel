@@ -38,7 +38,7 @@ You can create up to 10 layouts at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "view create-layout --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "view create-layout --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

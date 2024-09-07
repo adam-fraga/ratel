@@ -20,7 +20,7 @@ By encapsulating all view-related commands under a single entry point, the "view
 management and streamlines the workflow for developers working on frontend components within the project.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "view --help")
+		ut.RunCommand("ratel", true, "view --help")
 	},
 }
 

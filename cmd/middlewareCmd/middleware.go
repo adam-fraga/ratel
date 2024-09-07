@@ -23,7 +23,7 @@ var MiddlewareCmd = &cobra.Command{
   simplifies the workflow and enhances productivity for developers working on web applications using the framework.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "middleware --help")
+		ut.RunCommand("ratel", true, "middleware --help")
 	},
 }
 

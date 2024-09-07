@@ -58,7 +58,7 @@ providing a structured architecture to kickstart your development process.
 		if len(args) == 1 {
 			project.CreateProject(args[0])
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "project create --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "project create --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

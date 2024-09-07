@@ -28,7 +28,7 @@ the workflow and enhances productivity for developers working on web application
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "project --help")
+		ut.RunCommand("ratel", true, "project --help")
 	},
 }
 

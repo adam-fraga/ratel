@@ -38,7 +38,7 @@ You can create up to 20 partials at a time.`,
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "view create-partial --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "view create-partial --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

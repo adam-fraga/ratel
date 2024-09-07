@@ -25,7 +25,7 @@ var DbCmd = &cobra.Command{
   that require database integration.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "db --help")
+		ut.RunCommand("ratel",true, "db --help")
 	},
 }
 

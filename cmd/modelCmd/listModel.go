@@ -16,7 +16,7 @@ var listModelCmd = &cobra.Command{
 				ut.PrintErrorMsg("Error listing the models: " + err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "model list --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "model list --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

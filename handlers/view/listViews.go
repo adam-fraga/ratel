@@ -83,7 +83,7 @@ func ListViews(viewType string) error {
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	default:
-		if err := ut.RunCommandWithOutput("./ratel", "view list --help"); err != nil {
+		if err := ut.RunCommand("./ratel", true, "view list --help"); err != nil {
 			customError.Msg = fmt.Sprintf("Error running the command to show the help: " + err.Error())
 			return &customError
 		}

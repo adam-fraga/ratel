@@ -16,7 +16,7 @@ var ModelCmd = &cobra.Command{
 	Short: "model management commands for the project",
 	Long:  `model management commands for the project.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ut.RunCommandWithOutput("ratel", "model --help")
+		ut.RunCommand("ratel", true, "model --help")
 	},
 }
 

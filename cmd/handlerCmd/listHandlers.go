@@ -20,7 +20,7 @@ var listHandlerCmd = &cobra.Command{
 				ut.PrintErrorMsg("Error listing the handlers: " + err.Error())
 			}
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "handler list --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "handler list --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

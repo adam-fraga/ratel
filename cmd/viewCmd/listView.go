@@ -36,7 +36,7 @@ helping you to understand the organization and structure of your project's front
 		} else if len(args) == 1 {
 			h.ListViews(args[0])
 		} else {
-			ut.RunCommandWithOutput("ratel", "view list --help")
+			ut.RunCommand("ratel", true, "view list --help")
 		}
 	},
 }

@@ -48,7 +48,7 @@ whether for local development or testing.`,
 		if provider != "" {
 			db.InitDbDevelopmentContainer(provider)
 		} else {
-			if err := ut.RunCommandWithOutput("ratel", "db create-dev-database --help"); err != nil {
+			if err := ut.RunCommand("ratel",true, "db create-dev-database --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}
