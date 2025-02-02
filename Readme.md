@@ -120,7 +120,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 ---
 
 ## 📬 Contact
-📧 **Your Name:** fragadams@gmail.com  
+📧 **Your Name:** adam.fraga@admtechlabs.com  
 🔗 **Project Link:** [Ratel on GitHub](https://github.com/adam-fraga/ratel)
 
 [⬆ Back to top](#table-of-contents)
