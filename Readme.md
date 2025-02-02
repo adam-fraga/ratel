@@ -40,7 +40,10 @@ Key Features:
 ## Installation
 
 To install Ratel on your local machine, simply download the latest version of the binary here:
-(My ratel website here later)
+
+```
+Link will be available soon
+```
 
 Alternatively, you can build Ratel from source by following these steps:
 
@@ -48,10 +51,10 @@ Alternatively, you can build Ratel from source by following these steps:
 
 ```bash
 git clone https://github.com/adam-fraga/ratel.git
+cd ratel
+go build -o ./tmp/ratel cmd/main.go
+mv ./tmp/ratel ~/go/bin/ratel
 ```
-
-````markdown
-<!-- USAGE -->
 
 ## Usage
 
@@ -64,7 +67,12 @@ Use the `ratel create` command to create a new project:
 ```bash
 ratel create my-project
 ```
-````
+
+Then initialize yhe project by givint it your repo name
+
+```bash
+ratel init github.com/username/my-project
+```
 
 ### Managing Middleware
 
@@ -72,6 +80,7 @@ Use the `ratel middleware` command to manage middleware functionalities within y
 
 ```bash
 ratel middleware create auth
+ratel middleware list
 ```
 
 ### View Handling
