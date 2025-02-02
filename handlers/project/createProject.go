@@ -16,7 +16,6 @@ import (
 	"time"
 
 	em "github.com/adam-fraga/ratel/embed"
-	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )
@@ -25,9 +24,9 @@ import (
 type Project struct {
 	ProjectName string
 	Folders     []Folder
-  Framework string
-  Reponame string
-  Files []File
+	Framework   string
+	Reponame    string
+	Files       []File
 }
 
 // Folder represent a folder in the project
@@ -39,20 +38,16 @@ type Folder struct {
 
 // File represent a file in the project
 type File struct {
-	FileName    string `json:"fileName"`
-	FileContent string `json:"fileContent"`
-	Extension   string `json:"extension"`
-  FileLocation string `json:"fileLocation"`
+	FileName     string `json:"fileName"`
+	FileContent  string `json:"fileContent"`
+	Extension    string `json:"extension"`
+	FileLocation string `json:"fileLocation"`
 }
 
 // Init the project creation process
 func CreateProject(appName string) {
 	CreateProjectStructure(appName)
-	err := PopulateProjectFiles()
-	if err != nil {
-		fmt.Println("Error populating project files")
-		ut.PrintErrorMsg(err.Error())
-	}
+	PopulateProjectFiles()
 }
 
 // Create the project structure based on the data/projectStruct.json file
@@ -66,7 +61,7 @@ func CreateProjectStructure(appName string) error {
 	}
 
 	for _, folder := range projectStruct {
-		err := CreateFolder(&folder)
+		CreateFolder(&folder)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -77,85 +72,48 @@ func CreateProjectStructure(appName string) error {
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
-func CreateFolder(folder *Folder) error {
+func CreateFolder(folder *Folder) {
 	ut.PrintInfoMsg(fmt.Sprintf("     %s Folder with permissions 755 successfuly created", folder.FolderName))
 
 	if folder.FolderName != "root" {
 		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
 		if err != nil {
-			return &errors.DevError{
-				Type:       "Project Structure Error",
-				Origin:     "createFolder()",
-				FileOrigin: "handlers/project.go",
-				Msg:        err.Error() + fmt.Sprintf("Error creating %s folder", folder.FolderName)}
+			ut.PrintErrorMsg("Error creating folder " + folder.FolderName + ": " + err.Error())
 		}
 	}
 
 	if len(folder.Files) > 0 {
 		for _, file := range folder.Files {
-			err := CreateFile(file)
-			if err != nil {
-				return &errors.DevError{
-					Type:       "Project Structure Error",
-					Origin:     "createFolder()",
-					FileOrigin: "handlers/project.go",
-					Msg:        err.Error() + fmt.Sprintf("Error creating file %s in folder %s", file, folder.FolderName)}
-			}
+			CreateFile(file)
 		}
 	}
 
 	if len(folder.SubFolders) > 0 {
 		for _, subFolder := range folder.SubFolders {
-			err := CreateFolder(&subFolder)
-			if err != nil {
-				return &errors.DevError{
-					Type:       "Project Structure Error",
-					Origin:     "createFolder()",
-					FileOrigin: "handlers/project.go",
-					Msg:        err.Error() + fmt.Sprintf("Error creating subfolder %s in folder %s", subFolder.FolderName, folder.FolderName)}
-			}
+			CreateFolder(&subFolder)
 		}
 	}
-
-	return nil
 }
 
 // Create a file with the given permissions
-func CreateFile(fileDestination string) error {
+func CreateFile(fileDestination string) {
 	file, err := os.Create(fileDestination)
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "createFolder()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %s file\n", fileDestination)}
+		ut.PrintErrorMsg("Error creating file")
 	}
 
-	err2 := os.Chmod(fileDestination, os.FileMode(0777))
-
-	if err2 != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "createFolder()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err2.Error() + fmt.Sprintf("Error changing permissions of %s file\n", fileDestination)}
+	err = os.Chmod(fileDestination, os.FileMode(0777))
+	if err != nil {
+		ut.PrintErrorMsg("Error setting right for file")
 	}
 
 	defer file.Close()
-	return nil
 }
 
 // Populate the project files with the data from the files/configs embeded folder using goroutines
-func PopulateProjectFiles() error {
+func PopulateProjectFiles() {
 
-	files, err := GetFilesFromProject()
-	if err != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "populateProjectFiles()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error getting files from project\n")}
-	}
+	files := GetFilesFromProject()
 
 	var wg sync.WaitGroup
 	wg.Add(len(files["src"]))
@@ -167,54 +125,39 @@ func PopulateProjectFiles() error {
 
 	time.Sleep(1 * time.Second)
 	wg.Wait()
-
-	return nil
 }
 
 /*
 Process the file copying the contents from the source file containing in the embedded folder configs
 to the destination file in the project structure
 */
-func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) error {
+func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) {
 	var embeddedConfigs = em.EmbeddedConfigs
 	defer wg.Done()
 	srcFileData, err := embeddedConfigs.ReadFile(srcFiles[i])
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "processFile()",
-			FileOrigin: "handlers/project.go",
-			Msg:        fmt.Sprintf("Error reading file from embedded source file %s"+err.Error()+"\n", srcFiles[i])}
+		ut.PrintErrorMsg("Error reading file from embedded source file " + srcFiles[i] + err.Error())
 	}
 
 	dstFilePath := dstFiles[i]
 	dstFile, err := os.Create(dstFilePath)
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "processFile()",
-			FileOrigin: "handlers/project.go",
-			Msg:        fmt.Sprintf("Error creating file %s"+err.Error()+"\n", dstFiles[i])}
+		ut.PrintErrorMsg("Error creating file " + dstFiles[i] + err.Error())
 	}
+
 	defer dstFile.Close()
 
 	_, err = io.Copy(dstFile, bytes.NewReader(srcFileData)) // Copy file contents
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "processFile()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error copying file %s\n", dstFiles[i])}
+		ut.PrintErrorMsg("Error copiying file " + dstFiles[i] + err.Error())
 	}
 
 	pb.Finish()
 	fmt.Println()
-
-	return nil
 }
 
 // Get the files from the project structure embedded file json and return a map with the source and destination files
-func GetFilesFromProject() (map[string][]string, error) {
+func GetFilesFromProject() map[string][]string {
 	var fileName string
 	var srcFiles []string
 	var dstFiles []string
@@ -225,11 +168,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 	ut.PrintSuccessMsg("   Populating the project files...\n")
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
-		return nil, &errors.DevError{
-			Type:       "Project Structure Error",
-			Origin:     "getFilesFromProject()",
-			FileOrigin: "handlers/project.go",
-			Msg:        err.Error() + fmt.Sprintf("Error getting the project structure from json file\n")}
+		ut.PrintErrorMsg("Error getting project structure from projectStruct.json: " + err.Error())
 	}
 
 	for _, folder := range projectStruct {
@@ -253,7 +192,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 	files["src"] = srcFiles
 	files["dst"] = dstFiles
 
-	return files, nil
+	return files
 }
 
 // Parse the project structure from the data/projectStruct.json file and return a slice of Folder structs

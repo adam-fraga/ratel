@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	echoFlag   bool
-	fiberFlag  bool
+	echoFlag  bool
+	fiberFlag bool
 )
 
 // initProjectCmd represents the init command
@@ -45,7 +45,7 @@ If no framework flag is provided, the project will be initialized without any fr
 		} else if fiberFlag {
 			framework = "Fiber"
 		} else {
-			framework = "" // No framework specified
+			framework = "" // Default go "net/http" package
 		}
 
 		project.InitProject(repoName, framework)
@@ -56,4 +56,3 @@ func init() {
 	initProjectCmd.Flags().BoolVar(&echoFlag, "echo", false, "Initialize the project with Echo framework")
 	initProjectCmd.Flags().BoolVar(&fiberFlag, "fiber", false, "Initialize the project with Fiber framework")
 }
-

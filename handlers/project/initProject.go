@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Adm FRG adam.fraga@live.fr
+Copyright © 2024 Adm FRG adam.fraga@admtechlabs.com
 Package project contains handlers to execute the logic of the project system of ratel web framework
 */
 
@@ -22,112 +22,109 @@ import (
 // Init the project creation process
 func InitProject(reponame string, framework string) {
 
-  p := Project{}
+	p := Project{}
 
-  files := []File{
-    {FileName : "main",  Extension: ".go", FileLocation : "./cmd/"},
-    {FileName : "index", Extension: ".go", FileLocation : "./handlers/"},
-    {FileName : "db", Extension: ".go", FileLocation : "./db/"},
-    {FileName : "router", Extension: ".go", FileLocation : "./routers/"},
-    {FileName : "user", Extension: ".go", FileLocation : "./models/"},
-    {FileName : "errors", Extension: ".go", FileLocation : "./error/"},
-    {FileName : "auth-middleware", FileContent : "", Extension: ".go", FileLocation : "./middlewares/"},
-    {FileName : "utils", Extension: ".go", FileLocation : "./utils/"},
-    {FileName : "header", Extension: ".templ", FileLocation : "./views/partials/"},
-    {FileName : "footer", Extension: ".templ", FileLocation : "./views/partials/"},
-    {FileName : "base", Extension: ".templ", FileLocation : "./views/layouts/"},
-    {FileName : "index",  Extension: ".templ", FileLocation : "./views/pages/"},
-    {FileName : "index.test", Extension: ".go", FileLocation : "./test/"},
-  }
+	files := []File{
+		{FileName: "main", Extension: ".go", FileLocation: "."},
+		{FileName: "index", Extension: ".go", FileLocation: "./src/handlers/"},
+		{FileName: "db", Extension: ".go", FileLocation: "./src/db/"},
+		{FileName: "user", Extension: ".go", FileLocation: "./src/models/"},
+		{FileName: "errors", Extension: ".go", FileLocation: "./src/errors/"},
+		{FileName: "utils", Extension: ".go", FileLocation: "./src/utils/"},
+		{FileName: "header", Extension: ".templ", FileLocation: "./src/views/partials/"},
+		{FileName: "footer", Extension: ".templ", FileLocation: "./src/views/partials/"},
+		{FileName: "base", Extension: ".templ", FileLocation: "./src/views/layouts/"},
+		{FileName: "index", Extension: ".templ", FileLocation: "./src/views/pages/"},
+		{FileName: "index.test", Extension: ".go", FileLocation: "./src/test/"},
+	}
 
-  p.Files  = files
+	p.Files = files
 
-  if reponame == "" || !s.HasPrefix(reponame, "github.com/"){
-    utils.PrintErrorMsg("Repo name is not well formatted: \"github.com/your-name/repo\"")
-    return
-  }
+	if reponame == "" || !s.HasPrefix(reponame, "github.com/") {
+		utils.PrintErrorMsg("Repo name is not well formatted: \"github.com/your-name/repo\"")
+		return
+	}
 
-  p.Reponame = reponame
+	p.Reponame = reponame
 
-  if framework == "" {
-    utils.RunCommand("go",false, fmt.Sprintf("mod init %s", reponame))
-    utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo %s\n", reponame))
-  } else if framework == "Echo" || framework == "Fiber"{
-    p.Framework = framework
-    utils.RunCommand("go", false, fmt.Sprintf("mod init %s", p.Reponame))
-    utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo: %s with %s framework\n", p.Reponame, p.Framework))
-    getFrameworkFromGoPackage(&p)
-  }
+	if framework == "" {
+		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", reponame))
+		utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo %s\n", reponame))
+	} else if framework == "Echo" || framework == "Fiber" {
+		p.Framework = framework
+		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", p.Reponame))
+		utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo: %s with %s framework\n", p.Reponame, p.Framework))
+		getFrameworkFromGoPackage(&p)
+	}
 
-  utils.PrintCyanInfoMsg("  Preparing project files...\n")
-  err := writeFiles(&p)
-  if err != nil {
-    fmt.Print(err.Error())
-  }
+	utils.PrintCyanInfoMsg("  Preparing project files...\n")
+	err := writeFiles(&p)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
 }
 
-func getFrameworkFromGoPackage(p *Project){
-  if p.Framework == "Echo" {
-    utils.PrintCyanInfoMsg("  Get Echo framework dependencies...\n")
-    utils.RunCommand("go", false, "get github.com/labstack/echo/v4")
-  } else if p.Framework == "Fiber" {
-    utils.PrintCyanInfoMsg("  Get Fiber framework dependencies...\n")
-    utils.RunCommand("go", false, "get github.com/gofiber/fiber/v2")
-  } 
+func getFrameworkFromGoPackage(p *Project) {
+	if p.Framework == "Echo" {
+		utils.PrintCyanInfoMsg("  Get Echo framework dependencies...\n")
+		utils.RunCommand("go", false, "get github.com/labstack/echo/v4")
+	} else if p.Framework == "Fiber" {
+		utils.PrintCyanInfoMsg("  Get Fiber framework dependencies...\n")
+		utils.RunCommand("go", false, "get github.com/gofiber/fiber/v2")
+	}
 }
-
 
 func writeFiles(p *Project) error {
 
-  var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
-  errChan := make(chan error, len(p.Files))
+	errChan := make(chan error, len(p.Files))
 
-  defer close(errChan)
+	defer close(errChan)
 
-  for _, file := range p.Files{
-    wg.Add(1)
-    go writeFile(file, p, &wg, errChan)
-  }
+	for _, file := range p.Files {
+		wg.Add(1)
+		go writeFile(file, p, &wg, errChan)
+	}
 
-  for _, file := range p.Files{
-    if err := <- errChan; err != nil {
-      fmt.Printf("    Error writing file %s%s: %s", file.FileName, file.Extension, err.Error())
-      os.Exit(1)
-    }
-  }
+	for _, file := range p.Files {
+		if err := <-errChan; err != nil {
+			fmt.Printf("    Error writing file %s%s: %s", file.FileName, file.Extension, err.Error())
+			os.Exit(1)
+		}
+	}
 
-  wg.Wait()
-  return nil
+	wg.Wait()
+	return nil
 }
 
 func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
-  defer wg.Done()
+	defer wg.Done()
 
-  fileLocation := fmt.Sprintf("%s%s%s", f.FileLocation, f.FileName, f.Extension)
-  fileName := fmt.Sprintf("%s%s", f.FileName, f.Extension)
+	fileLocation := fmt.Sprintf("%s%s%s", f.FileLocation, f.FileName, f.Extension)
+	fileName := fmt.Sprintf("%s%s", f.FileName, f.Extension)
 
 	file, err := os.OpenFile(fileLocation, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 
 	if err != nil {
-    errChan <- &errors.ClientError{
-      Msg: fmt.Sprintf("    Cannot open file: %s, you need to run this command at the root of your project.", fileName),
-    }
+		errChan <- &errors.ClientError{
+			Msg: fmt.Sprintf("    Cannot open file: %s, you need to run this command at the root of your project.", fileName),
+		}
 	} else {
-    errChan <- nil
-  }
+		errChan <- nil
+	}
 
-  utils.PrintInfoMsg(fmt.Sprintf("   - Writing file %s in location => %s", fileName, fileLocation))
+	utils.PrintInfoMsg(fmt.Sprintf("   - Writing file %s in location => %s", fileName, fileLocation))
 
 	defer file.Close()
 
 	var content string
 
-  switch fileName {
+	switch fileName {
 
-  case "main.go":
-    if p.Framework == "Fiber" {
-    content = fmt.Sprintf(`
+	case "main.go":
+		if p.Framework == "Fiber" {
+			content = fmt.Sprintf(`
     package main
 
     import (
@@ -147,8 +144,8 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
       app.Listen(":8080")
     }
     `, p.Reponame, p.Reponame)
-      } else if p.Framework == "Echo" {
-        content = fmt.Sprintf(`
+		} else if p.Framework == "Echo" {
+			content = fmt.Sprintf(`
     package main
 
     import (
@@ -173,8 +170,8 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
       e.Logger.Fatal(e.Start(":8080"))
     }
     `, p.Reponame, p.Reponame)
-    } else { 
-      content = fmt.Sprintf(`
+		} else {
+			content = fmt.Sprintf(`
       package main
 
 import (
@@ -192,11 +189,11 @@ func main() {
 
 	router.ListenAndServe(":3000")
 }`, p.Reponame, p.Reponame)
-        }
-    break
+		}
+		break
 
-  case "index.go":
-    content = fmt.Sprintf(`
+	case "index.go":
+		content = fmt.Sprintf(`
       package handlers
 
 import (
@@ -213,91 +210,22 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	// t.Handler(homePage).ServeHTTP(w, r)
 }`, p.Reponame)
-      break
+		break
 
-  case "index.test.go":
-    content = "package test;"
-    break
+	case "index.test.go":
+		content = "package test;"
+		break
 
-  case "db.go":
-    content = "package db;"
-      break
+	case "db.go":
+		content = "package db;"
+		break
 
-  case "router.go":
-    if p.Framework == ""{
-    content = fmt.Sprintf(`
-package routers
+	case "utils.go":
+		content = "//TODO WRITE UTILS"
+		break
 
-import (
-	"net/http"
-	"path/filepath"
-	h "%s/handlers"
-)
-
-type Router struct {
-	router *http.ServeMux
-}
-
-func NewRouter() *Router {
-	return &Router{router: http.NewServeMux()}
-}
-
-func (r *Router) ServeStatic() {
-	staticDir := http.Dir(filepath.Join(".", "static"))
-	fileServer := http.FileServer(staticDir)
-	r.router.Handle("/static/", http.StripPrefix("/static/", fileServer))
-}
-
-func (r *Router) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
-	r.router.HandleFunc(pattern, handler)
-}
-
-func (r *Router) ListenAndServe(port string) {
-	http.ListenAndServe(port, r.router)
-}`, p.Reponame)
-    }else if p.Framework == "Fiber"{
-      content = `//TODO WRITE ROUTER FIBER`
-    }else if p.Framework == "Echo"{
-      content = `//TODO WRITE ROUTER ECHO`
-    }
-      break
-
-  case "user.go":
-      content = `//TODO WRITE MODEL`
-      break
-
-  case "error.go":
-    content = `
-      package errors
-
-import (
-	"fmt"
-)
-
-type CustomError struct {
-	Message string
-	Status  int
-}
-
-func (e *CustomError) Error() string {
-	return fmt.Sprintf("Error: %s", e.Message)
-}
-
-func New(message string, status int) *CustomError {
-	return &CustomError{Message: message, Status: status}
-}`
-      break
-
-  case "utils.go":
-    content = "//TODO WRITE UTILS"
-      break
-
-  case "auth-middleware.go":
-    content = "//TODO WRITE MIDDLEWARES;"
-      break
-
-  case "header.templ":
-    content = `
+	case "header.templ":
+		content = `
 package partials
 
 templ Header() {
@@ -311,10 +239,10 @@ templ Header() {
   </nav>
 </header>
 }`
-    break
+		break
 
-  case "footer.templ":
-    content = `
+	case "footer.templ":
+		content = `
 package partials
 
 templ footer(data map[string]interface{}) {
@@ -322,10 +250,10 @@ templ footer(data map[string]interface{}) {
   <p>© 2017 Company, Inc.</p>
 </footer>
 }`
-    break
+		break
 
-  case "base.templ":
-    content = fmt.Sprintf(`
+	case "base.templ":
+		content = fmt.Sprintf(`
 package layouts
 
 import (
@@ -354,10 +282,10 @@ templ Base(Page t.Component) {
 
 </html>
 }`, p.Reponame, p.Reponame)
-    break
+		break
 
-  case "index.templ":
-    content = fmt.Sprintf(`
+	case "index.templ":
+		content = fmt.Sprintf(`
 package pages
 
 templ Index() {
@@ -380,16 +308,15 @@ templ Contact(data map[string]interface{}) {
   <p class="text-blue-400">This is a simple example of a Go web app</p>
 </main>
 }`)
-    break
-   }
+		break
+	}
 
-  _, err = file.WriteString(content)
-  if err != nil {
-      errChan <- &errors.ClientError{
-        Msg: fmt.Sprintf("Cannot open file: %s, you need to run this command at the root of your project.", fileName),
-      }
-    } else {
-    errChan <- nil
-  }
+	_, err = file.WriteString(content)
+	if err != nil {
+		errChan <- &errors.ClientError{
+			Msg: fmt.Sprintf("Cannot open file: %s, you need to run this command at the root of your project.", fileName),
+		}
+	} else {
+		errChan <- nil
+	}
 }
-

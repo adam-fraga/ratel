@@ -5,139 +5,111 @@
       "README.md",
       "LICENSE",
       "package.json",
-      "tsconfig.json",
-      "webpack.config.js",
       ".air.toml",
-      "Makefile",
       ".gitignore",
-      "tailwind.config.js",
-      ".env"
+      ".env",
+      "main.go"
     ]
-  },
-  {
-    "folderName": "static",
-    "subFolders": [
-      {
-        "folderName": "static/images"
-      },
-      {
-        "folderName": "static/fonts"
-      },
-      {
-        "folderName": "static/js",
-        "files": ["static/js/htmx.js"]
-      },
-      {
-        "folderName": "static/css"
-      }
-    ]
-  },
-  {
-    "folderName": "utils",
-    "files": ["utils/utils.go"]
-  },
-  {
-    "folderName": "cmd",
-    "files": ["cmd/main.go"]
   },
   {
     "folderName": "src",
     "subFolders": [
       {
-        "folderName": "src/css",
-        "files": ["src/css/input.css"]
+        "folderName": "src/scripts"
       },
       {
-        "folderName": "src/script",
-        "files": ["src/script/index.ts"]
-      }
-    ]
-  },
-  {
-    "folderName": "routers",
-    "files": ["routers/router.go"],
-    "subFolders": [
-      {
-        "folderName": "routers/routes"
-      }
-    ]
-  },
-
-  {
-    "folderName": "views",
-    "subFolders": [
-      {
-        "folderName": "views/layouts",
-        "files": ["views/layouts/base.templ"]
-      },
-      {
-        "folderName": "views/metadatas",
-        "files": ["views/metadatas/metadatas.templ"]
-      },
-      {
-        "folderName": "views/forms",
-        "files": [
-          "views/forms/login.templ",
-          "views/forms/register.templ",
-          "views/forms/profile.templ"
+        "folderName": "src/static",
+        "subFolders": [
+          {
+            "folderName": "src/static/images"
+          },
+          {
+            "folderName": "src/static/fonts"
+          },
+          {
+            "folderName": "src/static/js",
+            "files": ["src/static/js/htmx.js"]
+          },
+          {
+            "folderName": "src/static/css"
+          }
         ]
       },
       {
-        "folderName": "views/templates"
+        "folderName": "src/utils",
+        "files": ["src/utils/utils.go"]
       },
       {
-        "folderName": "views/partials",
-        "files": ["views/partials/header.templ", "views/partials/footer.templ"]
+        "folderName": "src/views",
+        "subFolders": [
+          {
+            "folderName": "src/views/layouts",
+            "files": ["src/views/layouts/base.templ"]
+          },
+          {
+            "folderName": "src/views/metadatas",
+            "files": ["src/views/metadatas/metadatas.templ"]
+          },
+          {
+            "folderName": "src/views/forms"
+          },
+          {
+            "folderName": "src/views/templates"
+          },
+          {
+            "folderName": "src/views/partials",
+            "files": [
+              "src/views/partials/header.templ",
+              "src/views/partials/footer.templ"
+            ]
+          },
+          {
+            "folderName": "src/views/components"
+          },
+          {
+            "folderName": "src/views/pages",
+            "files": ["src/views/pages/index.templ"]
+          }
+        ]
       },
       {
-        "folderName": "views/components"
+        "folderName": "src/handlers",
+        "files": ["src/handlers/index.go"]
       },
       {
-        "folderName": "views/pages",
-        "files": ["views/pages/index.templ"]
+        "folderName": "src/config",
+        "files": ["src/config/config.yml"]
+      },
+      {
+        "folderName": "src/docs"
+      },
+      {
+        "folderName": "src/errors"
+      },
+      {
+        "folderName": "src/db",
+        "files": ["src/db/db.go"],
+        "subFolders": [
+          {
+            "folderName": "src/db/migrations"
+          },
+          {
+            "folderName": "src/db/schemas"
+          },
+          {
+            "folderName": "src/db/seeds"
+          }
+        ]
+      },
+      {
+        "folderName": "src/middlewares"
+      },
+      {
+        "folderName": "src/models"
+      },
+      {
+        "folderName": "src/test"
       }
     ]
-  },
-  {
-    "folderName": "handlers",
-    "files": ["handlers/index.go"]
-  },
-  {
-    "folderName": "config",
-    "files": ["config/config.yml"]
-  },
-  {
-    "folderName": "docs"
-  },
-  {
-    "folderName": "error",
-    "files": ["error/error.go"]
-  },
-  {
-    "folderName": "db",
-    "files": ["db/db.go"],
-    "subFolders": [
-      {
-        "folderName": "db/migrations"
-      },
-      {
-        "folderName": "db/schemas"
-      },
-      {
-        "folderName": "db/seeds"
-      }
-    ]
-  },
-  {
-    "folderName": "middlewares",
-    "files": ["middlewares/auth-middleware.go"]
-  },
-  {
-    "folderName": "models",
-    "files": ["models/user.go"]
-  },
-  {
-    "folderName": "test",
-    "files": ["test/index.test.go"]
   }
 ]

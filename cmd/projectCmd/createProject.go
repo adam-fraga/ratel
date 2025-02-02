@@ -12,45 +12,60 @@ import (
 // createProjectCmd represents the createProject command
 var createProjectCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a new project for your Go teempl project with Ratel framework",
-	Long: `
-The "create" command allows you to generate a new project for your Go team project using the Ratel framework.
-This command takes the project name as an argument and generates a project structure based on a predefined architecture.
+	Short: "Create a new project for your Go templ project with Ratel framework",
+	Long: `The create command is a powerful tool designed to streamline the process 
+  of setting up a new project for your Go team using the Ratel framework. 
+  By simply providing the project name as an argument, 
+  this command automatically generates a fully structured project based on a well-defined,
+  best-practice architecture.
 
-The generated project structure includes the following directories and files:
+The generated project includes the following directories and files:
 
-- LICENSE: A file containing the license information for the project.
-- Makefile: A Makefile for building and managing the project.
-- README.md: A README file providing information about the project.
-- config/config.yml: Configuration file for project settings.
-- db/db.go: Database package containing database setup and connection logic.
-- docs: Directory for project documentation.
-- error/error.go: Error handling package.
-- handler/indexHandler.go: Handler package for HTTP request handling.
-- middlewares/auth-middleware.go: Middleware package for authentication.
-- model/user.go: Model package containing data models for the project.
-- package.json: npm package configuration file.
-- ratel: Ratel framework directory.
-- src/css: CSS stylesheets directory.
-- src/script: TypeScript scripts directory.
-- static: Static assets directory.
-- test/index.test.go: Test file for project testing.
-- tsconfig.json: TypeScript configuration file.
-- views: Views directory containing templates for the project.
+  -LICENSE: A file containing the license information for the project.
 
-Within the "views" directory, there are subdirectories and template files organized as follows:
-- components: Directory for reusable components.
-- layouts: Directory containing layout templates.
-- metadatas: Directory for metadata templates.
-- pages: Directory for page templates.
-- partials: Directory for partial templates.
-- templates: Directory for general templates.
+  -Makefile: A Makefile for building and managing the project.
 
-Users have the flexibility to override npm dependencies as needed to customize the project 
-according to their requirements.
+  -README.md: A README file providing an overview of the project.
 
-This command simplifies the process of creating a new project with the Ratel framework,
-providing a structured architecture to kickstart your development process.
+  -config/config.yml: A configuration file for project settings.
+
+  -db: A directory containing database setup and connection logic.
+
+  -docs: A directory for project documentation.
+
+  -errors: A directory for custom error handling.
+
+  -handlers: A directory for HTTP request handlers.
+
+  -middlewares: A directory for middleware logic.
+
+  -package.json: An npm package configuration file.
+
+  -src/css: A directory for Tailwind CSS stylesheets.
+
+  -static: A directory for static assets (e.g., CSS and JS output from TypeScript and Tailwind).
+
+  -test: A directory for project tests.
+
+  -tsconfig.json: A TypeScript configuration file.
+
+  -views: A directory containing templates for the project.
+
+Within the Views directory, the following subdirectories and template files are organized:
+
+  -components: A directory for reusable components.
+
+  -layouts: A directory containing layout templates.
+
+  -metadatas: A directory for metadata templates.
+
+  -pages: A directory for page templates.
+
+  -partials: A directory for partial templates.
+
+  -templates: A directory for general templates.
+
+  The create command simplifies the process of setting up a new project with the Ratel framework. By providing a well-structured architecture, it allows developers to quickly kickstart their development process and focus on building their application.
 `,
 
 	Annotations: map[string]string{"category": "project"},
