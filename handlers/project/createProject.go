@@ -102,7 +102,7 @@ func CreateFile(fileDestination string) {
 		ut.PrintErrorMsg("Error creating file")
 	}
 
-	err = os.Chmod(fileDestination, os.FileMode(0777))
+	err = os.Chmod(fileDestination, os.FileMode(0644))
 	if err != nil {
 		ut.PrintErrorMsg("Error setting right for file")
 	}

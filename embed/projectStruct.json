@@ -7,7 +7,7 @@
       "package.json",
       ".air.toml",
       ".gitignore",
-      ".env",
+      ".env.example",
       "main.go"
     ]
   },

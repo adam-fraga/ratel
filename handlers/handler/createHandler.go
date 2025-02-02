@@ -78,7 +78,7 @@ func (*Handler) CreateFile(h Handler) error {
 			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
 	}
 
-	if err := os.Chmod(h.Path+h.Name+".go", os.FileMode(0755)); err != nil {
+	if err := os.Chmod(h.Path+h.Name+".go", os.FileMode(0644)); err != nil {
 		return &errors.DevError{
 			Type:       "Creation handler file error",
 			Origin:     "createhandlerFile()",

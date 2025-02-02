@@ -75,7 +75,7 @@ func (*Model) CreateFile(m Model) error {
 			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
 	}
 
-	if err := os.Chmod(m.Path+m.Name+".go", os.FileMode(0755)); err != nil {
+	if err := os.Chmod(m.Path+m.Name+".go", os.FileMode(0644)); err != nil {
 		return &errors.DevError{
 			Type:       "Creation model file error",
 			Origin:     "createmodelFile()",

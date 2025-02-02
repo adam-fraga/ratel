@@ -79,7 +79,7 @@ func (*View) CreateFile(v *View) error {
 			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
 	}
 
-	if err := os.Chmod(v.Path+v.Name+".templ", os.FileMode(0755)); err != nil {
+	if err := os.Chmod(v.Path+v.Name+".templ", os.FileMode(0644)); err != nil {
 		return &errors.DevError{
 			Type:       "Creation view file error",
 			Origin:     "createViewFile()",
