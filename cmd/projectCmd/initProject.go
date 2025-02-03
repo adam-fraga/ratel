@@ -55,7 +55,7 @@ If no framework flag is provided, the project will be initialized without any fr
 		if err := project.InitProject(repoName, framework); err != nil {
 			var projectError *er.ProjectError
 			if errors.As(err, &projectError) {
-				fmt.Println("Failed to initialize the project ", &projectError.Msg)
+				ut.PrintErrorMsg("Failed to initialize the project " + projectError.Msg)
 			}
 
 		}

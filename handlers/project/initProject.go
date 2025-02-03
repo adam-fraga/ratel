@@ -41,7 +41,6 @@ func InitProject(reponame string, framework string) error {
 	p.Files = files
 
 	if reponame == "" || !s.HasPrefix(reponame, "github.com/") {
-		utils.PrintErrorMsg("Repo name is not well formatted: \"github.com/your-name/repo\"")
 		return &errors.ProjectError{
 			Origin: "File: handlers/project/initProject.go => Func: initProject()",
 			Msg:    "Repo name is not well formatted: \"github.com/your-name/repo\"",

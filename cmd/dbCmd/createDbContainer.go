@@ -4,10 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package dbCmd
 
 import (
-	"fmt"
-
 	"github.com/adam-fraga/ratel/handlers/db"
-	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -37,18 +34,12 @@ whether for local development or testing.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		provider, err := cmd.Flags().GetString("provider")
 		if err != nil {
-			var error = &errors.DevError{
-				Type:       "Error",
-				Origin:     "createDbContainerCmd",
-				FileOrigin: "handlers/dbCmd/createDbContainer.go",
-				Msg:        err.Error() + fmt.Sprintf("Error getting the provider flag")}
-
-			ut.PrintErrorMsg(error.Msg)
+			ut.PrintErrorMsg(err.Error())
 		}
 		if provider != "" {
 			db.InitDbDevelopmentContainer(provider)
 		} else {
-			if err := ut.RunCommand("ratel",true, "db create-dev-database --help"); err != nil {
+			if err := ut.RunCommand("ratel", true, "db create-dev-database --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}

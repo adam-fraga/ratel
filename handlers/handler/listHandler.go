@@ -21,7 +21,7 @@ func List() error {
 
 	if err := m.getHandlerFiles(&m); err != nil {
 		return &er.HandlerError{
-			Origin: "File: handlers/handler/listHandler.go => Func List()",
+			Origin: "File: handlers/handler/listHandler.go => Func: List()",
 			Msg:    fmt.Sprintf("Failed to list handlers in the project"),
 			Err:    err,
 		}
@@ -57,7 +57,7 @@ func (*Handlers) getHandlerFiles(m *Handlers) error {
 	defer files.Close()
 	if err != nil {
 		return &er.HandlerError{
-			Origin: "File: handlers/handler/listHandler.go => Func List()",
+			Origin: "File: handlers/handler/listHandler.go => Func: List()",
 			Msg:    fmt.Sprintf("Failed to get the handlers from project directory"),
 			Err:    err,
 		}
