@@ -11,37 +11,32 @@ import (
 	"github.com/fatih/color"
 )
 
-// DevError is a struct that represents an error that is thrown by the developer for the developer
-type DevError struct {
-	Type       string
-	Msg        string
-	Origin     string
-	FileOrigin string
-}
-
-func (e *DevError) Error() string {
-	printer := color.New(color.FgRed).SprintfFunc()
-	return fmt.Sprintf(printer("APP Error of type: %s\nIn file: %s\nReturned by: %s\nError Message: %s\n",
-		e.Type, e.FileOrigin, e.Origin, e.Msg))
-}
-
-// ClientError is a struct that represents an error that is thrown by the developer for the user
-type ClientError struct {
-	Msg string
-}
-
-func (e *ClientError) Error() string {
-	printer := color.New(color.FgRed).SprintfFunc()
-	return fmt.Sprintf(printer("Error: %s\n", e.Msg))
-}
-
-type DbError struct {
-	Query  string
+type ProjectError struct {
+	Origin string
 	Msg    string
-	Action string
+	Err    error
 }
 
-func (e *DbError) Error() string {
+func (e *ProjectError) Error() string {
 	printer := color.New(color.FgRed).SprintfFunc()
-	return fmt.Sprintf(printer("DB Error on action: %s\nQuery: %s\nError Message: %s\n", e.Action, e.Query, e.Msg))
+	return fmt.Sprintf(printer(e.Msg))
+}
+
+func (e *ProjectError) Unwrap() error {
+	return e.Err
+}
+
+type DBError struct {
+	Origin string
+	Msg    string
+	Err    error
+}
+
+func (e *DBError) Error() string {
+	printer := color.New(color.FgRed).SprintfFunc()
+	return fmt.Sprintf(printer(e.Msg))
+}
+
+func (e *DBError) Unwrap() error {
+	return e.Err
 }

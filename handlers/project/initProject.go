@@ -20,7 +20,7 @@ import (
 // Ask user wich framework he want to use between None, Echo or Fiber
 
 // Init the project creation process
-func InitProject(reponame string, framework string) {
+func InitProject(reponame string, framework string) error {
 
 	p := Project{}
 
@@ -42,7 +42,10 @@ func InitProject(reponame string, framework string) {
 
 	if reponame == "" || !s.HasPrefix(reponame, "github.com/") {
 		utils.PrintErrorMsg("Repo name is not well formatted: \"github.com/your-name/repo\"")
-		return
+		return &errors.DevError{
+			Origin: "handlers/project/initProject.go => func initProject()",
+			Msg:    "Repo name is not well formatted: \"github.com/your-name/repo\"",
+		}
 	}
 
 	p.Reponame = reponame
@@ -57,11 +60,16 @@ func InitProject(reponame string, framework string) {
 		getFrameworkFromGoPackage(&p)
 	}
 
-	utils.PrintCyanInfoMsg("  Preparing project files...\n")
+	utils.PrintCyanInfoMsg(" Preparing project files...\n")
 	err := writeFiles(&p)
 	if err != nil {
-		fmt.Print(err.Error())
+		utils.PrintErrorMsg(err.Error())
+		return &errors.DevError{
+			Origin: "App Error: handlers/initProject.go => func InitProject()",
+			Msg:    err.Error(),
+		}
 	}
+	return nil
 }
 
 func getFrameworkFromGoPackage(p *Project) {
@@ -89,7 +97,7 @@ func writeFiles(p *Project) error {
 
 	for _, file := range p.Files {
 		if err := <-errChan; err != nil {
-			fmt.Printf("    Error writing file %s%s: %s", file.FileName, file.Extension, err.Error())
+			fmt.Printf(" Error writing file %s%s: %s", file.FileName, file.Extension, err.Error())
 			os.Exit(1)
 		}
 	}
@@ -107,14 +115,16 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 	file, err := os.OpenFile(fileLocation, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 
 	if err != nil {
-		errChan <- &errors.ClientError{
-			Msg: fmt.Sprintf("    Cannot open file: %s, you need to run this command at the root of your project.", fileName),
+		utils.PrintErrorMsg(err.Error())
+		errChan <- &errors.DevError{
+			Origin: "handlers/project/initProject.go => func writeFile()",
+			Msg:    err.Error(),
 		}
 	} else {
 		errChan <- nil
 	}
 
-	utils.PrintInfoMsg(fmt.Sprintf("   - Writing file %s in location => %s", fileName, fileLocation))
+	utils.PrintInfoMsg(fmt.Sprintf(" Writing file %s in location => %s", fileName, fileLocation))
 
 	defer file.Close()
 
@@ -313,9 +323,12 @@ templ Contact(data map[string]interface{}) {
 
 	_, err = file.WriteString(content)
 	if err != nil {
-		errChan <- &errors.ClientError{
-			Msg: fmt.Sprintf("Cannot open file: %s, you need to run this command at the root of your project.", fileName),
+		utils.PrintErrorMsg(err.Error())
+		errChan <- &errors.DevError{
+			Origin: "handlers/project/initProject.go => func writeFile()",
+			Msg:    err.Error(),
 		}
+
 	} else {
 		errChan <- nil
 	}

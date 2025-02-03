@@ -16,6 +16,7 @@ import (
 	"time"
 
 	em "github.com/adam-fraga/ratel/embed"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/schollz/progressbar/v3"
 )
@@ -45,75 +46,123 @@ type File struct {
 }
 
 // Init the project creation process
-func CreateProject(appName string) {
-	CreateProjectStructure(appName)
+func CreateProject(appName string) error {
+	err := CreateProjectStructure(appName)
+	if err != nil {
+		return &er.ProjectError{
+			Msg:    "Error trying to create the project",
+			Origin: "handlers/project/ => func CreateProject()",
+			Err:    err,
+		}
+	}
 	PopulateProjectFiles()
+	return nil
 }
 
 // Create the project structure based on the data/projectStruct.json file
 func CreateProjectStructure(appName string) error {
-	ut.PrintInfoMsg(fmt.Sprintf("   Creating the project structure folder for the application %s\n", appName))
 	projectStruct, err := getProjectStructFromJsonFile()
+	ut.PrintInfoMsg(fmt.Sprintf("\n Creating project structure for the application %s...", appName))
 	if err != nil {
-		fmt.Println("Error parsing the json folders")
-		fmt.Println(err.Error())
-		return err
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func CreateProjectStructure()",
+		}
 	}
 
 	for _, folder := range projectStruct {
 		CreateFolder(&folder)
 		if err != nil {
-			fmt.Println(err.Error())
+			ut.PrintErrorMsg(err.Error())
+			return &er.DevError{
+				Msg:    err.Error(),
+				Origin: "handlers/project/createProject.go => func CreateProjectStructure()",
+			}
 		}
 	}
 
-	ut.PrintSuccessMsg("\n   Project structure successfully created\n")
+	ut.PrintSuccessMsg("\n Project structure successfully created\n")
 	return nil
 }
 
 // Create a folder with the given permissions and create the files and subfolders inside it
-func CreateFolder(folder *Folder) {
-	ut.PrintInfoMsg(fmt.Sprintf("     %s Folder with permissions 755 successfuly created", folder.FolderName))
-
+func CreateFolder(folder *Folder) error {
 	if folder.FolderName != "root" {
 		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
 		if err != nil {
-			ut.PrintErrorMsg("Error creating folder " + folder.FolderName + ": " + err.Error())
+			ut.PrintErrorMsg(err.Error())
+			return &er.DevError{
+				Msg:    err.Error(),
+				Origin: "handlers/project/createProject.go => func CreateFolder()",
+			}
 		}
 	}
 
 	if len(folder.Files) > 0 {
 		for _, file := range folder.Files {
-			CreateFile(file)
+			err := CreateFile(file)
+			if err != nil {
+				ut.PrintErrorMsg(err.Error())
+				return &er.DevError{
+					Msg:    err.Error(),
+					Origin: "handlers/project/createProject.go => func CreateFolder()",
+				}
+			}
 		}
 	}
 
 	if len(folder.SubFolders) > 0 {
 		for _, subFolder := range folder.SubFolders {
-			CreateFolder(&subFolder)
+			err := CreateFolder(&subFolder)
+			if err != nil {
+				ut.PrintErrorMsg(err.Error())
+				return &er.DevError{
+					Msg:    err.Error(),
+					Origin: "handlers/project/createProject.go => func CreateFolder()",
+				}
+			}
 		}
 	}
+	return nil
 }
 
 // Create a file with the given permissions
-func CreateFile(fileDestination string) {
+func CreateFile(fileDestination string) error {
 	file, err := os.Create(fileDestination)
 	if err != nil {
-		ut.PrintErrorMsg("Error creating file")
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func CreateFile()",
+		}
 	}
 
 	err = os.Chmod(fileDestination, os.FileMode(0644))
 	if err != nil {
-		ut.PrintErrorMsg("Error setting right for file")
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func CreateFile()",
+		}
 	}
 
 	defer file.Close()
+	return nil
 }
 
 // Populate the project files with the data from the files/configs embeded folder using goroutines
-func PopulateProjectFiles() {
+func PopulateProjectFiles() error {
 
-	files := GetFilesFromProject()
+	files, err := GetFilesFromProject()
+
+	if err != nil {
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func PopulateProjectFiles()",
+		}
+	}
 
 	var wg sync.WaitGroup
 	wg.Add(len(files["src"]))
@@ -125,39 +174,54 @@ func PopulateProjectFiles() {
 
 	time.Sleep(1 * time.Second)
 	wg.Wait()
+	return nil
 }
 
 /*
 Process the file copying the contents from the source file containing in the embedded folder configs
 to the destination file in the project structure
 */
-func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) {
+func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int, pb *progressbar.ProgressBar) error {
 	var embeddedConfigs = em.EmbeddedConfigs
 	defer wg.Done()
 	srcFileData, err := embeddedConfigs.ReadFile(srcFiles[i])
 	if err != nil {
-		ut.PrintErrorMsg("Error reading file from embedded source file " + srcFiles[i] + err.Error())
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func processFile()",
+		}
 	}
 
 	dstFilePath := dstFiles[i]
 	dstFile, err := os.Create(dstFilePath)
 	if err != nil {
-		ut.PrintErrorMsg("Error creating file " + dstFiles[i] + err.Error())
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func processFile()",
+		}
 	}
 
 	defer dstFile.Close()
 
 	_, err = io.Copy(dstFile, bytes.NewReader(srcFileData)) // Copy file contents
 	if err != nil {
-		ut.PrintErrorMsg("Error copiying file " + dstFiles[i] + err.Error())
+		ut.PrintErrorMsg(err.Error())
+		return &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func processFile()",
+		}
+
 	}
 
 	pb.Finish()
 	fmt.Println()
+	return nil
 }
 
 // Get the files from the project structure embedded file json and return a map with the source and destination files
-func GetFilesFromProject() map[string][]string {
+func GetFilesFromProject() (map[string][]string, error) {
 	var fileName string
 	var srcFiles []string
 	var dstFiles []string
@@ -165,10 +229,14 @@ func GetFilesFromProject() map[string][]string {
 
 	dataConfigFilePath := "configs/"
 
-	ut.PrintSuccessMsg("   Populating the project files...\n")
+	ut.PrintInfoMsg(" Populating the project files...\n")
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
-		ut.PrintErrorMsg("Error getting project structure from projectStruct.json: " + err.Error())
+		ut.PrintErrorMsg(err.Error())
+		return nil, &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func GetFilesFromProject()",
+		}
 	}
 
 	for _, folder := range projectStruct {
@@ -192,7 +260,7 @@ func GetFilesFromProject() map[string][]string {
 	files["src"] = srcFiles
 	files["dst"] = dstFiles
 
-	return files
+	return files, nil
 }
 
 // Parse the project structure from the data/projectStruct.json file and return a slice of Folder structs
@@ -201,7 +269,11 @@ func getProjectStructFromJsonFile() ([]Folder, error) {
 
 	err := json.Unmarshal(em.EmbeddedProjectStruct, &folders)
 	if err != nil {
-		return nil, fmt.Errorf("error decoding embedded project struct JSON: %w", err)
+		ut.PrintErrorMsg(err.Error())
+		return nil, &er.DevError{
+			Msg:    err.Error(),
+			Origin: "handlers/project/createProject.go => func getProjectStructFromJsonFile()",
+		}
 	}
 
 	return folders, nil

@@ -20,7 +20,7 @@ type DbUserConfig struct {
 }
 
 // InitDbDevelopmentContainer run the database container according to the choosed provider
-func InitDbDevelopmentContainer(dbProvider string) {
+func InitDbDevelopmentContainer(dbProvider string) error {
 	if dbProvider == "postgres" || dbProvider == "mongo" || dbProvider == "mariadb" {
 		var dbConfig DbUserConfig
 		dbConfig.DbProvider = dbProvider
@@ -28,14 +28,18 @@ func InitDbDevelopmentContainer(dbProvider string) {
 		err := createDbContainer(&dbConfig)
 
 		if err != nil {
+			err := fmt.Errorf("Error trying to create DB container: " + err.Error())
 			ut.PrintErrorMsg(err.Error())
+			return err
 		}
 	} else if dbProvider == "sqlite" {
 		createSqliteLocalDb()
 	} else {
-		var err = &errors.ClientError{Msg: fmt.Sprintf("Database provider \"%s\" not supported", dbProvider)}
+		err := fmt.Errorf("Database provider \"%s\" not supported", dbProvider)
 		ut.PrintErrorMsg(err.Error())
+		return err
 	}
+	return nil
 }
 
 // createDbContainer create the database container
@@ -50,22 +54,28 @@ func createDbContainer(dbConfig *DbUserConfig) error {
 	case "postgres":
 		confirmConfig(dbConf)
 		if err := runPostgresDockerCmd(dbConf); err != nil {
-			return &errors.ClientError{Msg: "Error running the command for Postgres SQL container: " + err.Error()}
+			ut.PrintErrorMsg(err.Error())
+			return fmt.Errorf("Error running the command for Postgres SQL container: " + err.Error())
 		}
 	case "mongo":
 		dbConf.DbPort = "27017"
 		confirmConfig(dbConf)
 		if err := runMongoDockerCmd(dbConf); err != nil {
-			return &errors.ClientError{Msg: "Error running the command for Mongo container: " + err.Error()}
+			ut.PrintErrorMsg(err.Error())
+			return fmt.Errorf("Error running the command for Mongo container: " + err.Error())
 		}
 	case "mariadb":
 		dbConf.DbPort = "3306"
 		confirmConfig(dbConf)
 		if err := runMariadbDockerCmd(dbConf); err != nil {
-			return &errors.ClientError{Msg: "Error running the command for MariaDB container: " + err.Error()}
+			wrappedErr := fmt.Errorf("Error running the command for MariaDB container: %w", err)
+			ut.PrintErrorMsg(wrappedErr.Error())
+			return fmt.Errorf("" + err.Error())
 		}
 	default:
-		return &errors.ClientError{Msg: "Database provider not supported"}
+		err = fmt.Errorf("Database provider is not supported")
+		ut.PrintErrorMsg(err.Error())
+		return err
 	}
 	return nil
 }
@@ -79,7 +89,9 @@ func runPostgresDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for Postgres container: " + err.Error()}
+		wrappedErr := fmt.Errorf("Error running the command for Postgres container: %w", err)
+		ut.PrintErrorMsg(wrappedErr.Error())
+		return wrappedErr
 	}
 	return nil
 }
@@ -91,7 +103,9 @@ func runMongoDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for Mongo containero : " + err.Error()}
+		wrappedErr := fmt.Errorf("error running the command for Mongo container: %w", err)
+		ut.PrintErrorMsg(wrappedErr.Error())
+		return wrappedErr
 	}
 	return nil
 }
@@ -109,7 +123,8 @@ func runMariadbDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		return &errors.ClientError{Msg: "Error running the command for MySQL container: " + err.Error()}
+		err = fmt.Errorf("Error running the command for MySQL container: " + err.Error())
+		return err
 	}
 	return nil
 }

@@ -74,7 +74,6 @@ Within the Views directory, the following subdirectories and template files are 
 			project.CreateProject(args[0])
 		} else {
 			if err := ut.RunCommand("ratel", true, "project create --help"); err != nil {
-				ut.PrintErrorMsg("Error running the command: " + err.Error())
 			}
 		}
 	},

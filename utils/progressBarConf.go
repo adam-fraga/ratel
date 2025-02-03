@@ -12,7 +12,7 @@ func SetProgressBar(fileName string) *progressbar.ProgressBar {
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionShowBytes(true),
 		progressbar.OptionSetWidth(15),
-		progressbar.OptionSetDescription("[reset] Writing "+fileName+" file..."),
+		progressbar.OptionSetDescription(" [reset] Writing "+fileName+" file..."),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:        "[cyan]=[reset]",
 			SaucerHead:    "[cyan]⮞[reset]",

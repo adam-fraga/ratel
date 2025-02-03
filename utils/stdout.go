@@ -2,9 +2,10 @@ package utils
 
 import (
 	"fmt"
-	er "github.com/adam-fraga/ratel/internal/errors"
 	"os/exec"
 	"strings"
+
+	er "github.com/adam-fraga/ratel/internal/errors"
 )
 
 func RunCommand(command string, showOutput bool, args ...string) error {
@@ -21,9 +22,9 @@ func RunCommand(command string, showOutput bool, args ...string) error {
 		return &er.ClientError{Msg: fmt.Sprintf("Error getting the output of the command: %s", err.Error())}
 	}
 	// Print the output
-  if showOutput {
-    PrintInfoMsg(string(output))
-  }
+	if showOutput {
+		PrintInfoMsg(string(output))
+	}
 
 	return nil
 }
