@@ -20,7 +20,11 @@ func List() error {
 	var m Models
 
 	if err := m.getModelFiles(&m); err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error getting the files to show: " + err.Error())}
+		return &er.ModelError{
+			Origin: "File: handlers/model/listModels.go => Func: List()",
+			Msg:    "Error getting project's models",
+			Err:    err,
+		}
 	}
 
 	m.printmodelsToStdout(&m)
@@ -52,7 +56,11 @@ func (*Models) getModelFiles(m *Models) error {
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error opening the directory to get the models")}
+		return &er.ModelError{
+			Origin: "File: handlers/model/listModels.go => Func: List()",
+			Msg:    "Error getting project's models",
+			Err:    err,
+		}
 	}
 	for {
 		file, err := files.Readdir(1)

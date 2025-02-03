@@ -12,14 +12,12 @@ import (
 // InitDb initialize the database for ratel
 func InitDb() error {
 	if err := createDatabase(); err != nil {
-		return &errors.DevError{
-			Type:       "createDatabase()",
-			Origin:     "InitDb()",
-			FileOrigin: "init.go",
-			Msg:        "Error creating the database: " + err.Error(),
+		return &errors.DBError{
+			Origin: "File: handlers/db/init.go => Func: InitDB()",
+			Msg:    "Failed to initialise databaase",
+			Err:    err,
 		}
 	}
-
 	return nil
 }
 

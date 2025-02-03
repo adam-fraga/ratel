@@ -48,16 +48,22 @@ func (*Middleware) Create(mids []string) error {
 	for _, mid := range mids {
 		m.Name = mid
 		if m.Name == "" {
-			return &errors.ClientError{Msg: fmt.Sprintf("%s name cannot be empty", m.Name)}
+			return &errors.MiddlewareError{
+				Origin: "File: handlers/middleware/createMiddleware.go => Func: Create()",
+				Msg:    fmt.Sprintf("Failed to create Middleware %s name cannot be empty", m.Name),
+				Err:    nil,
+			}
 		}
 
 		if err := m.CreateFile(m); err != nil {
-			return &errors.DevError{Msg: fmt.Sprintf("Error creating %s file :" + err.Error())}
+			return &errors.MiddlewareError{
+				Origin: "File: handlers/middleware/createMiddleware.go => Func: Create()",
+				Msg:    "Failed to create Middleware",
+				Err:    err,
+			}
 		}
 	}
-
 	return nil
-
 }
 
 func (*Middleware) CreateFile(m Middleware) error {
@@ -68,21 +74,22 @@ func (*Middleware) CreateFile(m Middleware) error {
 	defer file.Close()
 
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Creation view file error",
-			Origin:     "createViewFile()",
-			FileOrigin: "handlers/middlewares/createMiddleware.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
+		return &errors.MiddlewareError{
+			Origin: "File: handlers/middleware/createMiddleware.go => Func: CreateFile()",
+			Msg:    "Failed to create Middleware",
+			Err:    err,
+		}
 	}
 
 	if err := os.Chmod(m.Path+m.Name+".go", os.FileMode(0644)); err != nil {
-		return &errors.DevError{
-			Type:       "Creation view file error",
-			Origin:     "createViewFile()",
-			FileOrigin: "handlers/views/createView.go",
-			Msg:        err.Error() + fmt.Sprintf("Error changing permissions for %v file\n", file)}
+
+		return &errors.MiddlewareError{
+			Origin: "File: handlers/middleware/createMiddleware.go => Func: CreateFile()",
+			Msg:    "Failed to set permission for the Middleware file",
+			Err:    err,
+		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", m.Path, m.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.go successfuly created", m.Path, m.Name))
 	return nil
 }

@@ -51,11 +51,19 @@ func (*View) Create(v *View, files []string) error {
 	for _, file := range files {
 		v.Name = file
 		if v.Name == "" || v.Type == "" {
-			return &errors.ClientError{Msg: fmt.Sprintf("%s name cannot be empty", v.Type)}
+			return &errors.ViewError{
+				Origin: "File: handlers/views/createView.go => Func: CreateFile()",
+				Msg:    "Failed create Project's view, view name cannot be empty",
+				Err:    nil,
+			}
 		}
 
 		if err := v.CreateFile(v); err != nil {
-			return &errors.DevError{Msg: fmt.Sprintf("Error creating %s file :" + err.Error())}
+			return &errors.ViewError{
+				Origin: "File: handlers/views/createView.go => Func: CreateFile()",
+				Msg:    "Failed create Project's view, error creating view file",
+				Err:    nil,
+			}
 		}
 	}
 
@@ -72,19 +80,19 @@ func (*View) CreateFile(v *View) error {
 	defer file.Close()
 
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Creation view file error",
-			Origin:     "createViewFile()",
-			FileOrigin: "handlers/views/createView.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
+		return &errors.ViewError{
+			Origin: "File: handlers/views/createView.go => Func: CreateFile()",
+			Msg:    "Failed create Project's view",
+			Err:    err,
+		}
 	}
 
 	if err := os.Chmod(v.Path+v.Name+".templ", os.FileMode(0644)); err != nil {
-		return &errors.DevError{
-			Type:       "Creation view file error",
-			Origin:     "createViewFile()",
-			FileOrigin: "handlers/views/createView.go",
-			Msg:        err.Error() + fmt.Sprintf("Error changing permissions for %v file\n", file)}
+		return &errors.ViewError{
+			Origin: "File: handlers/views/createView.go => Func: CreateFile()",
+			Msg:    "Failed create Project's view, error setting permission for the view file",
+			Err:    err}
+
 	}
 
 	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", v.Path, v.Name))

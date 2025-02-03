@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-
-	er "github.com/adam-fraga/ratel/internal/errors"
 )
 
 func RunCommand(command string, showOutput bool, args ...string) error {
@@ -19,7 +17,7 @@ func RunCommand(command string, showOutput bool, args ...string) error {
 	// Get the output
 	output, err := cmd.Output()
 	if err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error getting the output of the command: %s", err.Error())}
+		return fmt.Errorf("Failed getting the output of the command: %s", err.Error())
 	}
 	// Print the output
 	if showOutput {

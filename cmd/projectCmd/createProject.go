@@ -4,7 +4,11 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package projectCmd
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/adam-fraga/ratel/handlers/project"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -71,7 +75,13 @@ Within the Views directory, the following subdirectories and template files are 
 	Annotations: map[string]string{"category": "project"},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 1 {
-			project.CreateProject(args[0])
+			var projectError *er.ProjectError
+			if err := project.CreateProject(args[0]); err != nil {
+				if errors.As(err, &projectError) {
+					fmt.Println("Failed creating the project: ", projectError.Msg)
+				}
+			}
+
 		} else {
 			if err := ut.RunCommand("ratel", true, "project create --help"); err != nil {
 			}

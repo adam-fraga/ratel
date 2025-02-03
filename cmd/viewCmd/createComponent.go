@@ -27,7 +27,7 @@ You can create up to 20 components at a time.`,
 		component := v.New("components")
 
 		if len(args) == 0 {
-			ut.PrintErrorMsg(fmt.Sprintf("You must provide a name for the %s", component.Type))
+			ut.PrintErrorMsg(fmt.Sprintf(" You must provide a name for the %s", component.Type))
 			os.Exit(1)
 		} else if len(args) > 0 && len(args) < 20 {
 			for i, arg := range args {

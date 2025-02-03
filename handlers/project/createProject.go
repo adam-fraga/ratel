@@ -50,8 +50,8 @@ func CreateProject(appName string) error {
 	err := CreateProjectStructure(appName)
 	if err != nil {
 		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => func CreateProject()",
 			Msg:    "Error trying to create the project",
-			Origin: "handlers/project/ => func CreateProject()",
 			Err:    err,
 		}
 	}
@@ -64,20 +64,20 @@ func CreateProjectStructure(appName string) error {
 	projectStruct, err := getProjectStructFromJsonFile()
 	ut.PrintInfoMsg(fmt.Sprintf("\n Creating project structure for the application %s...", appName))
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func CreateProjectStructure()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => func CreateProjectStructure()",
+			Msg:    "Failed to create the project from projectStruct.json file",
+			Err:    err,
 		}
 	}
 
 	for _, folder := range projectStruct {
 		CreateFolder(&folder)
 		if err != nil {
-			ut.PrintErrorMsg(err.Error())
-			return &er.DevError{
-				Msg:    err.Error(),
-				Origin: "handlers/project/createProject.go => func CreateProjectStructure()",
+			return &er.ProjectError{
+				Origin: "File: handlers/project/createProject.go => func CreateProjectStructure()",
+				Msg:    "Failed paring folder with projectStruct.json file",
+				Err:    err,
 			}
 		}
 	}
@@ -91,11 +91,12 @@ func CreateFolder(folder *Folder) error {
 	if folder.FolderName != "root" {
 		err := os.Mkdir(folder.FolderName, os.FileMode(0755))
 		if err != nil {
-			ut.PrintErrorMsg(err.Error())
-			return &er.DevError{
-				Msg:    err.Error(),
-				Origin: "handlers/project/createProject.go => func CreateFolder()",
+			return &er.ProjectError{
+				Origin: "File: handlers/project/createProject.go => func CreateFolder()",
+				Msg:    "Failed to create project error parsing folder with projectStruct.json file",
+				Err:    err,
 			}
+
 		}
 	}
 
@@ -103,10 +104,10 @@ func CreateFolder(folder *Folder) error {
 		for _, file := range folder.Files {
 			err := CreateFile(file)
 			if err != nil {
-				ut.PrintErrorMsg(err.Error())
-				return &er.DevError{
-					Msg:    err.Error(),
-					Origin: "handlers/project/createProject.go => func CreateFolder()",
+				return &er.ProjectError{
+					Origin: "File: handlers/project/createProject.go => Func: CreateFolder()",
+					Msg:    "Failed to create project file",
+					Err:    err,
 				}
 			}
 		}
@@ -116,10 +117,10 @@ func CreateFolder(folder *Folder) error {
 		for _, subFolder := range folder.SubFolders {
 			err := CreateFolder(&subFolder)
 			if err != nil {
-				ut.PrintErrorMsg(err.Error())
-				return &er.DevError{
-					Msg:    err.Error(),
-					Origin: "handlers/project/createProject.go => func CreateFolder()",
+				return &er.ProjectError{
+					Origin: "File: handlers/project/createProject.go => Func: CreateFolder()",
+					Msg:    "Failed to create project folder",
+					Err:    err,
 				}
 			}
 		}
@@ -131,19 +132,19 @@ func CreateFolder(folder *Folder) error {
 func CreateFile(fileDestination string) error {
 	file, err := os.Create(fileDestination)
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func CreateFile()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: CreateFile()",
+			Msg:    "Failed to create project file",
+			Err:    err,
 		}
 	}
 
 	err = os.Chmod(fileDestination, os.FileMode(0644))
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func CreateFile()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: CreateFile()",
+			Msg:    "Failed to create project error setting permission for file",
+			Err:    err,
 		}
 	}
 
@@ -157,10 +158,10 @@ func PopulateProjectFiles() error {
 	files, err := GetFilesFromProject()
 
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func PopulateProjectFiles()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: PopulateProjectFiles()",
+			Msg:    "Failed to create project error populating project file",
+			Err:    err,
 		}
 	}
 
@@ -186,20 +187,20 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 	defer wg.Done()
 	srcFileData, err := embeddedConfigs.ReadFile(srcFiles[i])
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func processFile()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: processFile()",
+			Msg:    "Failed create project error processing file",
+			Err:    err,
 		}
 	}
 
 	dstFilePath := dstFiles[i]
 	dstFile, err := os.Create(dstFilePath)
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func processFile()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: processFile()",
+			Msg:    "Failed create project error creating file",
+			Err:    err,
 		}
 	}
 
@@ -207,12 +208,11 @@ func processFile(wg *sync.WaitGroup, srcFiles []string, dstFiles []string, i int
 
 	_, err = io.Copy(dstFile, bytes.NewReader(srcFileData)) // Copy file contents
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func processFile()",
+		return &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: processFile()",
+			Msg:    "Failed create project error creating file",
+			Err:    err,
 		}
-
 	}
 
 	pb.Finish()
@@ -232,10 +232,10 @@ func GetFilesFromProject() (map[string][]string, error) {
 	ut.PrintInfoMsg(" Populating the project files...\n")
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return nil, &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func GetFilesFromProject()",
+		return nil, &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: GetFilesFromProject()",
+			Msg:    "Failed create project error getting project struct from projectStruct.json",
+			Err:    err,
 		}
 	}
 
@@ -269,10 +269,10 @@ func getProjectStructFromJsonFile() ([]Folder, error) {
 
 	err := json.Unmarshal(em.EmbeddedProjectStruct, &folders)
 	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-		return nil, &er.DevError{
-			Msg:    err.Error(),
-			Origin: "handlers/project/createProject.go => func getProjectStructFromJsonFile()",
+		return nil, &er.ProjectError{
+			Origin: "File: handlers/project/createProject.go => Func: getProjectStructFromJsonFile()",
+			Msg:    "Failed create project error Unmarshal projectStruct.json",
+			Err:    err,
 		}
 	}
 

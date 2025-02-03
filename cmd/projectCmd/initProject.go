@@ -1,7 +1,11 @@
 package projectCmd
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/adam-fraga/ratel/handlers/project"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -48,7 +52,13 @@ If no framework flag is provided, the project will be initialized without any fr
 			framework = "" // Default go "net/http" package
 		}
 
-		project.InitProject(repoName, framework)
+		if err := project.InitProject(repoName, framework); err != nil {
+			var projectError *er.ProjectError
+			if errors.As(err, &projectError) {
+				fmt.Println("Failed to initialize the project ", &projectError.Msg)
+			}
+
+		}
 	},
 }
 

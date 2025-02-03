@@ -20,7 +20,11 @@ func List() error {
 	var m Middlewares
 
 	if err := m.getMiddlewareFiles(&m); err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error getting the files to show: " + err.Error())}
+		return &er.MiddlewareError{
+			Origin: "File: handlers/middleware/listMiddlewares.go => Func: List()",
+			Msg:    "Failed to list project's middlewares",
+			Err:    err,
+		}
 	}
 
 	m.printMiddlewaresToStdout(&m)
@@ -52,7 +56,11 @@ func (*Middlewares) getMiddlewareFiles(m *Middlewares) error {
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error opening the directory to get the middlewares")}
+		return &er.MiddlewareError{
+			Origin: "File: handlers/middleware/listMiddlewares.go => Func: List()",
+			Msg:    "Failed get project's middlewares from directory",
+			Err:    err,
+		}
 	}
 	for {
 		file, err := files.Readdir(1)

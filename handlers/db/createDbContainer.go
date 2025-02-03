@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/adam-fraga/ratel/internal/errors"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
@@ -28,54 +28,64 @@ func InitDbDevelopmentContainer(dbProvider string) error {
 		err := createDbContainer(&dbConfig)
 
 		if err != nil {
-			err := fmt.Errorf("Error trying to create DB container: " + err.Error())
-			ut.PrintErrorMsg(err.Error())
-			return err
+			return &er.DBError{
+				Origin: "File: handlers/db/createDbContainer.go => func: InitDbDevelopmentContainer()",
+				Msg:    "Failed to create database container",
+				Err:    err,
+			}
 		}
 	} else if dbProvider == "sqlite" {
 		createSqliteLocalDb()
 	} else {
-		err := fmt.Errorf("Database provider \"%s\" not supported", dbProvider)
-		ut.PrintErrorMsg(err.Error())
-		return err
+		return &er.DBError{
+			Origin: "File: handlers/db/createDbContainer.go => Func: InitDbDevelopmentContainer()",
+			Msg:    "Error: Unsupported database provider. Please choose one of the following supported providers: postgres, mongo, mariadb, sqlite.",
+			Err:    nil,
+		}
 	}
 	return nil
 }
 
 // createDbContainer create the database container
 func createDbContainer(dbConfig *DbUserConfig) error {
-	dbConf, err := promptDbConfig(dbConfig)
-
-	if err != nil {
-		ut.PrintErrorMsg(err.Error())
-	}
+	dbConf := promptDbConfig(dbConfig)
 
 	switch dbConf.DbProvider {
 	case "postgres":
 		confirmConfig(dbConf)
 		if err := runPostgresDockerCmd(dbConf); err != nil {
-			ut.PrintErrorMsg(err.Error())
-			return fmt.Errorf("Error running the command for Postgres SQL container: " + err.Error())
+			return &er.DBError{
+				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
+				Msg:    "Error running the command for Postgres SQL container",
+				Err:    err,
+			}
 		}
 	case "mongo":
 		dbConf.DbPort = "27017"
 		confirmConfig(dbConf)
 		if err := runMongoDockerCmd(dbConf); err != nil {
-			ut.PrintErrorMsg(err.Error())
-			return fmt.Errorf("Error running the command for Mongo container: " + err.Error())
+			return &er.DBError{
+				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
+				Msg:    "Error running the command for MongoDB container",
+				Err:    err,
+			}
 		}
 	case "mariadb":
 		dbConf.DbPort = "3306"
 		confirmConfig(dbConf)
 		if err := runMariadbDockerCmd(dbConf); err != nil {
-			wrappedErr := fmt.Errorf("Error running the command for MariaDB container: %w", err)
-			ut.PrintErrorMsg(wrappedErr.Error())
-			return fmt.Errorf("" + err.Error())
+			return &er.DBError{
+				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
+				Msg:    "Error running the command for Mariadb mongo container",
+				Err:    err,
+			}
 		}
 	default:
-		err = fmt.Errorf("Database provider is not supported")
-		ut.PrintErrorMsg(err.Error())
-		return err
+		return &er.DBError{
+			Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
+			Msg:    "Unsupported database provider. Please choose one of the following supported providers: postgres, mongo, mariadb, sqlite.",
+			Err:    nil,
+		}
 	}
 	return nil
 }
@@ -89,9 +99,11 @@ func runPostgresDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		wrappedErr := fmt.Errorf("Error running the command for Postgres container: %w", err)
-		ut.PrintErrorMsg(wrappedErr.Error())
-		return wrappedErr
+		return &er.DBError{
+			Origin: "File: handlers/db/createDbContainer.go => Func: runPostgresDockerCmd()",
+			Msg:    "Error running the command for Postgres container",
+			Err:    nil,
+		}
 	}
 	return nil
 }
@@ -103,9 +115,11 @@ func runMongoDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		wrappedErr := fmt.Errorf("error running the command for Mongo container: %w", err)
-		ut.PrintErrorMsg(wrappedErr.Error())
-		return wrappedErr
+		return &er.DBError{
+			Origin: "File: handlers/db/createDbContainer.go => Func: runMongoDockerCmd()",
+			Msg:    "Error running the command for Mongo container",
+			Err:    nil,
+		}
 	}
 	return nil
 }
@@ -123,18 +137,21 @@ func runMariadbDockerCmd(dbConfig *DbUserConfig) error {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		err = fmt.Errorf("Error running the command for MySQL container: " + err.Error())
-		return err
+		return &er.DBError{
+			Origin: "File: handlers/db/createDbContainer.go => Func: runMariadbDockerCmd()",
+			Msg:    "Error running the command for MariaDB container",
+			Err:    nil,
+		}
 	}
 	return nil
 }
 
 // createSqliteLocalDb create a SQLite local database
 func createSqliteLocalDb() {
-	fmt.Println("Creating a SQLite local database")
+	fmt.Println("Creating a SQLite local database (TODO)")
 }
 
-func promptDbConfig(dbConfig *DbUserConfig) (*DbUserConfig, error) {
+func promptDbConfig(dbConfig *DbUserConfig) *DbUserConfig {
 
 	if dbConfig.DbProvider != "postgres" {
 		os.Stdin.WriteString("Please enter the database user: ")
@@ -156,12 +173,11 @@ func promptDbConfig(dbConfig *DbUserConfig) (*DbUserConfig, error) {
 	fmt.Scanln(&passwordConfirm)
 
 	if dbConfig.DbPassword != passwordConfirm {
-		err := &errors.ClientError{Msg: "Sorry your passwords do not match try again"}
-		ut.PrintErrorMsg(err.Error())
+		ut.PrintErrorMsg("Your informations are incorrect")
 		promptDbConfig(dbConfig)
 	}
 
-	return dbConfig, nil
+	return dbConfig
 }
 
 func confirmConfig(dbConfig *DbUserConfig) {
@@ -173,7 +189,8 @@ func confirmConfig(dbConfig *DbUserConfig) {
 
 	fmt.Scanln(&confirm)
 
-	if confirm == "n" {
+	if confirm != "y" {
+		ut.PrintInfoMsg("You need to confirm with \"y\"")
 		promptDbConfig(dbConfig)
 	}
 }

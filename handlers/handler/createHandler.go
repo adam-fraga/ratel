@@ -50,16 +50,22 @@ func (*Handler) Create(handlers []string) error {
 	for _, handler := range handlers {
 		h.Name = handler
 		if h.Name == "" {
-			return &errors.ClientError{Msg: fmt.Sprintf("%s name cannot be empty", h.Name)}
+			return &errors.HandlerError{
+				Origin: "File: handlers/handler/createHandler.go => Func: Create() ",
+				Msg:    "Handler name cannot be empty",
+				Err:    nil,
+			}
 		}
 
 		if err := h.CreateFile(h); err != nil {
-			return &errors.DevError{Msg: fmt.Sprintf("Error creating %s file :" + err.Error())}
+			return &errors.HandlerError{
+				Origin: "File: handlers/handler/createHandler.go => Func: Create()",
+				Msg:    "Failed to create the handler file",
+				Err:    err,
+			}
 		}
 	}
-
 	return nil
-
 }
 
 // CreateFile create a new handler file in the handlers directory
@@ -71,21 +77,21 @@ func (*Handler) CreateFile(h Handler) error {
 	defer file.Close()
 
 	if err != nil {
-		return &errors.DevError{
-			Type:       "Creation handler file error",
-			Origin:     "createhandlerFile()",
-			FileOrigin: "handlers/handlers/createHandler.go",
-			Msg:        err.Error() + fmt.Sprintf("Error creating %v file\n", file)}
+		return &errors.HandlerError{
+			Origin: "File: handlers/handlers/createHandler.go => Func: CreateFile()",
+			Msg:    fmt.Sprintf("Failed to create %v file\n", file),
+			Err:    err,
+		}
 	}
 
 	if err := os.Chmod(h.Path+h.Name+".go", os.FileMode(0644)); err != nil {
-		return &errors.DevError{
-			Type:       "Creation handler file error",
-			Origin:     "createhandlerFile()",
-			FileOrigin: "handlers/handlers/createhandler.go",
-			Msg:        err.Error() + fmt.Sprintf("Error changing permissions for %v file\n", file)}
+		return &errors.HandlerError{
+			Origin: "File: handlers/handlers/createhandler.go => Func: CreateFile()",
+			Msg:    fmt.Sprintf("Error changing permissions for %v file\n", file),
+			Err:    err,
+		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", h.Path, h.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.go successfuly created", h.Path, h.Name))
 	return nil
 }

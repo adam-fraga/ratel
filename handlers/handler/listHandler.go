@@ -20,7 +20,11 @@ func List() error {
 	var m Handlers
 
 	if err := m.getHandlerFiles(&m); err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error getting the files to show: " + err.Error())}
+		return &er.HandlerError{
+			Origin: "File: handlers/handler/listHandler.go => Func List()",
+			Msg:    fmt.Sprintf("Failed to list handlers in the project"),
+			Err:    err,
+		}
 	}
 
 	m.printHandlersToStdout(&m)
@@ -52,11 +56,16 @@ func (*Handlers) getHandlerFiles(m *Handlers) error {
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error opening the directory to get the handlers")}
+		return &er.HandlerError{
+			Origin: "File: handlers/handler/listHandler.go => Func List()",
+			Msg:    fmt.Sprintf("Failed to get the handlers from project directory"),
+			Err:    err,
+		}
 	}
 	for {
 		file, err := files.Readdir(1)
 		if err != nil {
+			ut.PrintErrorMsg(fmt.Sprintf("Failed ro read handler %v", file))
 			break
 		}
 		m.handlers = append(m.handlers, Handler{Name: file[0].Name(), Path: path})

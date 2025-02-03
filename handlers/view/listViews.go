@@ -23,11 +23,10 @@ type ViewFiles struct {
 
 // ListViews function to list the views
 func ListViews(viewType string) error {
-	var customError = er.DevError{
-		Type:       "Error",
-		Origin:     "ListViews",
-		FileOrigin: "listViews.go",
-		Msg:        "",
+	e := er.ViewError{
+		Origin: "File: handlers/view/listViews.go => Func: ListViews()",
+		Msg:    "",
+		Err:    nil,
 	}
 
 	var viewFiles ViewFiles
@@ -35,57 +34,69 @@ func ListViews(viewType string) error {
 	switch viewType {
 	case "":
 		if err := viewFiles.setViewFiles(&viewFiles, "all"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing all views in the project"
+			e.Err = err
+			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "templates":
 		if err := viewFiles.setViewFiles(&viewFiles, "templates"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing templates views in the project"
+			e.Err = err
+			return &e
+
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "forms":
 		if err := viewFiles.setViewFiles(&viewFiles, "forms"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing forms views in the project"
+			e.Err = err
+			return &e
+
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 
 	case "partials":
 		if err := viewFiles.setViewFiles(&viewFiles, "partials"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing partials views in the project"
+			e.Err = err
+			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "layouts":
 		if err := viewFiles.setViewFiles(&viewFiles, "layouts"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing layouts views in the project"
+			e.Err = err
+			return &e
+
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "pages":
 		if err := viewFiles.setViewFiles(&viewFiles, "pages"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing pages views in the project"
+			e.Err = err
+			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "components":
 		if err := viewFiles.setViewFiles(&viewFiles, "components"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing components views in the project"
+			e.Err = err
+			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "metadatas":
 		if err := viewFiles.setViewFiles(&viewFiles, "metadatas"); err != nil {
-			customError.Msg = fmt.Sprintf("Error getting the files to print to the stdout: " + err.Error())
-			return &customError
+			e.Msg = "Failed listing metadatas views in the project"
+			e.Err = err
+			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	default:
 		if err := ut.RunCommand("./ratel", true, "view list --help"); err != nil {
-			customError.Msg = fmt.Sprintf("Error running the command to show the help: " + err.Error())
-			return &customError
+			e.Msg = "Failed running help command"
+			e.Err = err
+			return &e
 		}
 	}
 	return nil
@@ -112,11 +123,19 @@ func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
 
 	if fileType == "all" {
 		if err := viewFiles.getAllView(viewFiles, fileTypes); err != nil {
-			return &er.ClientError{Msg: fmt.Sprintf("Error getting all the files to show: " + err.Error())}
+			return &er.ViewError{
+				Origin: "File: handlers/view/listViews.go => Func: setViewFiles()",
+				Msg:    "Failed getting all views in the project",
+				Err:    err,
+			}
 		}
 	} else {
 		if err := viewFiles.getViewFiles(viewFiles, fileType); err != nil {
-			return &er.ClientError{Msg: fmt.Sprintf("Error getting the files to show: " + err.Error())}
+			return &er.ViewError{
+				Origin: "File: handlers/view/listViews.go => Func: setViewFiles()",
+				Msg:    "Failed getting views files in the project",
+				Err:    err,
+			}
 		}
 	}
 	return nil
@@ -129,7 +148,11 @@ func (*ViewFiles) getAllView(viewFiles *ViewFiles, fileTypes []string) error {
 		files, err := os.Open(path)
 		defer files.Close()
 		if err != nil {
-			return &er.ClientError{Msg: fmt.Sprintf("Error opening the directory for the %s views", fileTypes)}
+			return &er.ViewError{
+				Origin: "File: handlers/view/listViews.go => Func: getAllviews()",
+				Msg:    "Failed getting views, error opening view file the project",
+				Err:    err,
+			}
 		}
 		for {
 			file, err := files.Readdir(1)
@@ -164,7 +187,11 @@ func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
-		return &er.ClientError{Msg: fmt.Sprintf("Error opening the directory for the %s views: "+err.Error(), fileType)}
+		return &er.ViewError{
+			Origin: "File: handlers/view/listViews.go => Func: getViewFiles()",
+			Msg:    "Failed getting views, error opening view file the project",
+			Err:    err,
+		}
 	}
 	for {
 		file, err := files.Readdir(1)

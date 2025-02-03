@@ -42,9 +42,10 @@ func InitProject(reponame string, framework string) error {
 
 	if reponame == "" || !s.HasPrefix(reponame, "github.com/") {
 		utils.PrintErrorMsg("Repo name is not well formatted: \"github.com/your-name/repo\"")
-		return &errors.DevError{
-			Origin: "handlers/project/initProject.go => func initProject()",
+		return &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: initProject()",
 			Msg:    "Repo name is not well formatted: \"github.com/your-name/repo\"",
+			Err:    nil,
 		}
 	}
 
@@ -63,10 +64,10 @@ func InitProject(reponame string, framework string) error {
 	utils.PrintCyanInfoMsg(" Preparing project files...\n")
 	err := writeFiles(&p)
 	if err != nil {
-		utils.PrintErrorMsg(err.Error())
-		return &errors.DevError{
-			Origin: "App Error: handlers/initProject.go => func InitProject()",
-			Msg:    err.Error(),
+		return &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: initProject()",
+			Msg:    "Failed initialize project, error writing file",
+			Err:    nil,
 		}
 	}
 	return nil
@@ -116,9 +117,10 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 
 	if err != nil {
 		utils.PrintErrorMsg(err.Error())
-		errChan <- &errors.DevError{
-			Origin: "handlers/project/initProject.go => func writeFile()",
-			Msg:    err.Error(),
+		errChan <- &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: writeFile()",
+			Msg:    "Failed initialize project, error writing file " + fileName,
+			Err:    nil,
 		}
 	} else {
 		errChan <- nil
@@ -324,9 +326,10 @@ templ Contact(data map[string]interface{}) {
 	_, err = file.WriteString(content)
 	if err != nil {
 		utils.PrintErrorMsg(err.Error())
-		errChan <- &errors.DevError{
-			Origin: "handlers/project/initProject.go => func writeFile()",
-			Msg:    err.Error(),
+		errChan <- &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: writeFile()",
+			Msg:    "Failed initialize project, error writing content in file " + fileName,
+			Err:    nil,
 		}
 
 	} else {
