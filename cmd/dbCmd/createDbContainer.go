@@ -4,7 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package dbCmd
 
 import (
+	"errors"
+
 	"github.com/adam-fraga/ratel/handlers/db"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -37,7 +40,13 @@ whether for local development or testing.`,
 			ut.PrintErrorMsg(err.Error())
 		}
 		if provider != "" {
-			db.InitDbDevelopmentContainer(provider)
+			if err := db.InitDbDevelopmentContainer(provider); err != nil {
+				var dbError *er.DBError
+				if errors.As(err, &dbError) {
+					ut.PrintErrorMsg("Failed initializing DB container, error " + dbError.Msg)
+				}
+
+			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "db create-dev-database --help"); err != nil {
 				ut.PrintErrorMsg("Error running the command: " + err.Error())

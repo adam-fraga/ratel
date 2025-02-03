@@ -4,11 +4,13 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package handlerCmd
 
 import (
+	"errors"
 	"os"
 
 	s "strings"
 
 	h "github.com/adam-fraga/ratel/handlers/handler"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -32,7 +34,10 @@ var createHandlerCmd = &cobra.Command{
 				args[i] = s.ReplaceAll(args[i], "-", "_")
 			}
 			if err := h.Create(args); err != nil {
-				ut.PrintErrorMsg(err.Error())
+				var handlerError *er.HandlerError
+				if errors.As(err, &handlerError) {
+					ut.PrintErrorMsg("Failed creating handler, error: " + handlerError.Msg)
+				}
 			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "handler create --help"); err != nil {

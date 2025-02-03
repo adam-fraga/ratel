@@ -4,7 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package handlerCmd
 
 import (
+	"errors"
+
 	h "github.com/adam-fraga/ratel/handlers/handler"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +20,10 @@ var listHandlerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			if err := h.List(); err != nil {
-				ut.PrintErrorMsg("Error listing the handlers: " + err.Error())
+				var handlerError *er.HandlerError
+				if errors.As(err, &handlerError) {
+					ut.PrintErrorMsg("Failed to list project's handlers, error " + handlerError.Msg)
+				}
 			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "handler list --help"); err != nil {

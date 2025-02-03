@@ -4,7 +4,9 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
+	"errors"
 	h "github.com/adam-fraga/ratel/handlers/middleware"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -18,7 +20,10 @@ var listMiddlewareCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			if err := h.List(); err != nil {
-				ut.PrintErrorMsg("Error listing the middlewares: " + err.Error())
+				var middlewareError *er.MiddlewareError
+				if errors.As(err, &middlewareError) {
+					ut.PrintErrorMsg("Error listing the middlewares: " + middlewareError.Msg)
+				}
 			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "middleware list --help"); err != nil {

@@ -4,10 +4,12 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package middlewareCmd
 
 import (
+	"errors"
 	"os"
 	s "strings"
 
 	h "github.com/adam-fraga/ratel/handlers/middleware"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +35,10 @@ You can create up to 20 middleware components at a time.`,
 				args[i] = s.ReplaceAll(args[i], "-", "_")
 			}
 			if err := m.Create(args); err != nil {
-				ut.PrintErrorMsg(err.Error())
+				var middlewareError *er.MiddlewareError
+				if errors.As(err, &middlewareError) {
+					ut.PrintErrorMsg("Failed creating Middleware, error " + middlewareError.Msg)
+				}
 			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "middleware create --help"); err != nil {
