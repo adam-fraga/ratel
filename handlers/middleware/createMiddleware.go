@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
@@ -29,18 +30,18 @@ func (*Middleware) Create(mids []string) error {
 	var m Middleware
 
 	if len(mids) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n   Creating multiple middlewares\n"))
+		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple middlewares\n"))
 
 		for _, mid := range mids {
-			ut.PrintSuccessMsg(fmt.Sprintf("     %s", mid))
+			ut.PrintSuccessMsg(fmt.Sprintf("  %s", mid))
 		}
 
-		ut.PrintWarningMsg("\n   Confirm you to create the followings middleware (y/n):")
+		ut.PrintWarningMsg("\n Confirm (Y/N):")
 		var response string
 
 		fmt.Scanln(&response)
 
-		if response == "n" {
+		if strings.ToLower(response) == "n" {
 			m.Create(mids)
 		}
 	}
@@ -58,7 +59,7 @@ func (*Middleware) Create(mids []string) error {
 		if err := m.CreateFile(m); err != nil {
 			return &errors.MiddlewareError{
 				Origin: "File: handlers/middleware/createMiddleware.go => Func: Create()",
-				Msg:    "Failed to create Middleware",
+				Msg:    "Failed to create Middleware, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -68,7 +69,7 @@ func (*Middleware) Create(mids []string) error {
 
 func (*Middleware) CreateFile(m Middleware) error {
 
-	m.Path = "middlewares/"
+	m.Path = "src/middlewares/"
 
 	file, err := os.Create(path.Join(m.Path, m.Name+".go"))
 	defer file.Close()
@@ -76,7 +77,7 @@ func (*Middleware) CreateFile(m Middleware) error {
 	if err != nil {
 		return &errors.MiddlewareError{
 			Origin: "File: handlers/middleware/createMiddleware.go => Func: CreateFile()",
-			Msg:    "Failed to create Middleware",
+			Msg:    "Failed to create Middleware, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -85,7 +86,7 @@ func (*Middleware) CreateFile(m Middleware) error {
 
 		return &errors.MiddlewareError{
 			Origin: "File: handlers/middleware/createMiddleware.go => Func: CreateFile()",
-			Msg:    "Failed to set permission for the Middleware file",
+			Msg:    "Failed to set permission for the Middleware file, error: " + err.Error(),
 			Err:    err,
 		}
 	}

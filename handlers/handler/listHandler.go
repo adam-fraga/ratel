@@ -40,32 +40,32 @@ func (*Handlers) printHandlersToStdout(m *Handlers) {
 	for _, mid := range m.handlers {
 		count++
 		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n   ***Handlers***\n"))
+			ut.PrintInfoMsg(fmt.Sprintf("\n ***Handlers***\n"))
 		}
 		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("     %s%s", mid.Path, mid.Name))
+		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
 	}
 
-	ut.PrintInfoMsg("\n   TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf("     %d\n", m.totalFiles))
+	ut.PrintInfoMsg("\n TOTAL")
+	ut.PrintSuccessMsg(fmt.Sprintf(" %d\n", m.totalFiles))
 }
 
 // getHandlerFiles function to get the handlers files from the directory
 func (*Handlers) getHandlerFiles(m *Handlers) error {
-	path := "handlers/"
+	path := "src/handlers/"
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
 		return &er.HandlerError{
 			Origin: "File: handlers/handler/listHandler.go => Func: List()",
-			Msg:    fmt.Sprintf("Failed to get the handlers from project directory"),
+			Msg:    "Failed to get the handlers from project directory, error: " + err.Error(),
 			Err:    err,
 		}
 	}
 	for {
 		file, err := files.Readdir(1)
 		if err != nil {
-			ut.PrintErrorMsg(fmt.Sprintf("Failed ro read handler %v", file))
+			ut.PrintErrorMsg(fmt.Sprintf("Failed to read handler %v, error: %s", file, err.Error()))
 			break
 		}
 		m.handlers = append(m.handlers, Handler{Name: file[0].Name(), Path: path})

@@ -1,7 +1,9 @@
 package viewCmd
 
 import (
+	"errors"
 	h "github.com/adam-fraga/ratel/handlers/view"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -32,9 +34,22 @@ helping you to understand the organization and structure of your project's front
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			h.ListViews("")
+			if err := h.ListViews(""); err != nil {
+				var viewError *er.ViewError
+				if errors.As(err, &viewError) {
+					ut.PrintErrorMsg("Failed to list all components, error: " + viewError.Msg)
+					return
+				}
+			}
+
 		} else if len(args) == 1 {
-			h.ListViews(args[0])
+			if err := h.ListViews(args[0]); err != nil {
+				var viewError *er.ViewError
+				if errors.As(err, &viewError) {
+					ut.PrintErrorMsg("Failed to list" + args[0] + " component, error: " + viewError.Msg)
+					return
+				}
+			}
 		} else {
 			ut.RunCommand("ratel", true, "view list --help")
 		}

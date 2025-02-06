@@ -34,14 +34,14 @@ func ListViews(viewType string) error {
 	switch viewType {
 	case "":
 		if err := viewFiles.setViewFiles(&viewFiles, "all"); err != nil {
-			e.Msg = "Failed listing all views in the project"
+			e.Msg = "Failed listing all views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "templates":
 		if err := viewFiles.setViewFiles(&viewFiles, "templates"); err != nil {
-			e.Msg = "Failed listing templates views in the project"
+			e.Msg = "Failed listing templates views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 
@@ -49,7 +49,7 @@ func ListViews(viewType string) error {
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "forms":
 		if err := viewFiles.setViewFiles(&viewFiles, "forms"); err != nil {
-			e.Msg = "Failed listing forms views in the project"
+			e.Msg = "Failed listing forms views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 
@@ -58,14 +58,14 @@ func ListViews(viewType string) error {
 
 	case "partials":
 		if err := viewFiles.setViewFiles(&viewFiles, "partials"); err != nil {
-			e.Msg = "Failed listing partials views in the project"
+			e.Msg = "Failed listing partials views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "layouts":
 		if err := viewFiles.setViewFiles(&viewFiles, "layouts"); err != nil {
-			e.Msg = "Failed listing layouts views in the project"
+			e.Msg = "Failed listing layouts views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 
@@ -73,28 +73,28 @@ func ListViews(viewType string) error {
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "pages":
 		if err := viewFiles.setViewFiles(&viewFiles, "pages"); err != nil {
-			e.Msg = "Failed listing pages views in the project"
+			e.Msg = "Failed listing pages views in the project, error: " + e.Error()
 			e.Err = err
 			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "components":
 		if err := viewFiles.setViewFiles(&viewFiles, "components"); err != nil {
-			e.Msg = "Failed listing components views in the project"
+			e.Msg = "Failed listing components views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	case "metadatas":
 		if err := viewFiles.setViewFiles(&viewFiles, "metadatas"); err != nil {
-			e.Msg = "Failed listing metadatas views in the project"
+			e.Msg = "Failed listing metadatas views in the project, error: " + err.Error()
 			e.Err = err
 			return &e
 		}
 		viewFiles.printFilesToStdOut(&viewFiles)
 	default:
-		if err := ut.RunCommand("./ratel", true, "view list --help"); err != nil {
-			e.Msg = "Failed running help command"
+		if err := ut.RunCommand("ratel", true, "view list --help"); err != nil {
+			e.Msg = "Failed running help command, error: " + err.Error()
 			e.Err = err
 			return &e
 		}
@@ -114,8 +114,8 @@ func (*ViewFiles) printFilesToStdOut(viewFiles *ViewFiles) {
 	viewFiles.Beautify(viewFiles.Metadatas, viewFiles)
 	viewFiles.Beautify(viewFiles.Forms, viewFiles)
 
-	ut.PrintInfoMsg("\n   TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf("     %d\n", viewFiles.totalFiles))
+	ut.PrintInfoMsg("\n TOTAL")
+	ut.PrintSuccessMsg(fmt.Sprintf(" %d\n", viewFiles.totalFiles))
 }
 
 func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
@@ -125,7 +125,7 @@ func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
 		if err := viewFiles.getAllView(viewFiles, fileTypes); err != nil {
 			return &er.ViewError{
 				Origin: "File: handlers/view/listViews.go => Func: setViewFiles()",
-				Msg:    "Failed getting all views in the project",
+				Msg:    "Failed getting all views in the project, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -133,7 +133,7 @@ func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
 		if err := viewFiles.getViewFiles(viewFiles, fileType); err != nil {
 			return &er.ViewError{
 				Origin: "File: handlers/view/listViews.go => Func: setViewFiles()",
-				Msg:    "Failed getting views files in the project",
+				Msg:    "Failed getting views files in the project, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -144,13 +144,13 @@ func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
 // getAllView function to get all the views from folders
 func (*ViewFiles) getAllView(viewFiles *ViewFiles, fileTypes []string) error {
 	for _, fileType := range fileTypes {
-		path := "views/" + string(fileType) + "/"
+		path := "src/views/" + string(fileType) + "/"
 		files, err := os.Open(path)
 		defer files.Close()
 		if err != nil {
 			return &er.ViewError{
 				Origin: "File: handlers/view/listViews.go => Func: getAllviews()",
-				Msg:    "Failed getting views, error opening view file the project",
+				Msg:    "Failed getting views, error opening view file the project, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -182,14 +182,14 @@ func (*ViewFiles) getAllView(viewFiles *ViewFiles, fileTypes []string) error {
 
 // getViewFiles function to get the view files
 func (*ViewFiles) getViewFiles(viewFiles *ViewFiles, fileType string) error {
-	path := "views/" + fileType + "/"
+	path := "src/views/" + fileType + "/"
 
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
 		return &er.ViewError{
 			Origin: "File: handlers/view/listViews.go => Func: getViewFiles()",
-			Msg:    "Failed getting views, error opening view file the project",
+			Msg:    "Failed getting views, error opening view file the project, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -229,9 +229,9 @@ func (*ViewFiles) Beautify(viewFileList []View, viewFiles *ViewFiles) {
 	for _, file := range viewFileList {
 		count++
 		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n   ***%s***", file.Type))
+			ut.PrintInfoMsg(fmt.Sprintf("\n  ***%s***", file.Type))
 		}
 		viewFiles.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("     %s%s", file.Path, file.Name))
+		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", file.Path, file.Name))
 	}
 }

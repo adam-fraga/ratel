@@ -4,11 +4,13 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	s "strings"
 
 	h "github.com/adam-fraga/ratel/handlers/view"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
@@ -35,6 +37,11 @@ You can create up to 10 layouts at a time.`,
 				args[i] = s.ReplaceAll(args[i], "-", "_")
 			}
 			if err := v.Create(layout, args); err != nil {
+				var viewError *er.ViewError
+				if errors.As(err, &viewError) {
+					ut.PrintErrorMsg("Failed creating form component, error: " + viewError.Msg)
+					return
+				}
 				ut.PrintErrorMsg(err.Error())
 			}
 		} else {

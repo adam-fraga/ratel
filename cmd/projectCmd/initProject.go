@@ -2,8 +2,6 @@ package projectCmd
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/adam-fraga/ratel/handlers/project"
 	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"

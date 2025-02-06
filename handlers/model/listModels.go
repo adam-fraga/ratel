@@ -22,7 +22,7 @@ func List() error {
 	if err := m.getModelFiles(&m); err != nil {
 		return &er.ModelError{
 			Origin: "File: handlers/model/listModels.go => Func: List()",
-			Msg:    "Error getting project's models",
+			Msg:    "Error getting project's models, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -40,25 +40,25 @@ func (*Models) printmodelsToStdout(m *Models) {
 	for _, mid := range m.models {
 		count++
 		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n   ***models***\n"))
+			ut.PrintInfoMsg(fmt.Sprintf("\n ***Models***\n"))
 		}
 		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("     %s%s", mid.Path, mid.Name))
+		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
 	}
 
-	ut.PrintInfoMsg("\n   TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf("     %d\n", m.totalFiles))
+	ut.PrintInfoMsg("\n  TOTAL")
+	ut.PrintSuccessMsg(fmt.Sprintf("  %d\n", m.totalFiles))
 }
 
 // getModelFiles function to get the middleware files from the directory
 func (*Models) getModelFiles(m *Models) error {
-	path := "models/"
+	path := "src/models/"
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
 		return &er.ModelError{
 			Origin: "File: handlers/model/listModels.go => Func: List()",
-			Msg:    "Error getting project's models",
+			Msg:    "Error getting project's models, error: " + err.Error(),
 			Err:    err,
 		}
 	}

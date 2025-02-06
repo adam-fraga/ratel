@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
@@ -29,18 +30,18 @@ func (*Model) Create(mids []string) error {
 	var m Model
 
 	if len(mids) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n   Creating multiple models\n"))
+		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple models\n"))
 
 		for _, mid := range mids {
-			ut.PrintSuccessMsg(fmt.Sprintf("     %s", mid))
+			ut.PrintSuccessMsg(fmt.Sprintf("  %s", mid))
 		}
 
-		ut.PrintWarningMsg("\n   Confirm you to create the followings models (y/n):")
+		ut.PrintWarningMsg("\n Confirm (y/n):")
 		var response string
 
 		fmt.Scanln(&response)
 
-		if response == "n" {
+		if strings.ToLower(response) == "n" {
 			m.Create(mids)
 		}
 	}
@@ -58,7 +59,7 @@ func (*Model) Create(mids []string) error {
 		if err := m.CreateFile(m); err != nil {
 			return &errors.ModelError{
 				Origin: "File: handlers/model/createModel.go => Func:CreateFile()",
-				Msg:    "Failed to create Model file",
+				Msg:    "Failed to create Model file, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -68,7 +69,7 @@ func (*Model) Create(mids []string) error {
 
 func (*Model) CreateFile(m Model) error {
 
-	m.Path = "models/"
+	m.Path = "src/models/"
 
 	file, err := os.Create(path.Join(m.Path, m.Name+".go"))
 	defer file.Close()
@@ -76,7 +77,7 @@ func (*Model) CreateFile(m Model) error {
 	if err != nil {
 		return &errors.ModelError{
 			Origin: "File: handlers/model/createModel.go => Func:CreateFile()",
-			Msg:    "Failed to create Model",
+			Msg:    "Failed to create Model, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -84,11 +85,11 @@ func (*Model) CreateFile(m Model) error {
 	if err := os.Chmod(m.Path+m.Name+".go", os.FileMode(0644)); err != nil {
 		return &errors.ModelError{
 			Origin: "File: handlers/model/createModel.go => Func:CreateFile()",
-			Msg:    "Failed to set permission for Model file",
+			Msg:    "Failed to set permission for Model file, error: " + err.Error(),
 			Err:    err,
 		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", m.Path, m.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf("  %s%s.go successfuly created", m.Path, m.Name))
 	return nil
 }

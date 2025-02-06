@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
@@ -32,18 +33,18 @@ func (*View) New(viewType string) *View {
 func (*View) Create(v *View, files []string) error {
 
 	if len(files) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n   Creating multiple %s\n", v.Type))
+		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple %s\n", v.Type))
 		var response string
 
 		for _, file := range files {
-			ut.PrintSuccessMsg(fmt.Sprintf("     %s", file))
+			ut.PrintSuccessMsg(fmt.Sprintf("  %s", file))
 		}
 
-		ut.PrintWarningMsg(fmt.Sprintf("\n   Confirm you to create the followings %s (y/n):", v.Type))
+		ut.PrintWarningMsg(fmt.Sprintf("\n Confirm (Y/N):"))
 
 		fmt.Scanln(&response)
 
-		if response == "n" {
+		if strings.ToLower(response) == "n" {
 			v.Create(v, files)
 		}
 	}
@@ -61,8 +62,8 @@ func (*View) Create(v *View, files []string) error {
 		if err := v.CreateFile(v); err != nil {
 			return &errors.ViewError{
 				Origin: "File: handlers/views/createView.go => Func: CreateFile()",
-				Msg:    "Failed create Project's view, error creating view file",
-				Err:    nil,
+				Msg:    "Failed create Project's view, error creating view file, error:" + err.Error(),
+				Err:    err,
 			}
 		}
 	}
@@ -74,7 +75,7 @@ func (*View) Create(v *View, files []string) error {
 // CreateFile Create a file view of type (Component, Page, Layout, forms, Partial, Template or Metadata) in the appropriate folder
 func (*View) CreateFile(v *View) error {
 
-	v.Path = "views/" + v.Type + "/"
+	v.Path = "src/views/" + v.Type + "/"
 
 	file, err := os.Create(path.Join(v.Path, v.Name+".templ"))
 	defer file.Close()
@@ -82,7 +83,7 @@ func (*View) CreateFile(v *View) error {
 	if err != nil {
 		return &errors.ViewError{
 			Origin: "File: handlers/views/createView.go => Func: CreateFile()",
-			Msg:    "Failed create Project's view",
+			Msg:    "Failed create Project's view, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -90,11 +91,11 @@ func (*View) CreateFile(v *View) error {
 	if err := os.Chmod(v.Path+v.Name+".templ", os.FileMode(0644)); err != nil {
 		return &errors.ViewError{
 			Origin: "File: handlers/views/createView.go => Func: CreateFile()",
-			Msg:    "Failed create Project's view, error setting permission for the view file",
+			Msg:    "Failed create Project's view, error setting permission for the view file, error: " + err.Error(),
 			Err:    err}
 
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("     %s%s.go successfuly created", v.Path, v.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.templ successfuly created", v.Path, v.Name))
 	return nil
 }

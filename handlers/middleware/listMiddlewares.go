@@ -22,7 +22,7 @@ func List() error {
 	if err := m.getMiddlewareFiles(&m); err != nil {
 		return &er.MiddlewareError{
 			Origin: "File: handlers/middleware/listMiddlewares.go => Func: List()",
-			Msg:    "Failed to list project's middlewares",
+			Msg:    "Failed to list project's middlewares, error: " + err.Error(),
 			Err:    err,
 		}
 	}
@@ -40,10 +40,10 @@ func (*Middlewares) printMiddlewaresToStdout(m *Middlewares) {
 	for _, mid := range m.middlewares {
 		count++
 		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n   ***Middlewares***\n"))
+			ut.PrintInfoMsg(fmt.Sprintf("\n ***Middlewares***\n"))
 		}
 		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("     %s%s", mid.Path, mid.Name))
+		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
 	}
 
 	ut.PrintInfoMsg("\n   TOTAL")
@@ -52,13 +52,13 @@ func (*Middlewares) printMiddlewaresToStdout(m *Middlewares) {
 
 // getMiddlewareFiles function to get the middleware files from the directory
 func (*Middlewares) getMiddlewareFiles(m *Middlewares) error {
-	path := "middlewares/"
+	path := "src/middlewares/"
 	files, err := os.Open(path)
 	defer files.Close()
 	if err != nil {
 		return &er.MiddlewareError{
 			Origin: "File: handlers/middleware/listMiddlewares.go => Func: List()",
-			Msg:    "Failed get project's middlewares from directory",
+			Msg:    "Failed get project's middlewares from directory, error: " + err.Error(),
 			Err:    err,
 		}
 	}

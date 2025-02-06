@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package viewCmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	s "strings"
@@ -11,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 
 	h "github.com/adam-fraga/ratel/handlers/view"
+	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
 )
 
@@ -35,7 +37,12 @@ You can create up to 20 components at a time.`,
 				args[i] = s.ReplaceAll(args[i], "-", "_")
 			}
 			if err := v.Create(component, args); err != nil {
-				ut.PrintErrorMsg(err.Error())
+				var viewError *er.ViewError
+				if errors.As(err, &viewError) {
+					ut.PrintErrorMsg("Failed creating view component, error: " + viewError.Msg)
+					return
+				}
+
 			}
 		} else {
 			if err := ut.RunCommand("ratel", true, "view create-component --help"); err != nil {

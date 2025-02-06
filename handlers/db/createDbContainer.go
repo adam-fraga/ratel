@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
@@ -184,12 +185,12 @@ func confirmConfig(dbConfig *DbUserConfig) {
 	ut.PrintInfoMsg(fmt.Sprintf("\nDatabase configuration:\n\nDB Provider: %s\nDB Port: %s\nDB User: %s\nDB Name: %s\n",
 		dbConfig.DbProvider, dbConfig.DbPort, dbConfig.DbUser, dbConfig.DbName))
 
-	os.Stdin.WriteString("Is the configuration correct? (y/n): ")
+	os.Stdin.WriteString("Is the configuration correct? (Y/N): ")
 	var confirm string
 
 	fmt.Scanln(&confirm)
 
-	if confirm != "y" {
+	if strings.ToLower(confirm) != "y" {
 		ut.PrintInfoMsg("You need to confirm with \"y\"")
 		promptDbConfig(dbConfig)
 	}
