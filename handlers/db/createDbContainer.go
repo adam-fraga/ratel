@@ -150,7 +150,7 @@ func runMariadbDockerCmd(dbConfig *DbUserConfig) error {
 }
 
 // createSqliteLocalDb create a SQLite local database
-func createSqliteLocalDb(DbUserConfig *DbUserConfig) error {
+func createSqliteLocalDb() error {
 	fmt.Println("Creating a SQLite local database (TODO)")
 	return nil
 }
