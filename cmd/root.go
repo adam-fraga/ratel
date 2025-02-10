@@ -12,6 +12,7 @@ import (
 	"github.com/adam-fraga/ratel/cmd/handlerCmd"
 	"github.com/adam-fraga/ratel/cmd/middlewareCmd"
 	"github.com/adam-fraga/ratel/cmd/modelCmd"
+	"github.com/adam-fraga/ratel/cmd/moduleCmd"
 	"github.com/adam-fraga/ratel/cmd/projectCmd"
 	"github.com/adam-fraga/ratel/cmd/viewCmd"
 	"github.com/spf13/cobra"
@@ -61,6 +62,7 @@ func addCommands() {
 	rootCmd.AddCommand(cacheCmd.CacheCmd)
 	rootCmd.AddCommand(modelCmd.ModelCmd)
 	rootCmd.AddCommand(handlerCmd.HandlerCmd)
+	rootCmd.AddCommand(moduleCmd.ModuleCmd)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
