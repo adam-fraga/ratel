@@ -34,20 +34,9 @@ func List() error {
 
 // printFilesToStdOut function to print the files to the stdout
 func (*Models) printmodelsToStdout(m *Models) {
-	m.totalFiles = 0
-	var count uint8
-
-	for _, mid := range m.models {
-		count++
-		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n ***Models***\n"))
-		}
-		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
-	}
-
-	ut.PrintInfoMsg("\n  TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf("  %d\n", m.totalFiles))
+	ut.PrintListToStdout("Models", m.models, func(mod Model) string {
+		return fmt.Sprintf("  📂 %s%s", mod.Path, mod.Name)
+	})
 }
 
 // getModelFiles function to get the middleware files from the directory

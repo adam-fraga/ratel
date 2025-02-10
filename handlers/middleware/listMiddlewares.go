@@ -26,28 +26,14 @@ func List() error {
 			Err:    err,
 		}
 	}
-
-	m.printMiddlewaresToStdout(&m)
-
+	m.printMiddlewaresToStdout()
 	return nil
 }
 
-// printFilesToStdOut function to print the files to the stdout
-func (*Middlewares) printMiddlewaresToStdout(m *Middlewares) {
-	m.totalFiles = 0
-	var count uint8
-
-	for _, mid := range m.middlewares {
-		count++
-		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n ***Middlewares***\n"))
-		}
-		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
-	}
-
-	ut.PrintInfoMsg("\n   TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf("     %d\n", m.totalFiles))
+func (m *Middlewares) printMiddlewaresToStdout() {
+	ut.PrintListToStdout("Middlewares", m.middlewares, func(mid Middleware) string {
+		return fmt.Sprintf("  📂 %s%s", mid.Path, mid.Name)
+	})
 }
 
 // getMiddlewareFiles function to get the middleware files from the directory

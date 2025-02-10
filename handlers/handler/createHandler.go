@@ -32,19 +32,20 @@ func (*Handler) Create(handlers []string) error {
 	var h Handler
 
 	if len(handlers) > 1 {
-		ut.PrintInfoMsg("\n Creating multiple handlers\n")
+		ut.PrintInfoMsg("\n 🏗️ Creating multiple handlers\n")
 
 		for _, handler := range handlers {
-			ut.PrintSuccessMsg(fmt.Sprintf("     %s", handler))
+			ut.PrintSuccessMsg(fmt.Sprintf("    📌 %s", handler))
 		}
 
-		ut.PrintWarningMsg("\n Confirm (Y/N):")
+		ut.PrintWarningMsg("\n ⚠️ Confirm (Y/N):")
 		var response string
 
 		fmt.Scanln(&response)
 
-		if strings.ToLower(response) == "n" {
-			h.Create(handlers)
+		if strings.ToLower(response) != "y" {
+			ut.PrintWarningMsg("\n ❌ Operation canceled.\n")
+			return nil
 		}
 	}
 
@@ -93,6 +94,6 @@ func (*Handler) CreateFile(h Handler) error {
 		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.go successfuly created", h.Path, h.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" ✅ %s%s.go successfuly created", h.Path, h.Name))
 	return nil
 }

@@ -114,8 +114,8 @@ func (*ViewFiles) printFilesToStdOut(viewFiles *ViewFiles) {
 	viewFiles.Beautify(viewFiles.Metadatas, viewFiles)
 	viewFiles.Beautify(viewFiles.Forms, viewFiles)
 
-	ut.PrintInfoMsg("\n TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf(" %d\n", viewFiles.totalFiles))
+	ut.PrintInfoMsg("\n 📊 TOTAL")
+	ut.PrintSuccessMsg(fmt.Sprintf(" 🔢 %d\n", viewFiles.totalFiles))
 }
 
 func (*ViewFiles) setViewFiles(viewFiles *ViewFiles, fileType string) error {
@@ -229,9 +229,9 @@ func (*ViewFiles) Beautify(viewFileList []View, viewFiles *ViewFiles) {
 	for _, file := range viewFileList {
 		count++
 		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n  ***%s***", file.Type))
+			ut.PrintInfoMsg(fmt.Sprintf("\n 📂 ***%s***", file.Type))
 		}
 		viewFiles.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", file.Path, file.Name))
+		ut.PrintSuccessMsg(fmt.Sprintf(" 📄  %s%s", file.Path, file.Name))
 	}
 }

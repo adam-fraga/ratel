@@ -30,19 +30,20 @@ func (*Middleware) Create(mids []string) error {
 	var m Middleware
 
 	if len(mids) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple middlewares\n"))
+		ut.PrintInfoMsg(fmt.Sprintf("\n 🏗️ Creating multiple middlewares\n"))
 
 		for _, mid := range mids {
-			ut.PrintSuccessMsg(fmt.Sprintf("  %s", mid))
+			ut.PrintSuccessMsg(fmt.Sprintf("  📌 %s", mid))
 		}
 
-		ut.PrintWarningMsg("\n Confirm (Y/N):")
+		ut.PrintWarningMsg("\n ⚠️ Confirm (Y/N):")
 		var response string
 
 		fmt.Scanln(&response)
 
-		if strings.ToLower(response) == "n" {
-			m.Create(mids)
+		if strings.ToLower(response) != "y" {
+			ut.PrintWarningMsg("\n ❌ Operation canceled.\n")
+			return nil
 		}
 	}
 
@@ -91,6 +92,6 @@ func (*Middleware) CreateFile(m Middleware) error {
 		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.go successfuly created", m.Path, m.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" ✅ %s%s.go successfuly created", m.Path, m.Name))
 	return nil
 }

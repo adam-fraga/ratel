@@ -30,19 +30,20 @@ func (*Model) Create(mids []string) error {
 	var m Model
 
 	if len(mids) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple models\n"))
+		ut.PrintInfoMsg(fmt.Sprintf("\n 🏗️ Creating multiple models\n"))
 
 		for _, mid := range mids {
-			ut.PrintSuccessMsg(fmt.Sprintf("  %s", mid))
+			ut.PrintSuccessMsg(fmt.Sprintf(" 📌  %s", mid))
 		}
 
-		ut.PrintWarningMsg("\n Confirm (y/n):")
+		ut.PrintWarningMsg("\n ⚠️ Confirm (y/n):")
 		var response string
 
 		fmt.Scanln(&response)
 
-		if strings.ToLower(response) == "n" {
-			m.Create(mids)
+		if strings.ToLower(response) != "y" {
+			ut.PrintWarningMsg("\n ❌ Operation canceled.\n")
+			return nil
 		}
 	}
 
@@ -90,6 +91,6 @@ func (*Model) CreateFile(m Model) error {
 		}
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf("  %s%s.go successfuly created", m.Path, m.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" ✅  %s%s.go successfuly created", m.Path, m.Name))
 	return nil
 }

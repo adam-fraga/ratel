@@ -26,3 +26,20 @@ func RunCommand(command string, showOutput bool, args ...string) error {
 
 	return nil
 }
+
+func PrintListToStdout[T any](title string, items []T, formatFunc func(T) string) {
+	if len(items) == 0 {
+		return
+	}
+
+	PrintInfoMsg(fmt.Sprintf("\n 🚀 *** %s ***\n", title))
+
+	var total uint8
+	for _, item := range items {
+		total++
+		PrintSuccessMsg(formatFunc(item))
+	}
+
+	PrintInfoMsg("\n 📊 TOTAL")
+	PrintSuccessMsg(fmt.Sprintf("    🔢 %d\n", total))
+}

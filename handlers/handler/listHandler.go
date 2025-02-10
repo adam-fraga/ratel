@@ -33,21 +33,10 @@ func List() error {
 }
 
 // printFilesToStdOut function to print the files to the stdout
-func (*Handlers) printHandlersToStdout(m *Handlers) {
-	m.totalFiles = 0
-	var count uint8
-
-	for _, mid := range m.handlers {
-		count++
-		if count == 1 {
-			ut.PrintInfoMsg(fmt.Sprintf("\n ***Handlers***\n"))
-		}
-		m.totalFiles++
-		ut.PrintSuccessMsg(fmt.Sprintf("  %s%s", mid.Path, mid.Name))
-	}
-
-	ut.PrintInfoMsg("\n TOTAL")
-	ut.PrintSuccessMsg(fmt.Sprintf(" %d\n", m.totalFiles))
+func (*Handlers) printHandlersToStdout(h *Handlers) {
+	ut.PrintListToStdout("Handlers", h.handlers, func(hdl Handler) string {
+		return fmt.Sprintf("  📂 %s%s", hdl.Path, hdl.Name)
+	})
 }
 
 // getHandlerFiles function to get the handlers files from the directory
