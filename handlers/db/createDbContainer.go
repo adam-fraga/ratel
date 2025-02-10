@@ -5,9 +5,11 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 
 	er "github.com/adam-fraga/ratel/internal/errors"
 	ut "github.com/adam-fraga/ratel/utils"
+	"golang.org/x/term"
 )
 
 // DbUserConfig represent the configuration of the database for the local development
@@ -26,22 +28,21 @@ func InitDbDevelopmentContainer(dbProvider string) error {
 		var dbConfig DbUserConfig
 		dbConfig.DbProvider = dbProvider
 
-		err := createDbContainer(&dbConfig)
-
-		if err != nil {
+		if err := createDbContainer(&dbConfig); err != nil {
 			return &er.DBError{
 				Origin: "File: handlers/db/createDbContainer.go => func: InitDbDevelopmentContainer()",
-				Msg:    "Failed to create database container",
+				Msg:    "Failed to create database container, error: " + err.Error(),
 				Err:    err,
 			}
 		}
+
 	} else if dbProvider == "sqlite" {
-		createSqliteLocalDb()
-	} else {
-		return &er.DBError{
-			Origin: "File: handlers/db/createDbContainer.go => Func: InitDbDevelopmentContainer()",
-			Msg:    "Error: Unsupported database provider. Please choose one of the following supported providers: postgres, mongo, mariadb, sqlite.",
-			Err:    nil,
+		if err := createSqliteLocalDb(); err != nil {
+			return &er.DBError{
+				Origin: "File: handlers/db/createDbContainer.go => Func: InitDbDevelopmentContainer()",
+				Msg:    "Failed to create database container ",
+				Err:    nil,
+			}
 		}
 	}
 	return nil
@@ -57,7 +58,7 @@ func createDbContainer(dbConfig *DbUserConfig) error {
 		if err := runPostgresDockerCmd(dbConf); err != nil {
 			return &er.DBError{
 				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
-				Msg:    "Error running the command for Postgres SQL container",
+				Msg:    "Failed to launch postgresql container, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -67,7 +68,7 @@ func createDbContainer(dbConfig *DbUserConfig) error {
 		if err := runMongoDockerCmd(dbConf); err != nil {
 			return &er.DBError{
 				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
-				Msg:    "Error running the command for MongoDB container",
+				Msg:    "Failed to launch mongo db container, error: " + err.Error(),
 				Err:    err,
 			}
 		}
@@ -77,10 +78,11 @@ func createDbContainer(dbConfig *DbUserConfig) error {
 		if err := runMariadbDockerCmd(dbConf); err != nil {
 			return &er.DBError{
 				Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
-				Msg:    "Error running the command for Mariadb mongo container",
+				Msg:    "Failed to launch maria db container, error: " + err.Error(),
 				Err:    err,
 			}
 		}
+
 	default:
 		return &er.DBError{
 			Origin: "File: handlers/db/createDbContainer.go => Func: createDbContainer()",
@@ -148,34 +150,53 @@ func runMariadbDockerCmd(dbConfig *DbUserConfig) error {
 }
 
 // createSqliteLocalDb create a SQLite local database
-func createSqliteLocalDb() {
+func createSqliteLocalDb(DbUserConfig *DbUserConfig) error {
 	fmt.Println("Creating a SQLite local database (TODO)")
+	return nil
 }
 
 func promptDbConfig(dbConfig *DbUserConfig) *DbUserConfig {
 
-	if dbConfig.DbProvider != "postgres" {
-		os.Stdin.WriteString("Please enter the database user: ")
-		fmt.Scanln(&dbConfig.DbUser)
-
-		os.Stdin.WriteString("Please enter the database name: ")
-		fmt.Scanln(&dbConfig.DbName)
-	} else {
+	switch dbConfig.DbProvider {
+	case "postgres":
 		dbConfig.DbPort = "5432"
-		dbConfig.DbName = "postgres"
-		dbConfig.DbUser = "postgres"
+	case "mongo":
+		dbConfig.DbPort = "27017"
+	case "sqlite":
+		dbConfig.DbPort = ""
+	case "mariadb":
+		dbConfig.DbPort = "3306"
+	default:
+		ut.PrintErrorMsg("DB Provider " + dbConfig.DbProvider + "is not supported")
 	}
 
+	os.Stdin.WriteString("Please enter the database user: ")
+	fmt.Scanln(&dbConfig.DbUser)
+
+	os.Stdin.WriteString("Please enter the database name: ")
+	fmt.Scanln(&dbConfig.DbName)
+
 	os.Stdin.WriteString("Please enter the database password: ")
-	fmt.Scanln(&dbConfig.DbPassword)
+	password, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		ut.PrintErrorMsg("error reading password, error: " + err.Error())
+		return promptDbConfig(dbConfig)
+	}
+	fmt.Println()
+
+	dbConfig.DbPassword = string(password)
 
 	os.Stdin.WriteString("Please confirm password: ")
-	var passwordConfirm string
-	fmt.Scanln(&passwordConfirm)
+	passwordConfirm, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		ut.PrintErrorMsg("Error reading password confirmation")
+		return promptDbConfig(dbConfig)
+	}
+	fmt.Println() // Add a newline after password confirmation
 
-	if dbConfig.DbPassword != passwordConfirm {
+	if dbConfig.DbPassword != string(passwordConfirm) {
 		ut.PrintErrorMsg("Your informations are incorrect")
-		promptDbConfig(dbConfig)
+		return promptDbConfig(dbConfig)
 	}
 
 	return dbConfig

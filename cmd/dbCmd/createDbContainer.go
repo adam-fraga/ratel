@@ -28,7 +28,7 @@ For MongoDB, Redis, and PostgreSQL, the command orchestrates the creation of a D
 ensuring seamless integration into your development environment. 
 You'll need to fill in the appropriate values in the .env file to configure the connection details.
 
-If you opt for SQLite, the command sets up a local file-based database, suitable for testing purposes. 
+If you opt for SQLite, the command sets up a local file-based database. 
 No Docker container is spun up for SQLite, as it operates directly on the local file system.
 
 This command streamlines the process of provisioning a database container tailored to your project's needs,
