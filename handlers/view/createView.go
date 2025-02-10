@@ -33,19 +33,20 @@ func (*View) New(viewType string) *View {
 func (*View) Create(v *View, files []string) error {
 
 	if len(files) > 1 {
-		ut.PrintInfoMsg(fmt.Sprintf("\n Creating multiple %s\n", v.Type))
+		ut.PrintInfoMsg(fmt.Sprintf("\n 🏗️ Creating multiple %s\n", v.Type))
 		var response string
 
 		for _, file := range files {
-			ut.PrintSuccessMsg(fmt.Sprintf("  %s", file))
+			ut.PrintSuccessMsg(fmt.Sprintf("  📌 %s", file))
 		}
 
-		ut.PrintWarningMsg(fmt.Sprintf("\n Confirm (Y/N):"))
+		ut.PrintWarningMsg(fmt.Sprintf("\n ⚠️ Confirm (Y/N):"))
 
 		fmt.Scanln(&response)
 
-		if strings.ToLower(response) == "n" {
-			v.Create(v, files)
+		if strings.ToLower(response) != "y" {
+			ut.PrintWarningMsg("\n ❌ Operation canceled.\n")
+			return nil
 		}
 	}
 
@@ -96,6 +97,6 @@ func (*View) CreateFile(v *View) error {
 
 	}
 
-	ut.PrintSuccessMsg(fmt.Sprintf(" %s%s.templ successfuly created", v.Path, v.Name))
+	ut.PrintSuccessMsg(fmt.Sprintf(" ✅ %s%s.templ successfuly created", v.Path, v.Name))
 	return nil
 }

@@ -102,7 +102,6 @@ func ListViews(viewType string) error {
 	return nil
 }
 
-// printFilesToStdOut function to print the files to the stdout
 func (*ViewFiles) printFilesToStdOut(viewFiles *ViewFiles) {
 	viewFiles.totalFiles = 0
 
