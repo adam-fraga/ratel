@@ -62,7 +62,7 @@ func CreateProject(appName string) error {
 // Create the project structure based on the data/projectStruct.json file
 func CreateProjectStructure(appName string) error {
 	projectStruct, err := getProjectStructFromJsonFile()
-	ut.PrintInfoMsg(fmt.Sprintf("\n Creating project structure for the application %s...", appName))
+	ut.PrintCyanInfoMsg(fmt.Sprintf("\n 🚀 Setting up project structure: %s ...", appName))
 	if err != nil {
 		return &er.ProjectError{
 			Origin: "File: handlers/project/createProject.go => func CreateProjectStructure()",
@@ -72,8 +72,7 @@ func CreateProjectStructure(appName string) error {
 	}
 
 	for _, folder := range projectStruct {
-		CreateFolder(&folder)
-		if err != nil {
+		if err := CreateFolder(&folder); err != nil {
 			return &er.ProjectError{
 				Origin: "File: handlers/project/createProject.go => func CreateProjectStructure()",
 				Msg:    "Failed paring folder with projectStruct.json file",
@@ -82,7 +81,7 @@ func CreateProjectStructure(appName string) error {
 		}
 	}
 
-	ut.PrintSuccessMsg("\n Project structure successfully created\n")
+	ut.PrintSuccessMsg("\n ✅ Project structure successfully created\n")
 	return nil
 }
 
@@ -229,7 +228,7 @@ func GetFilesFromProject() (map[string][]string, error) {
 
 	dataConfigFilePath := "configs/"
 
-	ut.PrintInfoMsg(" Populating the project files...\n")
+	ut.PrintCyanInfoMsg(" 🛠️ Populating Project Files...\n")
 	projectStruct, err := getProjectStructFromJsonFile()
 	if err != nil {
 		return nil, &er.ProjectError{

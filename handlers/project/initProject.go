@@ -8,6 +8,8 @@ package project
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 	"sync"
 
 	s "strings"
@@ -51,22 +53,32 @@ func InitProject(reponame string, framework string) error {
 	p.Reponame = reponame
 
 	if framework == "" {
+		fmt.Println("")
 		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", reponame))
-		utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo %s\n", reponame))
+		utils.PrintSuccessMsg(fmt.Sprintf("\n ✅ Successfully initialized repo %s\n", reponame))
 	} else if framework == "Echo" || framework == "Fiber" {
 		p.Framework = framework
+		fmt.Println("")
 		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", p.Reponame))
 		utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo: %s with %s framework\n", p.Reponame, p.Framework))
 		getFrameworkFromGoPackage(&p)
 	}
 
-	utils.PrintCyanInfoMsg(" Preparing project files...\n")
+	utils.PrintCyanInfoMsg(" 🛠️ Preparing project files...\n")
 	err := writeFiles(&p)
 	if err != nil {
 		return &errors.ProjectError{
 			Origin: "File: handlers/project/initProject.go => Func: initProject()",
-			Msg:    "Failed initialize project, error writing file",
-			Err:    nil,
+			Msg:    "Failed initialize project, error writing file: " + err.Error(),
+			Err:    err,
+		}
+	}
+
+	if err := getProjectPackages(); err != nil {
+		return &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: initProject()",
+			Msg:    "Failed initialize project, error getting packages: " + err.Error(),
+			Err:    err,
 		}
 	}
 	return nil
@@ -125,7 +137,7 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 		errChan <- nil
 	}
 
-	utils.PrintInfoMsg(fmt.Sprintf(" Writing file %s in location => %s", fileName, fileLocation))
+	utils.PrintInfoMsg(fmt.Sprintf("📝 Writing file %s in location => %s", fileName, fileLocation))
 
 	defer file.Close()
 
@@ -135,14 +147,11 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 
 	case "main.go":
 		if p.Framework == "Fiber" {
-			content = fmt.Sprintf(`
-    package main
+			content = fmt.Sprintf(`package main
 
     import (
       "github.com/gofiber/fiber/v2"
-      h "%s/handlers"
-      r "%s/router"
-
+      "%s/src/handlers"
     )
 
     func main() {
@@ -154,18 +163,15 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 
       app.Listen(":8080")
     }
-    `, p.Reponame, p.Reponame)
+    `, p.Reponame)
 		} else if p.Framework == "Echo" {
-			content = fmt.Sprintf(`
-    package main
+			content = fmt.Sprintf(`package main
 
     import (
       "net/http"
       "github.com/labstack/echo/v4"
       "github.com/labstack/echo/v4/middleware"
-     h "%s/handlers"
-     r "%s/router" 
-
+     "%s/src/handlers"
     )
 
     func main() {
@@ -180,47 +186,55 @@ func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 
       e.Logger.Fatal(e.Start(":8080"))
     }
-    `, p.Reponame, p.Reponame)
+    `, p.Reponame)
 		} else {
-			content = fmt.Sprintf(`
-      package main
+			content = fmt.Sprintf(`package main
 
 import (
-	h %s/handlers" 
-	r "%s/router"
+  "fmt"
+	"net/http"
+	"%s/src/handlers" 
+	"%s/src/views/pages"
 )
 
-func main() {
+        func main() {
+	mux := http.NewServeMux()
+	//Serve Static files within static directory
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	//Basic Handlers Example
+	mux.HandleFunc("/", handlers.IndexHandler)
+	mux.Handle("/about", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html") // Ensure it's interpreted as HTML
+		data := map[string]interface{}{
+			"title": "About Page", // Adjust based on your template needs
+		}
+		err := pages.About(data).Render(r.Context(), w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}))
 
-	router := r.NewRouter()
-	router.ServeStatic()
-
-	//Should be in Routes
-	router.HandleFunc("/", h.IndexHandler)
-
-	router.ListenAndServe(":3000")
+	fmt.Println("Server is running on port 8080")
+	http.ListenAndServe(":8080", mux)
 }`, p.Reponame, p.Reponame)
 		}
 		break
 
 	case "index.go":
-		content = fmt.Sprintf(`
-      package handlers
+		content = fmt.Sprintf(`package handlers
 
 import (
 	"net/http"
-	 t "github.com/a-h/templ"
-	 pages "%s/views/pages" #Change path to match your project and uncomment
+	 "github.com/a-h/templ"
+	 "%s/src/views/pages"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	homeData := make(map[string]interface{})
-	homeData["name"] = "John"
-	// homePage := pages.Index(homeData)
+	homePage := pages.Index()
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
-	// t.Handler(homePage).ServeHTTP(w, r)
-}`, p.Reponame)
+	templ.Handler(homePage).ServeHTTP(w, r)
+      }`, p.Reponame)
 		break
 
 	case "index.test.go":
@@ -236,8 +250,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		break
 
 	case "header.templ":
-		content = `
-package partials
+		content = `package partials
 
 templ Header() {
 <header>
@@ -253,8 +266,7 @@ templ Header() {
 		break
 
 	case "footer.templ":
-		content = `
-package partials
+		content = `package partials
 
 templ footer(data map[string]interface{}) {
 <footer>
@@ -264,19 +276,18 @@ templ footer(data map[string]interface{}) {
 		break
 
 	case "base.templ":
-		content = fmt.Sprintf(`
-package layouts
+		content = fmt.Sprintf(`package layouts
 
 import (
-met "%s/views/metadatas"
-par "%s/views/partials"
-t "github.com/a-h/templ"
+ "%s/src/views/metadatas"
+ "%s/src/views/partials"
+ "github.com/a-h/templ"
 )
 
 var (
-Head = met.Head
-Header = par.Header
-Footer = par.Footer
+Head = metadatas.Head
+Header = partials.Header
+Footer = partials.Footer
 )
 
 templ Base(Page t.Component) {
@@ -296,27 +307,26 @@ templ Base(Page t.Component) {
 		break
 
 	case "index.templ":
-		content = fmt.Sprintf(`
-package pages
+		content = fmt.Sprintf(`package pages
 
 templ Index() {
 <main>
-  <h1 class="text-blue-400">Welcome</h1>
-  <p class="text-blue-400">This is a simple example of a Go web app</p>
+  <h1>Welcome</h1>
+  <p>This is a simple example of a Go web app</p>
 </main>
 }
 
 templ About(data map[string]interface{}) {
 <main>
-  <h1 class="text-blue-400">About</h1>
-  <p class="text-blue-400">This is a simple example of a Go web app</p>
+  <h1>About</h1>
+  <p>This is a simple example of a Go web app</p>
 </main>
 }
 
 templ Contact(data map[string]interface{}) {
 <main>
-  <h1 class="text-blue-400">Contact</h1>
-  <p class="text-blue-400">This is a simple example of a Go web app</p>
+  <h1>Contact</h1>
+  <p>This is a simple example of a Go web app</p>
 </main>
 }`)
 		break
@@ -334,4 +344,44 @@ templ Contact(data map[string]interface{}) {
 	} else {
 		errChan <- nil
 	}
+}
+
+func getProjectPackages() error {
+
+	utils.PrintCyanInfoMsg("\n 📦 Fetching and installing dependencies...\n")
+
+	commands := [][]string{
+		{"go", "get", "github.com/a-h/templ"},
+		{"go", "get", "github.com/joho/godotenv"},
+		{"mv", ".main.go", "main.go"},
+		{"templ", "generate"},
+		{"air"},
+	}
+
+	for _, cmdArgs := range commands {
+		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		if err := cmd.Run(); err != nil {
+			return &errors.ProjectError{
+				Origin: "File: handlers/project/initProject.go => Func: getProjectPackages()",
+				Msg:    "Failed running command to get project packages: " + strings.Join(cmdArgs, ", error: "+err.Error()),
+				Err:    err,
+			}
+		}
+		// Add messages based on the executed command
+		switch strings.Join(cmdArgs, " ") {
+		case "go get github.com/a-h/templ":
+			utils.PrintSuccessMsg("✅ go: added github.com/a-h/templ")
+		case "go get github.com/joho/godotenv":
+			utils.PrintSuccessMsg("✅ go: added github.com/joho/godotenv latest")
+		case "templ generate":
+			utils.PrintCyanInfoMsg("⚡ Generating Templ components...")
+			utils.PrintSuccessMsg("✅ Templ components generated successfully!")
+		}
+	}
+
+	utils.PrintSuccessMsg("\n 🎉 Dependencies installed successfully. Your project is ready to go !\n")
+	return nil
 }

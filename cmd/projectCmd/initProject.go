@@ -55,7 +55,6 @@ If no framework flag is provided, the project will be initialized without any fr
 			if errors.As(err, &projectError) {
 				ut.PrintErrorMsg("Failed to initialize the project " + projectError.Msg)
 			}
-
 		}
 	},
 }
