@@ -10,6 +10,7 @@ import (
 	// "strconv"
 	"strings"
 
+	"github.com/adam-fraga/ratel/handlers/migration/"
 	"github.com/adam-fraga/ratel/utils"
 	"github.com/spf13/cobra"
 )
