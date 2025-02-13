@@ -24,7 +24,7 @@ var createHandlerCmd = &cobra.Command{
   You can create up to 20 handler components at a time.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		var h h.Handler
+		h := h.Handler{}
 		if len(args) == 0 {
 			ut.PrintErrorMsg("You must provide a name for the handler")
 			os.Exit(1)

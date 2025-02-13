@@ -20,8 +20,8 @@ type Model struct {
 	Path string
 }
 
-func (*Model) New() *Model {
-	return &Model{}
+func (Model) New() Model {
+	return Model{}
 }
 
 // Createmodel Create a file model of type (Component, Page, Layout)

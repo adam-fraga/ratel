@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Adm FRG adam.fraga@live.fr
+Copyright © 2024 Admtechlabs adam.fraga@admtechlabs.com
 Package dbMigrationCmd provide a way to interact with the migration system of the ratel web framework.
 */
 
@@ -14,16 +14,20 @@ import (
 // migrationCmd represents the migration command
 var MigrationCmd = &cobra.Command{
 	Use:   "migration",
-	Short: "Migration commands",
-	Long:  `Migration commands provide a way to interact with the migration system of the web framework.`,
-
+	Short: "Manage database migrations",
+	Long: `The migration command provides tools to manage database schema changes, 
+including creating, applying, and rolling back migrations to keep the database in sync with the application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("MIGRATION COMMAND CALLED")
 	},
 }
 
 func addMigrationSubcommand() {
-	MigrationCmd.AddCommand(runMigrationCmd)
+	MigrationCmd.AddCommand(runMigrationCreateCmd)
+	MigrationCmd.AddCommand(runMigrationUpCmd)
+	MigrationCmd.AddCommand(runMigrationDownCmd)
+	MigrationCmd.AddCommand(runMigrationStatusCmd)
+	MigrationCmd.AddCommand(runMigrationVersionCmd)
 }
 
 func init() {

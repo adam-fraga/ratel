@@ -22,8 +22,8 @@ type Handler struct {
 }
 
 // New Create a new handler
-func (*Handler) New() *Handler {
-	return &Handler{}
+func (Handler) New() Handler {
+	return Handler{}
 }
 
 // Create a new handler

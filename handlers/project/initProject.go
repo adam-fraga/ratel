@@ -22,9 +22,11 @@ import (
 // Ask user wich framework he want to use between None, Echo or Fiber
 
 // Init the project creation process
-func InitProject(reponame string, framework string) error {
+func InitProject(reponame string, framework string, dbProvider string) error {
 
 	p := Project{}
+	p.Framework = strings.ToLower(framework)
+	p.DBProvider = strings.ToLower(dbProvider)
 
 	files := []File{
 		{FileName: "main", Extension: ".go", FileLocation: "."},
@@ -49,19 +51,12 @@ func InitProject(reponame string, framework string) error {
 			Err:    nil,
 		}
 	}
-
 	p.Reponame = reponame
 
-	if framework == "" {
-		fmt.Println("")
-		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", reponame))
-		utils.PrintSuccessMsg(fmt.Sprintf("\n ✅ Successfully initialized repo %s\n", reponame))
-	} else if framework == "Echo" || framework == "Fiber" {
-		p.Framework = framework
-		fmt.Println("")
-		utils.RunCommand("go", false, fmt.Sprintf("mod init %s", p.Reponame))
-		utils.PrintSuccessMsg(fmt.Sprintf("\n Successfully initialized repo: %s with %s framework\n", p.Reponame, p.Framework))
-		getFrameworkFromGoPackage(&p)
+	initGoModule(p.Reponame)
+
+	if p.DBProvider == "postgres" { //Rename to match pq in the package dependencies name
+		p.DBProvider = "pq"
 	}
 
 	utils.PrintCyanInfoMsg(" 🛠️ Preparing project files...\n")
@@ -74,7 +69,7 @@ func InitProject(reponame string, framework string) error {
 		}
 	}
 
-	if err := getProjectPackages(); err != nil {
+	if err := getProjectDependencies(&p); err != nil {
 		return &errors.ProjectError{
 			Origin: "File: handlers/project/initProject.go => Func: initProject()",
 			Msg:    "Failed initialize project, error getting packages: " + err.Error(),
@@ -84,16 +79,7 @@ func InitProject(reponame string, framework string) error {
 	return nil
 }
 
-func getFrameworkFromGoPackage(p *Project) {
-	if p.Framework == "Echo" {
-		utils.PrintCyanInfoMsg("  Get Echo framework dependencies...\n")
-		utils.RunCommand("go", false, "get github.com/labstack/echo/v4")
-	} else if p.Framework == "Fiber" {
-		utils.PrintCyanInfoMsg("  Get Fiber framework dependencies...\n")
-		utils.RunCommand("go", false, "get github.com/gofiber/fiber/v2")
-	}
-}
-
+// Parse each file and write them concurrently
 func writeFiles(p *Project) error {
 
 	var wg sync.WaitGroup
@@ -118,6 +104,7 @@ func writeFiles(p *Project) error {
 	return nil
 }
 
+// Contains logic that Write files content  in the project
 func writeFile(f File, p *Project, wg *sync.WaitGroup, errChan chan<- error) {
 	defer wg.Done()
 
@@ -346,11 +333,20 @@ templ Contact(data map[string]interface{}) {
 	}
 }
 
-func getProjectPackages() error {
+// Get the project dependencies with go get command
+func getProjectDependencies(p *Project) error {
 
 	utils.PrintCyanInfoMsg("\n 📦 Fetching and installing dependencies...\n")
 
-	commands := [][]string{
+	customDependenciesCmd := [][]string{
+		{"go", "get", "github.com/gofiber/fiber/v3"},
+		{"go", "get", "github.com/labstack/echo/v4"},
+		{"go", "get", "github.com/lib/pq"},
+		{"go", "get", "go.mongodb.org/mongo-driver/v2/mongo"},
+	}
+
+	defaultDependenciesCmd := [][]string{
+		{"go", "get", "github.com/mattn/go-sqlite3"},
 		{"go", "get", "github.com/a-h/templ"},
 		{"go", "get", "github.com/joho/godotenv"},
 		{"mv", ".main.go", "main.go"},
@@ -358,7 +354,12 @@ func getProjectPackages() error {
 		{"air"},
 	}
 
-	for _, cmdArgs := range commands {
+	commands := filterDependenciesCommands(p, customDependenciesCmd)
+	cmds := make([][]string, len(defaultDependenciesCmd)+len(commands))
+	copy(cmds, commands)
+	copy(cmds[len(commands):], defaultDependenciesCmd)
+
+	for _, cmdArgs := range cmds {
 		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -379,9 +380,53 @@ func getProjectPackages() error {
 		case "templ generate":
 			utils.PrintCyanInfoMsg("⚡ Generating Templ components...")
 			utils.PrintSuccessMsg("✅ Templ components generated successfully!")
+		case "go get github.com/gofiber/fiber/v3":
+			utils.PrintSuccessMsg("✅ go: added github.com/gofiber/fiber/v3 successfully!")
+		case "go get github.com/labstack/echo/v4":
+			utils.PrintSuccessMsg("✅ go: added github.com/echo/v4 successfully!")
+		case "go get github.com/lib/pq":
+			utils.PrintSuccessMsg("✅ go: added github.com/lib/pq successfully!")
+		case "go get go.mongodb.org/mongo-driver/v2/mongo":
+			utils.PrintSuccessMsg("✅ go: added github.com/mongodrive/v2/mongo successfully!")
 		}
 	}
 
 	utils.PrintSuccessMsg("\n 🎉 Dependencies installed successfully. Your project is ready to go !\n")
 	return nil
+}
+
+// Init go project with the go mod command
+func initGoModule(reponame string) error {
+	fmt.Println("")
+	utils.PrintCyanInfoMsg("\n ⚙️ Initializing go module...\n")
+
+	initCmd := exec.Command("go", "mod", "init", reponame)
+	initCmd.Stdout = os.Stdout
+	initCmd.Stderr = os.Stderr
+
+	if err := initCmd.Run(); err != nil {
+		return &errors.ProjectError{
+			Origin: "File: handlers/project/initProject.go => Func: getProjectPackages()",
+			Msg:    "Failed trying to init go module, error: " + err.Error(),
+			Err:    err,
+		}
+	}
+
+	utils.PrintSuccessMsg(fmt.Sprintf("\n ✅ Successfully initialized repo %s\n", reponame))
+	return nil
+}
+
+// Filter commands to extract choosen Framework and db provider
+func filterDependenciesCommands(p *Project, commands [][]string) [][]string {
+	var cmds [][]string
+
+	for _, cmdArgs := range commands {
+		if strings.Contains(cmdArgs[2], p.Framework) {
+			cmds = append(cmds, cmdArgs)
+		}
+		if strings.Contains(cmdArgs[2], p.DBProvider) {
+			cmds = append(cmds, cmdArgs)
+		}
+	}
+	return cmds
 }

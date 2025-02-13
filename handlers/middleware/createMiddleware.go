@@ -20,8 +20,8 @@ type Middleware struct {
 	Path string
 }
 
-func (*Middleware) New() *Middleware {
-	return &Middleware{}
+func (Middleware) New() Middleware {
+	return Middleware{}
 }
 
 // CreateView Create a file view of type (Component, Page, Layout)

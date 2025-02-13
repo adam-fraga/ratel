@@ -23,11 +23,13 @@ import (
 
 // Project represent a project
 type Project struct {
-	ProjectName string
-	Folders     []Folder
-	Framework   string
-	Reponame    string
-	Files       []File
+	ProjectName  string
+	Folders      []Folder
+	Framework    string
+	Reponame     string
+	Files        []File
+	DBProvider   string
+	Dependencies []string
 }
 
 // Folder represent a folder in the project

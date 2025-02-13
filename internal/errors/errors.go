@@ -98,3 +98,18 @@ func (e *DBError) Error() string {
 func (e *DBError) Unwrap() error {
 	return e.Err
 }
+
+type MigrationError struct {
+	Origin string
+	Msg    string
+	Err    error
+}
+
+func (e *MigrationError) Error() string {
+	printer := color.New(color.FgRed).SprintfFunc()
+	return printer(e.Msg)
+}
+
+func (e *MigrationError) Unwrap() error {
+	return e.Err
+}
